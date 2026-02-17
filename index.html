@@ -1,91 +1,539 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>KAI</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f7f7f7;
-  margin: 20px;
-}
-h1 {
-  margin-bottom: 5px;
-}
-.subtitle {
-  color: #777;
-  font-size: 14px;
-  margin-bottom: 25px;
-}
-textarea, input {
-  width: 100%;
-  padding: 12px;
-  margin-top: 8px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 16px;
-}
-button {
-  width: 100%;
-  padding: 15px;
-  background: black;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-}
-.saved {
-  margin-top: 15px;
-  color: green;
-  font-size: 14px;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- iOS "real app" hints -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#000000" />
+
+  <title>KAI</title>
+
+  <!-- Optional: if you upload a file named apple-touch-icon.png to the repo root,
+       iOS will use it for the Home Screen icon -->
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --card:#141416;
+      --muted:#a7a7ad;
+      --text:#f3f3f5;
+      --line:#2a2a2f;
+      --gold:#d6b36a;
+      --ok:#66d17a;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,system-ui,Segoe UI,Roboto,Helvetica,Arial;
+      background:linear-gradient(180deg,#050506, #0b0b0c 30%, #0b0b0c);
+      color:var(--text);
+    }
+    .wrap{
+      max-width:860px;
+      margin:0 auto;
+      padding:18px 16px 120px;
+    }
+    header{
+      display:flex;
+      gap:14px;
+      align-items:flex-end;
+      justify-content:space-between;
+      margin:10px 0 14px;
+    }
+    .title{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    h1{ margin:0; font-size:28px; letter-spacing:0.4px; }
+    .sub{ color:var(--muted); font-size:13px; }
+    .badge{
+      color:var(--gold);
+      font-size:12px;
+      border:1px solid rgba(214,179,106,.35);
+      padding:6px 10px;
+      border-radius:999px;
+    }
+
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin:14px 0 14px;
+    }
+    .tab{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid var(--line);
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:14px;
+    }
+    .tab.active{
+      color:var(--text);
+      border-color:rgba(214,179,106,.55);
+      box-shadow:0 0 0 1px rgba(214,179,106,.20) inset;
+    }
+
+    .card{
+      background:rgba(20,20,22,.92);
+      border:1px solid rgba(42,42,47,.85);
+      border-radius:16px;
+      padding:14px;
+      margin:12px 0;
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .field{ flex:1; min-width:220px; }
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:0 0 8px;
+    }
+    input, textarea, select{
+      width:100%;
+      background:#0f0f11;
+      border:1px solid var(--line);
+      color:var(--text);
+      border-radius:12px;
+      padding:12px 12px;
+      font-size:15px;
+      outline:none;
+    }
+    textarea{ min-height:110px; resize:vertical; }
+    .small textarea{ min-height:84px; }
+
+    .actions{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      background:rgba(10,10,12,.88);
+      backdrop-filter: blur(10px);
+      border-top:1px solid rgba(42,42,47,.85);
+      padding:12px 14px;
+    }
+    .actions .inner{
+      max-width:860px;
+      margin:0 auto;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:12px 14px;
+      font-size:15px;
+      color:#0b0b0c;
+      background:var(--gold);
+      font-weight:600;
+    }
+    .btn.secondary{
+      background:transparent;
+      color:var(--text);
+      border:1px solid var(--line);
+      font-weight:500;
+    }
+    .status{
+      color:var(--muted);
+      font-size:13px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .dot{
+      width:9px; height:9px;
+      border-radius:50%;
+      background:var(--muted);
+      display:inline-block;
+    }
+    .dot.ok{ background:var(--ok); }
+
+    .historyList{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+    }
+    .hitem{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:#0f0f11;
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:flex-start;
+    }
+    .hmeta{ color:var(--muted); font-size:12px; }
+    .hdate{ font-weight:650; }
+    .hbtn{
+      border:1px solid var(--line);
+      background:transparent;
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:14px;
+      white-space:nowrap;
+    }
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:13px;
+      white-space:pre-wrap;
+      color:#e9e9ee;
+      background:#0f0f11;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>KAI</h1>
+        <div class="sub">Kabbalah Always Illuminates · Alignment · Restriction · Witnessing</div>
+      </div>
+      <div class="badge" id="todayBadge">Date: —</div>
+    </header>
 
-<h1>KAI</h1>
-<div class="subtitle">Kabbalah Always Illuminates · Alignment · Restriction · Witnessing</div>
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-screen="morning">Morning</button>
+      <button class="tab" data-screen="restriction">Restriction</button>
+      <button class="tab" data-screen="evening">Evening</button>
+      <button class="tab" data-screen="history">History</button>
+    </div>
 
-<div id="date"></div>
+    <!-- MORNING -->
+    <section id="screen-morning" class="screen">
+      <div class="card">
+        <div class="row">
+          <div class="field">
+            <label>Where are you reactive today?</label>
+            <input id="reactive_where" placeholder="Work / relationship / body / money / control / etc" />
+          </div>
+          <div class="field">
+            <label>What is the pattern?</label>
+            <input id="pattern" placeholder="Urgency / anger / avoidance / approval-seeking / scarcity / etc" />
+          </div>
+        </div>
 
-<input id="reactive" placeholder="Where are you reactive today?">
-<input id="pattern" placeholder="What is the pattern?">
-<input id="restriction" placeholder="Restriction (choose one action)">
-<textarea id="witness" placeholder="Evening Witness"></textarea>
+        <div class="row">
+          <div class="field">
+            <label>Certainty (0–10)</label>
+            <input id="certainty" inputmode="numeric" placeholder="0–10" />
+          </div>
+          <div class="field">
+            <label>Energy (0–10)</label>
+            <input id="energy" inputmode="numeric" placeholder="0–10" />
+          </div>
+          <div class="field">
+            <label>One intention</label>
+            <input id="intention" placeholder="What is my soul trying to do today?" />
+          </div>
+        </div>
+      </div>
+    </section>
 
-<button onclick="saveEntry()">Save</button>
+    <!-- RESTRICTION -->
+    <section id="screen-restriction" class="screen" hidden>
+      <div class="card">
+        <div class="row">
+          <div class="field">
+            <label>Restriction (choose one action)</label>
+            <select id="restriction_action">
+              <option value="">Select one…</option>
+              <option>Pause before speaking</option>
+              <option>Delay response 10 minutes</option>
+              <option>Ask 1 curious question</option>
+              <option>Lower volume / soften face</option>
+              <option>Do not interrupt</option>
+              <option>Choose dignity over victory</option>
+              <option>Let go of control once</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Where will you apply it?</label>
+            <input id="restriction_where" placeholder="Meeting / text thread / family / commute / self-talk" />
+          </div>
+        </div>
 
-<div class="saved" id="savedMessage"></div>
+        <div class="row small">
+          <div class="field">
+            <label>Trigger forecast</label>
+            <textarea id="trigger_forecast" placeholder="When will it try to grab me today?"></textarea>
+          </div>
+          <div class="field">
+            <label>Replacement behavior</label>
+            <textarea id="replacement" placeholder="What do I do instead, concretely?"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENING -->
+    <section id="screen-evening" class="screen" hidden>
+      <div class="card">
+        <div class="row small">
+          <div class="field">
+            <label>Evening witness</label>
+            <textarea id="evening_witness" placeholder="Did I witness illumination? Where did I restrict? What changed?"></textarea>
+          </div>
+          <div class="field">
+            <label>One insight / message</label>
+            <textarea id="insight" placeholder="What did Light show me today?"></textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Gratitude (one line)</label>
+            <input id="gratitude" placeholder="I appreciate…" />
+          </div>
+          <div class="field">
+            <label>Tomorrow’s micro-commitment</label>
+            <input id="tomorrow" placeholder="One tiny action I will repeat tomorrow" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <label>Teacher packet preview (copy/send)</label>
+        <div class="mono" id="packetPreview">—</div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="screen-history" class="screen" hidden>
+      <div class="card">
+        <label>Saved days</label>
+        <div class="historyList" id="historyList"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="actions">
+    <div class="inner">
+      <div class="status">
+        <span class="dot" id="saveDot"></span>
+        <span id="saveStatus">Not saved yet.</span>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn secondary" id="copyBtn">Copy</button>
+        <button class="btn secondary" id="exportBtn">Export</button>
+        <button class="btn" id="saveBtn">Save</button>
+      </div>
+    </div>
+  </div>
 
 <script>
-const today = new Date().toISOString().split("T")[0];
-document.getElementById("date").innerText = "Date: " + today;
+  // --- Storage model (platform-ready) ---
+  // All entries live in one object: localStorage["kai_entries"] = { "YYYY-MM-DD": { ...fields } }
+  const STORAGE_KEY = "kai_entries";
 
-function loadEntry() {
-  const data = JSON.parse(localStorage.getItem(today));
-  if (data) {
-    document.getElementById("reactive").value = data.reactive || "";
-    document.getElementById("pattern").value = data.pattern || "";
-    document.getElementById("restriction").value = data.restriction || "";
-    document.getElementById("witness").value = data.witness || "";
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth()+1).padStart(2,"0");
+  const dd = String(today.getDate()).padStart(2,"0");
+  const todayKey = `${yyyy}-${mm}-${dd}`;
+
+  const $ = (id) => document.getElementById(id);
+
+  $("todayBadge").textContent = `Date: ${todayKey}`;
+
+  const fields = [
+    "reactive_where","pattern","certainty","energy","intention",
+    "restriction_action","restriction_where","trigger_forecast","replacement",
+    "evening_witness","insight","gratitude","tomorrow"
+  ];
+
+  function readAll() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
   }
-}
+  function writeAll(obj) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+  }
+  function getTodayEntry() {
+    const all = readAll();
+    return all[todayKey] || {};
+  }
+  function setTodayEntry(entry) {
+    const all = readAll();
+    all[todayKey] = entry;
+    writeAll(all);
+  }
 
-function saveEntry() {
-  const entry = {
-    reactive: document.getElementById("reactive").value,
-    pattern: document.getElementById("pattern").value,
-    restriction: document.getElementById("restriction").value,
-    witness: document.getElementById("witness").value
-  };
-  localStorage.setItem(today, JSON.stringify(entry));
-  document.getElementById("savedMessage").innerText = "Saved.";
-}
+  function loadToday() {
+    const entry = getTodayEntry();
+    fields.forEach(f => {
+      const el = $(f);
+      if (!el) return;
+      el.value = entry[f] ?? "";
+    });
+    updatePacketPreview();
+    renderHistory();
+    setSavedUI(!!Object.keys(entry).length);
+  }
 
-loadEntry();
+  function collect() {
+    const entry = {};
+    fields.forEach(f => entry[f] = ($(f)?.value ?? "").trim());
+    entry._updatedAt = new Date().toISOString();
+    return entry;
+  }
+
+  function setSavedUI(isSaved) {
+    $("saveDot").classList.toggle("ok", isSaved);
+    $("saveStatus").textContent = isSaved ? "Saved." : "Not saved yet.";
+  }
+
+  function buildPacket(entry) {
+    return [
+      `KAI · ${todayKey}`,
+      ``,
+      `Morning`,
+      `• Reactive: ${entry.reactive_where || "—"}`,
+      `• Pattern: ${entry.pattern || "—"}`,
+      `• Certainty: ${entry.certainty || "—"} / 10`,
+      `• Energy: ${entry.energy || "—"} / 10`,
+      `• Intention: ${entry.intention || "—"}`,
+      ``,
+      `Restriction`,
+      `• Action: ${entry.restriction_action || "—"}`,
+      `• Where: ${entry.restriction_where || "—"}`,
+      `• Trigger: ${entry.trigger_forecast || "—"}`,
+      `• Replacement: ${entry.replacement || "—"}`,
+      ``,
+      `Evening`,
+      `• Witness: ${entry.evening_witness || "—"}`,
+      `• Insight: ${entry.insight || "—"}`,
+      `• Gratitude: ${entry.gratitude || "—"}`,
+      `• Tomorrow: ${entry.tomorrow || "—"}`
+    ].join("\n");
+  }
+
+  function updatePacketPreview() {
+    const entry = collect();
+    $("packetPreview").textContent = buildPacket(entry);
+  }
+
+  function save() {
+    const entry = collect();
+    setTodayEntry(entry);
+    setSavedUI(true);
+    updatePacketPreview();
+    renderHistory();
+  }
+
+  async function copyPacket() {
+    const packet = buildPacket(collect());
+    try{
+      await navigator.clipboard.writeText(packet);
+      $("saveStatus").textContent = "Copied to clipboard.";
+      $("saveDot").classList.add("ok");
+    } catch {
+      // Fallback: prompt
+      window.prompt("Copy this:", packet);
+    }
+  }
+
+  function exportPacket() {
+    const packet = buildPacket(collect());
+    const blob = new Blob([packet], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `KAI_${todayKey}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    $("saveStatus").textContent = "Exported .txt file.";
+    $("saveDot").classList.add("ok");
+  }
+
+  function renderHistory() {
+    const all = readAll();
+    const dates = Object.keys(all).sort().reverse();
+    const list = $("historyList");
+    list.innerHTML = "";
+
+    if (dates.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "hmeta";
+      empty.textContent = "No saved days yet. Tap Save.";
+      list.appendChild(empty);
+      return;
+    }
+
+    dates.forEach(date => {
+      const e = all[date] || {};
+      const item = document.createElement("div");
+      item.className = "hitem";
+
+      const left = document.createElement("div");
+      left.innerHTML = `
+        <div class="hdate">${date}</div>
+        <div class="hmeta">Pattern: ${(e.pattern || "—").slice(0,60)} · Action: ${(e.restriction_action || "—").slice(0,60)}</div>
+      `;
+
+      const btn = document.createElement("button");
+      btn.className = "hbtn";
+      btn.textContent = "Load";
+      btn.onclick = () => loadDate(date);
+
+      item.appendChild(left);
+      item.appendChild(btn);
+      list.appendChild(item);
+    });
+  }
+
+  function loadDate(date) {
+    const all = readAll();
+    const e = all[date] || {};
+    // Load into current view as "read-only" copy (for now).
+    // For simplicity, we just populate fields with that day so you can review/edit,
+    // but saving will overwrite TODAY only.
+    fields.forEach(f => { if ($(f)) $(f).value = e[f] ?? ""; });
+    updatePacketPreview();
+    // Jump to Evening where packet preview lives
+    showScreen("evening");
+    $("saveStatus").textContent = `Loaded ${date} (review).`;
+    $("saveDot").classList.add("ok");
+  }
+
+  // --- Screens ---
+  function showScreen(name){
+    document.querySelectorAll(".screen").forEach(s => s.hidden = true);
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.getElementById(`screen-${name}`).hidden = false;
+    document.querySelector(`.tab[data-screen="${name}"]`).classList.add("active");
+  }
+
+  document.querySelectorAll(".tab").forEach(btn => {
+    btn.addEventListener("click", () => showScreen(btn.dataset.screen));
+  });
+
+  // Autosave packet preview as you type (without writing storage)
+  fields.forEach(f => {
+    const el = $(f);
+    if (!el) return;
+    el.addEventListener("input", () => {
+      setSavedUI(false);
+      updatePacketPreview();
+    });
+  });
+
+  $("saveBtn").addEventListener("click", save);
+  $("copyBtn").addEventListener("click", copyPacket);
+  $("exportBtn").addEventListener("click", exportPacket);
+
+  loadToday();
 </script>
-
 </body>
 </html>
