@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>KAI</title>
+<style>
+:root{--bg:#fff;--text:#111;--muted:#666;--line:#e6e6e6}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+header{padding:16px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:18px}
+.sub{font-size:12px;color:var(--muted);margin-top:4px}
+.card{border:1px solid var(--line);border-radius:12px;padding:12px;margin:12px}
+label{font-size:12px;color:var(--muted)}
+input,textarea{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;margin-top:6px}
+.primary{background:#111;color:#fff;border-color:#111;margin-top:12px;width:100%;padding:12px;border-radius:12px}
+</style>
+</head>
+<body>
+<header>
+<h1>KAI</h1>
+<div class="sub">Kabbalah Always Illuminates • Alignment • Restriction • Witnessing</div>
+</header>
+
+<div class="card">
+<label>Where are you reactive today?</label>
+<input id="area" placeholder="Work / relationship / etc" />
+</div>
+
+<div class="card">
+<label>What is the pattern?</label>
+<input id="pattern" placeholder="Anger / urgency / avoidance" />
+</div>
+
+<div class="card">
+<label>Restriction (choose one action)</label>
+<textarea id="restriction" placeholder="Pause before speaking..."></textarea>
+</div>
+
+<div class="card">
+<label>Evening Witness</label>
+<textarea id="witness" placeholder="Did you witness illumination?"></textarea>
+</div>
+
+<button class="primary" onclick="save()">Save</button>
+
+<script>
+function save(){
+  const data={
+    area:document.getElementById('area').value,
+    pattern:document.getElementById('pattern').value,
+    restriction:document.getElementById('restriction').value,
+    witness:document.getElementById('witness').value,
+    date:new Date().toISOString()
+  }
+  localStorage.setItem('kai_entry_'+Date.now(),JSON.stringify(data))
+  alert('Saved locally on this device.')
+}
+</script>
+</body>
+</html>
