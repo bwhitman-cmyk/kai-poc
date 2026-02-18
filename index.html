@@ -1419,7 +1419,16 @@ document.querySelectorAll(".tab").forEach(btn => {
     setActiveTab(tab);
   });
 });
+// Wire tab clicks
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const tab = btn.dataset.tab;
+    setActiveTab(tab);
+  });
+});
 
+hydrateUI();
+renderCard();
 hydrateUI();
 renderCard();
     })();
