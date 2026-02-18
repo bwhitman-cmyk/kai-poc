@@ -2,1691 +2,1419 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- iOS standalone app -->
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b0c" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-title" content="KAI" />
+
+  <!-- iOS Home Screen icon (must exist at site root) -->
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <!-- PWA manifest (must exist at site root) -->
+  <link rel="manifest" href="/manifest.webmanifest" />
 
   <title>KAI</title>
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
   <style>
     :root{
       --bg:#070708;
-      --card:#141416;
-      --muted:#a7a7ad;
-      --text:#f3f3f5;
-      --line:#2a2a2f;
-      --gold:#d6b36a;
-      --gold2:#f2d9a6;
-      --ok:#66d17a;
-      --bad:#ff6b6b;
+      --panel:#0e0f12;
+      --panel2:#0b0c0e;
+      --text:#f3f3f4;
+      --muted:#b3b3b7;
+      --gold:#c8a24a;
+      --gold2:#8f6f2a;
+      --line:rgba(255,255,255,.08);
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --radius:18px;
+
+      /* BIGGER BASE TYPE (fixes tiny UI) */
+      --base: 19px;
+      --h1: 38px;
+      --h2: 18px;
+      --label: 15px;
+      --input: 18px;
+      --btn: 17px;
+
+      --pad: 18px;
+      --gap: 14px;
     }
+
+    @media (min-width: 900px){
+      :root{
+        --base: 20px;
+        --h1: 40px;
+        --input: 19px;
+        --btn: 18px;
+        --pad: 20px;
+      }
+    }
+
     *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,system-ui,Segoe UI,Roboto,Helvetica,Arial;
-      background: radial-gradient(1000px 600px at 20% 0%, rgba(214,179,106,.10), transparent 55%),
-                  radial-gradient(900px 500px at 90% 10%, rgba(214,179,106,.08), transparent 50%),
-                  linear-gradient(180deg,#050506,#0a0a0c 25%, #070708);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 700px at 20% 15%, rgba(200,162,74,.15), transparent 55%),
+                  radial-gradient(900px 520px at 85% 10%, rgba(200,162,74,.08), transparent 55%),
+                  linear-gradient(180deg, #060607, #070708 50%, #050506);
       color:var(--text);
+      font-size: var(--base);
+      line-height: 1.35;
+      -webkit-font-smoothing: antialiased;
+      padding: calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 18px);
     }
-    .wrap{ max-width:1040px; margin:0 auto; padding:18px 16px 140px; }
 
-    header{
-      display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
-      margin:10px 0 12px;
+    .wrap{ max-width: 1150px; margin: 0 auto; }
+
+    .top{
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 16px;
+      margin-bottom: 14px;
     }
-    .title{ display:flex; flex-direction:column; gap:6px; }
-    h1{ margin:0; font-size:28px; letter-spacing:.4px; }
-    .sub{ color:var(--muted); font-size:13px; }
-
-    .badgeRow{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
-    .badge{
-      color:var(--gold);
-      font-size:12px;
-      border:1px solid rgba(214,179,106,.35);
-      padding:6px 10px;
-      border-radius:999px;
-      background: rgba(0,0,0,.18);
+    .brand{
+      display:flex; flex-direction:column; gap:6px;
     }
-    .badge.ok{ border-color: rgba(102,209,122,.45); color: var(--ok); }
-    .badge.bad{ border-color: rgba(255,107,107,.45); color: var(--bad); }
+    .brand h1{
+      margin:0;
+      font-size: var(--h1);
+      letter-spacing:.08em;
+    }
+    .brand .sub{
+      color:var(--muted);
+      font-size: 15px;
+    }
 
-    .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 14px; }
-    .tab{
-      background:transparent; color:var(--muted);
+    .chips{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+      margin-top: 6px;
+    }
+    .chip{
       border:1px solid var(--line);
-      padding:10px 12px; border-radius:12px; font-size:14px;
+      background: rgba(255,255,255,.03);
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 14px;
     }
-    .tab.active{
-      color:var(--text);
-      border-color:rgba(214,179,106,.55);
-      box-shadow:0 0 0 1px rgba(214,179,106,.20) inset;
-    }
+    .chip b{ color: var(--gold); font-weight: 700; }
 
-    .card{
-      background:rgba(20,20,22,.92);
-      border:1px solid rgba(42,42,47,.85);
-      border-radius:16px;
-      padding:14px;
-      margin:12px 0;
-      box-shadow: 0 14px 30px rgba(0,0,0,.22);
-    }
-    .card h3{
-      margin:0 0 10px;
-      font-size:15px;
-      letter-spacing:.2px;
-      color: var(--gold2);
-    }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; }
-    .field{ flex:1; min-width:220px; }
-    label{ display:block; font-size:12px; color:var(--muted); margin:0 0 8px; }
-    input, textarea, select{
-      width:100%;
-      background:#0f0f11;
-      border:1px solid var(--line);
-      color:var(--text);
-      border-radius:12px;
-      padding:12px 12px;
-      font-size:15px;
-      outline:none;
-    }
-    textarea{ min-height:110px; resize:vertical; }
-    .small textarea{ min-height:84px; }
-
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      color:var(--text);
-      font-size:13px;
-      background: rgba(0,0,0,.18);
-    }
-    .pill strong{ color: var(--gold2); font-weight:650; }
-    .muted{ color:var(--muted); font-size:13px; }
-    .tiny{ font-size:12px; color:var(--muted); }
-
-    .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    @media (max-width: 900px){ .grid2{ grid-template-columns:1fr; } }
-
-    .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size:13px;
-      white-space:pre-wrap;
-      color:#e9e9ee;
-      background:#0f0f11;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-    }
-
-    .mini{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .kicker{ font-size:12px; color:var(--muted); }
-    .bigHeb{ font-size:28px; letter-spacing:1px; color: var(--gold2); font-weight:900; }
-
-    .divider{ height:1px; background:rgba(42,42,47,.85); margin:12px 0; }
-
-    .actions{
-      position:fixed;
-      left:0; right:0; bottom:0;
-      background:rgba(10,10,12,.88);
-      backdrop-filter: blur(10px);
-      border-top:1px solid rgba(42,42,47,.85);
-      padding:12px 14px;
-    }
-    .actions .inner{
-      max-width:1040px;
-      margin:0 auto;
+    .tabs{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
+      margin: 10px 0 14px;
+    }
+    .tab{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor:pointer;
+      user-select:none;
+      font-size: 15px;
+    }
+    .tab.active{
+      border-color: rgba(200,162,74,.6);
+      box-shadow: 0 0 0 2px rgba(200,162,74,.15) inset;
+      background: rgba(200,162,74,.08);
+    }
+
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding: var(--pad);
+      box-shadow: var(--shadow);
+    }
+    .panel + .panel{ margin-top: 14px; }
+
+    .titleRow{
+      display:flex; align-items:center; justify-content:space-between; gap: 12px;
+      margin-bottom: 10px;
+    }
+    .panel h2{
+      margin:0;
+      font-size: 18px;
+      color: var(--gold);
+      letter-spacing:.02em;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--gap);
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    label{
+      display:block;
+      color: var(--muted);
+      font-size: var(--label);
+      margin: 0 0 6px;
+    }
+
+    input, select, textarea{
+      width:100%;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.35);
+      color: var(--text);
+      padding: 14px 14px;
+      font-size: var(--input);
+      outline:none;
+    }
+    textarea{ min-height: 86px; resize: vertical; }
+
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+    }
+    @media (max-width: 980px){
+      .row2{ grid-template-columns: 1fr; }
+    }
+
+    .btnRow{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top: 14px;
       align-items:center;
-      justify-content:space-between;
+      justify-content:flex-end;
     }
     .btn{
-      border:0;
-      border-radius:14px;
-      padding:12px 14px;
-      font-size:15px;
-      color:#0b0b0c;
-      background:var(--gold);
-      font-weight:800;
-      box-shadow: 0 12px 20px rgba(0,0,0,.25);
-    }
-    .btn.secondary{
-      background:transparent;
-      color:var(--text);
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-size: var(--btn);
       border:1px solid var(--line);
-      font-weight:650;
-      box-shadow:none;
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      cursor:pointer;
+    }
+    .btn.primary{
+      border-color: rgba(200,162,74,.65);
+      background: rgba(200,162,74,.14);
+      color: #fff;
+      font-weight: 700;
     }
     .btn.danger{
-      background:transparent;
-      color: var(--bad);
-      border:1px solid rgba(255,107,107,.35);
-      font-weight:700;
-      box-shadow:none;
+      border-color: rgba(255,80,80,.45);
+      background: rgba(255,80,80,.10);
+      color:#fff;
     }
-    .status{
-      color:var(--muted);
-      font-size:13px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .dot{ width:9px; height:9px; border-radius:50%; background:var(--muted); display:inline-block; }
-    .dot.ok{ background:var(--ok); }
-    .dot.bad{ background:var(--bad); }
+    .btn:active{ transform: translateY(1px); }
 
-    .toast{
-      position:fixed;
-      top:14px; left:50%;
-      transform:translateX(-50%);
-      background:rgba(0,0,0,.78);
-      border:1px solid rgba(214,179,106,.25);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:14px;
-      font-size:13px;
-      box-shadow:0 10px 30px rgba(0,0,0,.35);
-      display:none;
-      z-index:999;
+    .hint{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
-    /* Library cards */
-    .libGrid{
+    .split{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: var(--gap);
+    }
+    @media (max-width: 980px){
+      .split{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(0,0,0,.28);
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 14px;
+      color: #e8e8ea;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .toggleRow{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      padding: 12px 14px;
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(0,0,0,.22);
+    }
+    .toggleRow b{ color: var(--gold); }
+
+    .switch{
+      position:relative; width: 56px; height: 32px;
+    }
+    .switch input{ display:none; }
+    .slider{
+      position:absolute; inset:0;
+      background: rgba(255,255,255,.12);
+      border:1px solid var(--line);
+      border-radius: 999px;
+      transition: .2s;
+    }
+    .slider:before{
+      content:"";
+      position:absolute;
+      width: 26px; height: 26px;
+      left: 3px; top: 2px;
+      background: #fff;
+      border-radius: 50%;
+      transition: .2s;
+      box-shadow: 0 10px 25px rgba(0,0,0,.45);
+    }
+    .switch input:checked + .slider{
+      background: rgba(200,162,74,.26);
+      border-color: rgba(200,162,74,.55);
+    }
+    .switch input:checked + .slider:before{
+      transform: translateX(24px);
+      background: #fff;
+    }
+
+    .oneTapGrid{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
-      gap:10px;
+      gap: 10px;
+      margin-top: 10px;
     }
-    @media (max-width: 980px){ .libGrid{ grid-template-columns: repeat(2, 1fr);} }
-    @media (max-width: 620px){ .libGrid{ grid-template-columns: 1fr;} }
-
-    .libCard{
-      border:1px solid rgba(42,42,47,.85);
-      border-radius:16px;
-      padding:12px;
-      background:#0f0f11;
+    @media (max-width: 980px){
+      .oneTapGrid{ grid-template-columns: 1fr; }
     }
-    .libTop{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
-    .libHeb{ font-size:24px; font-weight:900; color:var(--gold2); letter-spacing:1px; }
-    .libMeaning{ color:var(--text); font-weight:750; font-size:14px; }
-    .libUse{ color:var(--muted); font-size:12px; margin-top:6px; }
-    .libBtns{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .chip{
+    .oneTap{
+      text-align:left;
       border:1px solid var(--line);
-      color:var(--muted);
-      border-radius:999px;
-      padding:7px 10px;
-      font-size:12px;
-      background: rgba(0,0,0,.12);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding: 12px 14px;
+      cursor:pointer;
+    }
+    .oneTap .k{ color: var(--gold); font-weight: 800; }
+    .oneTap .s{ color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(env(safe-area-inset-bottom) + 14px);
+      background: rgba(10,10,12,.88);
+      border: 1px solid rgba(200,162,74,.35);
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 14px;
+      display:none;
+      z-index: 50;
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
     }
 
-    /* Share card preview */
-    .shareWrap{ display:flex; gap:12px; flex-wrap:wrap; align-items:flex-start; }
-    .previewBox{
-      border:1px solid rgba(42,42,47,.85);
-      border-radius:16px;
-      padding:10px;
-      background:#0f0f11;
+    /* Celebration modal */
+    .modalBackdrop{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.65);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index: 60;
+      padding: 18px;
     }
-    canvas{ max-width:100%; height:auto; border-radius:14px; }
-    .linkBtn{
-      display:inline-block;
-      text-decoration:none;
-      border:1px solid var(--line);
-      color:var(--text);
-      border-radius:12px;
-      padding:10px 12px;
-      font-size:14px;
+    .modal{
+      width: min(760px, 100%);
+      background: radial-gradient(900px 420px at 30% 20%, rgba(200,162,74,.20), transparent 58%),
+                  linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid rgba(200,162,74,.35);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .modal h3{
+      margin:0 0 6px;
+      font-size: 22px;
+      color: #fff;
+      letter-spacing:.02em;
+    }
+    .modal p{ margin:0 0 12px; color: var(--muted); }
+    .spark{
+      position:absolute;
+      width: 10px; height: 10px;
+      background: rgba(200,162,74,.9);
+      border-radius: 2px;
+      filter: blur(.2px);
+      animation: fall 1.25s linear infinite;
+      opacity:.9;
+    }
+    @keyframes fall{
+      0%{ transform: translateY(-30px) rotate(0deg); opacity:0; }
+      10%{ opacity: .95; }
+      100%{ transform: translateY(420px) rotate(320deg); opacity: 0; }
+    }
+    .xClose{
+      position:absolute; right:12px; top:10px;
+      background: transparent;
+      border: 1px solid var(--line);
+      color: #fff;
+      border-radius: 999px;
+      width: 38px; height: 38px;
+      cursor:pointer;
     }
   </style>
 </head>
 
 <body>
-  <div class="toast" id="toast">Saved.</div>
-
   <div class="wrap">
-    <header>
-      <div class="title">
+    <div class="top">
+      <div class="brand">
         <h1>KAI</h1>
-        <div class="sub">Kabbalah Always Illuminates · Alignment · Restriction · Witnessing</div>
+        <div class="sub">Kabbalah Always Illuminates • Alignment • Restriction • Witnessing</div>
       </div>
-
-      <div class="badgeRow">
-        <div class="badge" id="todayBadge">Date: —</div>
-        <div class="badge" id="profileBadge">Profile: —</div>
-        <div class="badge ok" id="streakBadge">Streak: 0</div>
+      <div class="chips">
+        <div class="chip">Date: <b id="chipDate">—</b></div>
+        <div class="chip">Profile: <b id="chipProfile">—</b></div>
+        <div class="chip">Streak: <b id="chipStreak">—</b></div>
+        <div class="chip">Daily Restrict: <b id="chipDailyRestrict">—</b></div>
       </div>
-    </header>
-
-    <div class="tabs" role="tablist">
-      <button class="tab active" data-screen="start">Start</button>
-      <button class="tab" data-screen="morning">Morning</button>
-      <button class="tab" data-screen="restriction">Restriction</button>
-      <button class="tab" data-screen="evening">Evening</button>
-      <button class="tab" data-screen="sharecard">Share Card</button>
-      <button class="tab" data-screen="library">Library</button>
-      <button class="tab" data-screen="tools">Tools</button>
-      <button class="tab" data-screen="learn">Learn</button>
-      <button class="tab" data-screen="history">History</button>
     </div>
 
-    <!-- START / PROFILE -->
-    <section id="screen-start" class="screen">
-      <div class="card">
-        <h3>Profile and Intent</h3>
-        <div class="row">
-          <div class="field">
-            <label>Your name</label>
-            <input id="p_name" placeholder="Bernard" />
-          </div>
-          <div class="field">
-            <label>Birthdate (astrology layer)</label>
-            <input id="p_birth" type="date" />
-          </div>
-          <div class="field">
-            <label>Primary focus</label>
-            <select id="p_focus">
-              <option value="">Select…</option>
-              <option>Leadership</option>
-              <option>Relationship</option>
-              <option>Health / nervous system</option>
-              <option>Spiritual discipline</option>
-              <option>Work / money / control</option>
-              <option>Family</option>
-              <option>Other</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="field">
-            <label>30-day outcome (one sentence)</label>
-            <input id="p_outcome" placeholder="Increase certainty and reduce urgency reactivity." />
-          </div>
-          <div class="field">
-            <label>Preferred intensity</label>
-            <select id="p_intensity">
-              <option>Simple</option>
-              <option selected>Simple + Powerful</option>
-              <option>Deep Work Mode</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Enable</label>
-            <select id="p_features">
-              <option value="core">Core only</option>
-              <option value="core_tools" selected>Core + Tools</option>
-              <option value="core_tools_learn">Core + Tools + Learn</option>
-            </select>
-          </div>
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="start">Start</div>
+      <div class="tab" data-tab="morning">Morning</div>
+      <div class="tab" data-tab="restriction">Restriction</div>
+      <div class="tab" data-tab="evening">Evening</div>
+      <div class="tab" data-tab="share">Share Card</div>
+      <div class="tab" data-tab="library">Library</div>
+      <div class="tab" data-tab="tools">Tools</div>
+      <div class="tab" data-tab="history">History</div>
+    </div>
+
+    <!-- START -->
+    <section class="panel" data-pane="start">
+      <div class="titleRow">
+        <h2>Profile and Intent</h2>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label>Your name</label>
+          <input id="pName" placeholder="Bernard" />
         </div>
 
-        <div class="divider"></div>
+        <div>
+          <label>Birthdate (astrology layer)</label>
+          <input id="pBirth" type="date" />
+        </div>
 
-        <div class="mini">
-          <span class="pill"><strong>Sun sign:</strong> <span id="sunSign">—</span></span>
-          <span class="pill"><strong>KAI mode:</strong> <span id="kaiMode">—</span></span>
-          <span class="pill"><strong>Personal prompt:</strong> <span id="personalPrompt">—</span></span>
+        <div>
+          <label>Primary focus</label>
+          <select id="pFocus">
+            <option value="">Select…</option>
+            <option>Certainty</option>
+            <option>Restriction</option>
+            <option>Love / Achdut</option>
+            <option>Leadership</option>
+            <option>Healing / Energy</option>
+            <option>Communication</option>
+          </select>
+        </div>
+
+        <div>
+          <label>30-day outcome (one sentence)</label>
+          <input id="pOutcome" placeholder="Increase certainty and reduce urgency reactivity…" />
+        </div>
+
+        <div>
+          <label>Preferred intensity</label>
+          <select id="pMode">
+            <option>Simple + Powerful</option>
+            <option>Guided (more prompts)</option>
+            <option>Deep (study + tools)</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Enable</label>
+          <select id="pEnable">
+            <option>Core + Tools</option>
+            <option>Core only</option>
+            <option>Core + Library</option>
+          </select>
         </div>
       </div>
 
-      <div class="card">
-        <h3>Daily Guidance Preview</h3>
-        <div class="grid2">
-          <div>
-            <div class="pill"><strong>Pattern:</strong> <span id="dominantPattern">—</span></div>
-            <div style="height:10px"></div>
+      <div style="margin-top:12px" class="toggleRow">
+        <div>
+          <b>Daily Restrict Mode</b>
+          <div class="hint" style="margin:4px 0 0">One restriction per day, celebrated + streak tracked. 🔥</div>
+        </div>
+        <label class="switch" aria-label="Daily Restrict">
+          <input id="dailyRestrictToggle" type="checkbox" />
+          <span class="slider"></span>
+        </label>
+      </div>
 
-            <div class="kicker">72 Name tool (pattern-mapped or chosen from Library)</div>
-            <div class="mini">
-              <div class="bigHeb" id="nameHeb">—</div>
-              <div>
-                <div class="pill"><strong>Meaning:</strong> <span id="nameMeaning">—</span></div>
-                <div class="tiny" id="nameHow">Select a pattern or choose a Name in Library.</div>
-              </div>
-            </div>
+      <div class="panel" style="margin-top:14px">
+        <div class="titleRow">
+          <h2>Daily Guidance Preview</h2>
+        </div>
 
-            <div style="height:10px"></div>
-            <div class="kicker">Zohar lens (teaching bite)</div>
-            <div class="mono" id="zoharLens">—</div>
+        <div class="split">
+          <div class="card">
+            <label>Pattern (choose in Morning)</label>
+            <div class="chip" style="display:inline-block;margin-bottom:10px">Pattern: <b id="prevPattern">—</b></div>
+
+            <label>72 Name tool (pattern-mapped or chosen in Library)</label>
+            <div class="chip" style="display:inline-block;margin-bottom:10px">Meaning: <b id="prevNameMeaning">Choose a tool</b></div>
+
+            <label>Zohar lens (teaching bite)</label>
+            <textarea id="prevZohar" placeholder="Sefirah lens: …&#10;Teaching bite: …&#10;(Teacher can later attach exact Zohar references.)"></textarea>
+
+            <div class="hint">This POC keeps Zohar references high-level on purpose. Exact citations can be teacher-attached later.</div>
           </div>
 
-          <div>
-            <div class="kicker">Suggested restriction</div>
-            <div class="mono" id="suggestedRestriction">—</div>
-            <div style="height:10px"></div>
+          <div class="card">
+            <label>Suggested restriction</label>
+            <input id="prevSuggest" placeholder="Choose one restriction move and witness the effect." />
 
-            <div class="kicker">KAI Card (shareable text)</div>
-            <div class="mono" id="kaiCard">—</div>
+            <label style="margin-top:10px">KAI Card (shareable text)</label>
+            <div class="card mono" id="shareTextBox" style="min-height: 170px"></div>
+
+            <div class="hint">Tap **Share Text** below to copy a clean share version.</div>
           </div>
         </div>
+
+        <div class="btnRow">
+          <button class="btn" id="btnCopy">Copy</button>
+          <button class="btn" id="btnShareText">Share Text</button>
+          <button class="btn" id="btnExport">Export</button>
+          <button class="btn primary" id="btnSave">Save</button>
+          <button class="btn danger" id="btnResetDay">Reset Day</button>
+        </div>
+
+        <div class="hint" id="saveState">● Not saved yet.</div>
       </div>
     </section>
 
     <!-- MORNING -->
-    <section id="screen-morning" class="screen" hidden>
-      <div class="card">
-        <h3>Morning Intake</h3>
-        <div class="row">
-          <div class="field">
-            <label>Where are you reactive today?</label>
-            <input id="reactive_where" placeholder="Work / relationship / body / money / control / etc" />
-          </div>
-          <div class="field">
-            <label>What is the pattern?</label>
-            <select id="pattern">
-              <option value="">Select…</option>
-              <option value="urgency">Urgency / speed / forcing</option>
-              <option value="anger">Anger / sharpness / attack</option>
-              <option value="avoidance">Avoidance / delay / dissociation</option>
-              <option value="approval">Approval-seeking / people-pleasing</option>
-              <option value="control">Control / micromanage / certainty-grab</option>
-              <option value="shame">Shame / unworthiness / collapse</option>
-              <option value="scarcity">Scarcity / fear / contraction</option>
-              <option value="judgment">Judgment / criticism / superiority</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
+    <section class="panel" data-pane="morning" style="display:none">
+      <div class="titleRow"><h2>Morning</h2></div>
+
+      <div class="grid">
+        <div style="grid-column: 1 / -1">
+          <label>Where are you reactive today?</label>
+          <input id="mWhere" placeholder="Work / relationship / body / money / control / etc" />
         </div>
 
-        <div class="row">
-          <div class="field">
-            <label>Certainty (0–10)</label>
-            <input id="certainty" inputmode="numeric" placeholder="0–10" />
-          </div>
-          <div class="field">
-            <label>Energy (0–10)</label>
-            <input id="energy" inputmode="numeric" placeholder="0–10" />
-          </div>
-          <div class="field">
-            <label>One intention</label>
-            <input id="intention" placeholder="What is my soul trying to do today?" />
-          </div>
+        <div style="grid-column: 1 / -1">
+          <label>What is the pattern?</label>
+          <input id="mPattern" placeholder="Urgency / anger / avoidance / approval-seeking / scarcity / etc" />
         </div>
 
-        <div class="row small">
-          <div class="field">
-            <label>Trigger forecast (optional)</label>
-            <textarea id="trigger_forecast" placeholder="When will it try to grab me today?"></textarea>
-          </div>
-          <div class="field">
-            <label>One courageous micro-choice (optional)</label>
-            <textarea id="micro_choice" placeholder="One small action that breaks the pattern."></textarea>
-          </div>
+        <div>
+          <label>Certainty (0–10)</label>
+          <input id="mCert" inputmode="decimal" placeholder="0–10" />
+        </div>
+
+        <div>
+          <label>Energy (0–10)</label>
+          <input id="mEnergy" inputmode="decimal" placeholder="0–10" />
+        </div>
+
+        <div>
+          <label>One intention</label>
+          <input id="mIntent" placeholder="What is my soul trying to do today" />
         </div>
       </div>
 
-      <div class="card">
-        <h3>Today’s Tool</h3>
-        <div class="grid2">
-          <div>
-            <div class="pill"><strong>72 Name:</strong> <span id="m_nameBrief">—</span></div>
-            <div style="height:10px"></div>
-            <div class="mono" id="m_namePractice">Choose a pattern to see your tool.</div>
-          </div>
-          <div>
-            <div class="pill"><strong>Zohar lens:</strong> <span id="m_zoharTag">—</span></div>
-            <div style="height:10px"></div>
-            <div class="mono" id="m_zoharText">—</div>
-          </div>
-        </div>
+      <div class="panel" style="margin-top:14px">
+        <div class="titleRow"><h2>One-Tap Restriction (fast + fun)</h2></div>
+        <div class="hint">Tap one, it auto-fills Restriction + suggested mini-script. Then hit Save. ⚡️</div>
+
+        <div class="oneTapGrid" id="oneTapGrid"></div>
       </div>
     </section>
 
     <!-- RESTRICTION -->
-    <section id="screen-restriction" class="screen" hidden>
-      <div class="card">
-        <h3>Restriction</h3>
-        <div class="row">
-          <div class="field">
-            <label>Restriction action</label>
-            <select id="restriction_action">
-              <option value="">Select one…</option>
-              <option>Pause before speaking (3 breaths)</option>
-              <option>Delay response 10 minutes</option>
-              <option>Ask 1 curious question</option>
-              <option>Lower volume / soften face</option>
-              <option>Do not interrupt</option>
-              <option>Choose dignity over victory</option>
-              <option>Let go of control once</option>
-              <option>Say: “Let me sit with that”</option>
-              <option>Give before you take</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Where will you apply it?</label>
-            <input id="restriction_where" placeholder="Meeting / text thread / family / commute / self-talk" />
-          </div>
-          <div class="field">
-            <label>Confidence (0–10)</label>
-            <input id="restriction_conf" inputmode="numeric" placeholder="0–10" />
-          </div>
+    <section class="panel" data-pane="restriction" style="display:none">
+      <div class="titleRow"><h2>Restriction</h2></div>
+
+      <div class="grid">
+        <div>
+          <label>Restriction action</label>
+          <select id="rAction">
+            <option value="">Select one…</option>
+            <option>Pause (10 seconds)</option>
+            <option>Delay response (10 minutes)</option>
+            <option>Lower volume (voice/text)</option>
+            <option>Ask a question first</option>
+            <option>One breath before sending</option>
+            <option>Choose dignity over victory</option>
+            <option>Name the feeling (no story)</option>
+            <option>Do the opposite (small)</option>
+          </select>
         </div>
 
-        <div class="row small">
-          <div class="field">
-            <label>Replacement behavior</label>
-            <textarea id="replacement" placeholder="What do I do instead, specifically?"></textarea>
-          </div>
-          <div class="field">
-            <label>Mini script (optional)</label>
-            <textarea id="mini_script" placeholder='Example: “I hear you. Give me 10 minutes to respond with clarity.”'></textarea>
-          </div>
+        <div>
+          <label>Where will you apply it?</label>
+          <input id="rWhere" placeholder="Meeting / text thread / family / commute / self-talk" />
         </div>
 
-        <div class="divider"></div>
-        <div class="pill"><strong>Suggested (from tool):</strong> <span id="r_suggested">—</span></div>
+        <div>
+          <label>Confidence (0–10)</label>
+          <input id="rConf" inputmode="decimal" placeholder="0–10" />
+        </div>
+
+        <div style="grid-column: 1 / -1">
+          <label>Replacement behavior (specific)</label>
+          <textarea id="rReplace" placeholder="What do I do instead, specifically?"></textarea>
+        </div>
+
+        <div style="grid-column: 1 / -1">
+          <label>Mini script (optional)</label>
+          <input id="rScript" placeholder='Example: "I hear you. Give me 10 minutes to respond with clarity."' />
+        </div>
       </div>
+
+      <div class="hint" id="rSuggested">Suggested (from tool): Choose one restriction move and witness the effect.</div>
     </section>
 
     <!-- EVENING -->
-    <section id="screen-evening" class="screen" hidden>
-      <div class="card">
-        <h3>Evening Witness</h3>
-        <div class="row small">
-          <div class="field">
-            <label>Witness</label>
-            <textarea id="evening_witness" placeholder="Where did you restrict? What changed? What did you notice?"></textarea>
-          </div>
-          <div class="field">
-            <label>One insight</label>
-            <textarea id="insight" placeholder="What did Light show you today?"></textarea>
-          </div>
-        </div>
+    <section class="panel" data-pane="evening" style="display:none">
+      <div class="titleRow"><h2>Evening Witness</h2></div>
 
-        <div class="row">
-          <div class="field">
-            <label>Certainty now (0–10)</label>
-            <input id="certainty_pm" inputmode="numeric" placeholder="0–10" />
-          </div>
-          <div class="field">
-            <label>Gratitude</label>
-            <input id="gratitude" placeholder="I appreciate…" />
-          </div>
-          <div class="field">
-            <label>Tomorrow micro-commitment</label>
-            <input id="tomorrow" placeholder="One tiny action I will repeat tomorrow" />
-          </div>
+      <div class="row2">
+        <div>
+          <label>Did you witness illumination?</label>
+          <textarea id="eWitness" placeholder="What did you witness? Where did Light show up?"></textarea>
         </div>
-      </div>
-
-      <div class="card">
-        <h3>Shareable Output</h3>
-        <div class="grid2">
-          <div>
-            <div class="kicker">Teacher Packet</div>
-            <div class="mono" id="packetPreview">—</div>
-          </div>
-          <div>
-            <div class="kicker">KAI Card (short)</div>
-            <div class="mono" id="cardPreview">—</div>
-            <div class="tiny">For visual sharing, go to “Share Card”.</div>
-          </div>
+        <div>
+          <label>What changed in certainty/energy?</label>
+          <textarea id="eShift" placeholder="Certainty: AM → PM…&#10;Energy: AM → PM…"></textarea>
         </div>
       </div>
     </section>
 
-    <!-- SHARE CARD (PNG) -->
-    <section id="screen-sharecard" class="screen" hidden>
-      <div class="card">
-        <h3>Daily Share Card (PNG)</h3>
-        <div class="muted">Generate a visually shareable card. Then Download or Share.</div>
-        <div style="height:10px"></div>
+    <!-- SHARE -->
+    <section class="panel" data-pane="share" style="display:none">
+      <div class="titleRow"><h2>Daily Share Card (PNG)</h2></div>
 
-        <div class="row">
-          <div class="field">
-            <label>Card style</label>
-            <select id="card_style">
-              <option value="darkgold" selected>Black + Gold (KAI)</option>
-              <option value="noir">Noir Minimal</option>
-              <option value="goldglow">Gold Glow</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Include</label>
-            <select id="card_include">
-              <option value="balanced" selected>Balanced</option>
-              <option value="minimal">Minimal</option>
-              <option value="teacher">Teacher-ish (more structured)</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Tagline</label>
-            <input id="card_tagline" placeholder="Kabbalah Always Illuminates" />
-          </div>
+      <div class="grid">
+        <div>
+          <label>Card style</label>
+          <select id="sStyle">
+            <option>Black + Gold (KAI)</option>
+            <option>Minimal (Ink)</option>
+            <option>Bright (Light)</option>
+          </select>
         </div>
-
-        <div class="divider"></div>
-
-        <div class="shareWrap">
-          <div class="previewBox">
-            <canvas id="cardCanvas" width="1080" height="1350"></canvas>
-          </div>
-          <div style="flex:1; min-width:260px;">
-            <div class="pill"><strong>Status:</strong> <span id="cardStatus">Not generated yet.</span></div>
-            <div style="height:10px"></div>
-
-            <div class="libBtns">
-              <button class="btn" id="genCardBtn">Generate Card</button>
-              <a class="linkBtn" id="downloadLink" href="#" download="KAI_Card.png" style="display:none;">Download PNG</a>
-              <button class="btn secondary" id="shareCardBtn">Share PNG</button>
-            </div>
-
-            <div style="height:12px"></div>
-            <div class="mono" id="cardTextForDebug">—</div>
-            <div class="tiny">Tip: Generate, then Share. If iOS blocks file share, Download first.</div>
-          </div>
+        <div>
+          <label>Include</label>
+          <select id="sInclude">
+            <option>Balanced</option>
+            <option>Only restriction</option>
+            <option>Only 72 Name</option>
+            <option>Full</option>
+          </select>
         </div>
+        <div>
+          <label>Tagline</label>
+          <input id="sTag" value="Kabbalah Always Illuminates" />
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:14px">
+        <div class="titleRow"><h2>Preview</h2></div>
+        <canvas id="cardCanvas" width="1400" height="800" style="width:100%;border-radius:16px;border:1px solid var(--line);background:#000"></canvas>
+        <div class="btnRow">
+          <button class="btn" id="btnRender">Render Card</button>
+          <button class="btn primary" id="btnDownload">Download PNG</button>
+        </div>
+        <div class="hint">Tip: after Download, use iOS Share to Messages/WhatsApp/etc.</div>
       </div>
     </section>
 
-    <!-- LIBRARY (72 NAMES) -->
-    <section id="screen-library" class="screen" hidden>
-      <div class="card">
-        <h3>72 Names Library</h3>
-        <div class="muted">Browse, search, and choose a Name as today’s tool. (This POC includes a curated starter set; expand to full 72 next.)</div>
-        <div style="height:10px"></div>
+    <!-- LIBRARY -->
+    <section class="panel" data-pane="library" style="display:none">
+      <div class="titleRow"><h2>72 Names Library</h2></div>
+      <div class="hint">Curated starter set now. Expand to full 72 next. Search by meaning/use-case.</div>
 
-        <div class="row">
-          <div class="field">
-            <label>Search</label>
-            <input id="lib_search" placeholder="Type meaning or use-case (e.g., anger, urgency, dignity)" />
-          </div>
-          <div class="field">
-            <label>Filter by use-case</label>
-            <select id="lib_filter">
-              <option value="all" selected>All</option>
-              <option value="urgency">Urgency</option>
-              <option value="anger">Anger</option>
-              <option value="fear">Fear / scarcity</option>
-              <option value="control">Control</option>
-              <option value="shame">Shame / dignity</option>
-              <option value="clarity">Clarity / certainty</option>
-              <option value="compassion">Compassion</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="pill"><strong>Chosen Name for today:</strong> <span id="chosenNameLabel">—</span></div>
-        <div style="height:10px"></div>
-        <div class="mono" id="chosenNamePractice">Select a Name to see its practice.</div>
-
-        <div class="libBtns" style="margin-top:10px;">
-          <button class="btn secondary" id="useChosenBtn">Use Today</button>
-          <button class="btn secondary" id="clearChosenBtn">Clear</button>
+      <div class="grid" style="margin-top:12px">
+        <div style="grid-column: 1 / -1">
+          <label>Search</label>
+          <input id="libSearch" placeholder="Type meaning or use-case (e.g., anger, urgency, dignity)" />
         </div>
       </div>
 
-      <div class="card">
-        <h3>Library</h3>
-        <div class="libGrid" id="libGrid"></div>
+      <div class="card" style="margin-top:12px">
+        <div class="chip" style="display:inline-block">Chosen Name for today: <b id="libChosen">—</b></div>
+        <div class="hint" id="libPractice" style="margin-top:8px">Select a Name to see its practice.</div>
+        <div class="btnRow" style="justify-content:flex-start">
+          <button class="btn primary" id="btnUseToday">Use Today</button>
+          <button class="btn" id="btnClearName">Clear</button>
+        </div>
       </div>
+
+      <div class="grid" id="libGrid" style="margin-top:12px"></div>
     </section>
 
     <!-- TOOLS -->
-    <section id="screen-tools" class="screen" hidden>
-      <div class="card">
-        <h3>72 Name Tool (Today)</h3>
-        <div class="muted">Pattern-driven by default, or overridden by Library selection.</div>
-        <div style="height:10px"></div>
-        <div class="pill"><strong>Pattern:</strong> <span id="t_pattern">—</span></div>
-        <div style="height:10px"></div>
+    <section class="panel" data-pane="tools" style="display:none">
+      <div class="titleRow"><h2>Tools</h2></div>
 
-        <div class="mini">
-          <div class="bigHeb" id="t_nameHeb">—</div>
+      <div class="panel">
+        <div class="titleRow"><h2>Gematria</h2></div>
+        <div class="grid">
           <div>
-            <div class="pill"><strong>Meaning:</strong> <span id="t_nameMeaning">—</span></div>
-            <div class="tiny" id="t_nameNote">Select a pattern in Morning or choose from Library.</div>
-          </div>
-        </div>
-
-        <div style="height:10px"></div>
-        <div class="mono" id="t_namePractice">—</div>
-      </div>
-
-      <div class="card">
-        <h3>Gematria</h3>
-        <div class="row">
-          <div class="field">
             <label>Enter Hebrew (e.g., אהבה)</label>
-            <input id="g_input" placeholder="אהבה" />
+            <input id="gText" placeholder="אהבה" dir="rtl" />
           </div>
-          <div class="field">
+          <div>
             <label>Total</label>
-            <input id="g_total" readonly placeholder="—" />
+            <input id="gTotal" placeholder="—" readonly />
+          </div>
+          <div style="grid-column: 1 / -1">
+            <label>Breakdown</label>
+            <input id="gBreak" placeholder="Type Hebrew letters above to see breakdown." readonly />
           </div>
         </div>
-        <div style="height:10px"></div>
-        <div class="mono" id="g_breakdown">Type Hebrew letters above to see breakdown.</div>
       </div>
 
-      <div class="card">
-        <h3>Astrology (light personalization)</h3>
-        <div class="muted">Prompt layer, not destiny.</div>
-        <div style="height:10px"></div>
-        <div class="mini">
-          <span class="pill"><strong>Sun sign:</strong> <span id="a_sign">—</span></span>
-          <span class="pill"><strong>Prompt:</strong> <span id="a_prompt">—</span></span>
+      <div class="panel" style="margin-top:14px">
+        <div class="titleRow"><h2>Astrology (light personalization)</h2></div>
+        <div class="hint">Prompt layer, not destiny. Your birthdate in Start activates this.</div>
+        <div class="grid" style="margin-top:10px">
+          <div class="chip">Sun sign: <b id="aSign">—</b></div>
+          <div class="chip">Prompt: <b id="aPrompt">—</b></div>
         </div>
-        <div style="height:10px"></div>
-        <div class="mono" id="a_teaching">—</div>
-      </div>
-    </section>
-
-    <!-- LEARN -->
-    <section id="screen-learn" class="screen" hidden>
-      <div class="card">
-        <h3>Learn (micro-lessons)</h3>
-        <div class="muted">Short, applied teachings.</div>
-        <div style="height:10px"></div>
-        <div class="pill"><strong>Today’s lesson:</strong> <span id="l_title">—</span></div>
-        <div style="height:10px"></div>
-        <div class="mono" id="l_body">—</div>
-        <div style="height:12px"></div>
-        <div class="mini">
-          <button class="btn secondary" id="lessonNext">New lesson</button>
-          <span class="tiny">Teachers can later curate a canonical library.</span>
-        </div>
+        <div class="hint" style="margin-top:10px">This can later evolve into: monthly arc, Omer, and teacher-attached tikkun work.</div>
       </div>
     </section>
 
     <!-- HISTORY -->
-    <section id="screen-history" class="screen" hidden>
-      <div class="card">
-        <h3>History Intelligence</h3>
-        <div class="grid2">
-          <div>
-            <div class="pill"><strong>Most frequent pattern (14 days):</strong> <span id="h_topPattern">—</span></div>
-            <div style="height:10px"></div>
-            <div class="mono" id="h_insights">Save a few days and KAI will surface trend insights here.</div>
-          </div>
-          <div>
-            <div class="pill"><strong>Pattern counts:</strong> <span id="h_countsTag">—</span></div>
-            <div style="height:10px"></div>
-            <div class="mono" id="h_counts">—</div>
-          </div>
-        </div>
-      </div>
+    <section class="panel" data-pane="history" style="display:none">
+      <div class="titleRow"><h2>History</h2></div>
+      <div class="hint">Saved days live on this device (local storage) for now. Later: sync + teacher view.</div>
 
-      <div class="card">
-        <h3>Saved Days</h3>
-        <div class="historyList" id="historyList"></div>
+      <div class="card" style="margin-top:12px">
+        <div class="btnRow" style="justify-content:flex-start">
+          <button class="btn" id="btnLoadToday">Load Today</button>
+          <button class="btn" id="btnListDays">List Saved Days</button>
+          <button class="btn danger" id="btnNukeAll">Delete ALL Data</button>
+        </div>
+        <div class="mono" id="historyBox" style="margin-top:12px;min-height:140px"></div>
       </div>
     </section>
-  </div>
 
-  <div class="actions">
-    <div class="inner">
-      <div class="status">
-        <span class="dot" id="saveDot"></span>
-        <span id="saveStatus">Not saved yet.</span>
-      </div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn secondary" id="copyBtn">Copy</button>
-        <button class="btn secondary" id="shareBtn">Share Text</button>
-        <button class="btn secondary" id="exportBtn">Export</button>
-        <button class="btn" id="saveBtn">Save</button>
-        <button class="btn danger" id="resetBtn">Reset Day</button>
+    <div class="toast" id="toast"></div>
+
+    <div class="modalBackdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+      <div class="modal" id="modal">
+        <button class="xClose" id="modalClose" aria-label="Close">✕</button>
+        <h3 id="modalTitle">🔥 Streak!</h3>
+        <p id="modalBody">You did today’s restriction. Light recorded. Keep going.</p>
+        <div class="btnRow" style="justify-content:flex-start">
+          <button class="btn primary" id="modalOk">Ok</button>
+        </div>
       </div>
     </div>
+
   </div>
 
-<script>
-  // Storage keys
-  const STORAGE_ENTRIES = "kai_entries";
-  const STORAGE_PROFILE = "kai_profile";
-  const STORAGE_STREAK  = "kai_streak";
-  const STORAGE_TOOL_OVERRIDE = "kai_tool_override"; // { heb, meaning, use, practice }
+  <script>
+    // ---------- Helpers ----------
+    const $ = (id)=>document.getElementById(id);
+    const todayISO = ()=> new Date().toISOString().slice(0,10);
+    const keyProfile = "kai_profile_v1";
+    const keyStreak  = "kai_streak_v1";
+    const keyDailyRestrict = "kai_daily_restrict_v1";
+    const dayKey = (d)=> `kai_day_${d}_v1`;
 
-  const $ = (id) => document.getElementById(id);
-
-  // Today key
-  const now = new Date();
-  const yyyy = now.getFullYear();
-  const mm = String(now.getMonth()+1).padStart(2,"0");
-  const dd = String(now.getDate()).padStart(2,"0");
-  const todayKey = `${yyyy}-${mm}-${dd}`;
-  $("todayBadge").textContent = `Date: ${todayKey}`;
-
-  // Toast
-  let toastTimer = null;
-  function toast(msg){
-    const t = $("toast");
-    t.textContent = msg;
-    t.style.display = "block";
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(()=>{ t.style.display="none"; }, 1100);
-  }
-
-  // JSON helpers
-  function readJSON(key, fallback){
-    try{ return JSON.parse(localStorage.getItem(key)) ?? fallback; }
-    catch{ return fallback; }
-  }
-  function writeJSON(key, obj){
-    localStorage.setItem(key, JSON.stringify(obj));
-  }
-
-  // Screens
-  function showScreen(name){
-    document.querySelectorAll(".screen").forEach(s => s.hidden = true);
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    document.getElementById(`screen-${name}`).hidden = false;
-    document.querySelector(`.tab[data-screen="${name}"]`).classList.add("active");
-    refreshGuidance();
-  }
-  document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click", () => showScreen(btn.dataset.screen)));
-
-  // Save status
-  function setSavedUI(isSaved, msg){
-    $("saveDot").classList.toggle("ok", isSaved);
-    $("saveDot").classList.toggle("bad", !isSaved && !!msg);
-    $("saveStatus").textContent = msg ? msg : (isSaved ? "Saved." : "Not saved yet.");
-  }
-
-  // Pattern mappings (core engine)
-  const PATTERNS = {
-    urgency: {
-      label: "Urgency / speed / forcing",
-      sefirah: "Netzach (push) imbalance",
-      zohar: "When we force outcomes, we shrink the vessel. Victory arrives through restraint and timing.",
-      restriction: "Delay response 3 breaths. Replace speed with presence. Ask: “What would certainty do?”",
-      name: { heb:"והו", meaning:"Release pressure / soften forcing", use:"urgency", practice:"60 seconds: slow breathing. Visualize urgency dissolving into calm clarity. Then act once, cleanly." }
-    },
-    anger: {
-      label: "Anger / sharpness / attack",
-      sefirah: "Gevurah needs sweetening",
-      zohar: "Judgment becomes medicine only when blended with compassion. Sweeten before you speak.",
-      restriction: "Lower volume, soften face, fewer words. Choose dignity over victory.",
-      name: { heb:"ילי", meaning:"Sweeten judgment", use:"anger", practice:"Attention to throat/heart. Inhale soften. Exhale release punishment. Speak half as much as you want to." }
-    },
-    avoidance: {
-      label: "Avoidance / delay / dissociation",
-      sefirah: "Yesod (foundation) destabilized",
-      zohar: "Avoidance looks like peace but breeds chaos. The smallest truthful step rebuilds foundation.",
-      restriction: "Do the next right step for 3 minutes. Contact over completion.",
-      name: { heb:"מהש", meaning:"Courage to face", use:"clarity", practice:"Name the avoided thing. Commit to 3 minutes. The goal is contact, not completion." }
-    },
-    approval: {
-      label: "Approval-seeking / people-pleasing",
-      sefirah: "Tiferet distorted into performance",
-      zohar: "When we trade truth for approval, we exile our light. Restore inner certainty first.",
-      restriction: "Tell the truth gently once. No over-explaining.",
-      name: { heb:"סאל", meaning:"Inner certainty", use:"clarity", practice:"Ask: “What is true even if nobody claps?” Speak it calmly without defense." }
-    },
-    control: {
-      label: "Control / micromanage / certainty-grab",
-      sefirah: "Hod (submission) missing",
-      zohar: "Control is fear wearing a crown. Trust is the real sovereignty.",
-      restriction: "Release one lever. Delegate or allow imperfection once.",
-      name: { heb:"ההע", meaning:"Trust / surrender", use:"control", practice:"Choose one lever to release today. Replace control with a clear request, then let it unfold." }
-    },
-    shame: {
-      label: "Shame / unworthiness / collapse",
-      sefirah: "Malchut dimmed",
-      zohar: "Shame is concealment pretending to be humility. True humility restores dignity and action.",
-      restriction: "Stand tall. One action that proves worthiness is earned through doing.",
-      name: { heb:"נלך", meaning:"Restore dignity", use:"shame", practice:"Feet on ground, shoulders back. Say: “I am not my story.” Then do one brave action." }
-    },
-    scarcity: {
-      label: "Scarcity / fear / contraction",
-      sefirah: "Chesed blocked",
-      zohar: "Contraction convinces us the world is smaller than it is. Expand vessel through generosity.",
-      restriction: "Give first: a kindness, contribution, or message with no credit.",
-      name: { heb:"ללה", meaning:"Expansion / abundance", use:"fear", practice:"Do one generous act today with no credit. Expansion follows giving." }
-    },
-    judgment: {
-      label: "Judgment / criticism / superiority",
-      sefirah: "Gevurah without compassion",
-      zohar: "Criticism is often self-protection. Curiosity opens a gate where judgment closes it.",
-      restriction: "Ask one curious question before you conclude.",
-      name: { heb:"כהת", meaning:"Transform criticism", use:"compassion", practice:"When criticism appears, pause and ask: “What am I not seeing?” Then ask them." }
-    },
-    other: {
-      label: "Other",
-      sefirah: "Unknown",
-      zohar: "Name the pattern clearly. A named pattern can be corrected.",
-      restriction: "Choose one restriction move and witness the effect.",
-      name: { heb:"—", meaning:"Choose a tool", use:"all", practice:"Pick the closest pattern above, or choose a Name in Library." }
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.style.display = "block";
+      clearTimeout(window.__tmo);
+      window.__tmo = setTimeout(()=> t.style.display="none", 2200);
     }
-  };
 
-  // Library (curated starter set; expand to full 72 next)
-  // You can paste the full 72 later into this same structure.
-  const NAME_LIBRARY = [
-    { heb:"והו", meaning:"Soften forcing", use:"urgency", practice:"Breathe slow for 60s. Release the need to force. Take one clean action.", note:"Pattern tool for urgency." },
-    { heb:"ילי", meaning:"Sweeten judgment", use:"anger", practice:"Soften throat/face. Reduce words. Choose dignity over victory.", note:"Pattern tool for anger." },
-    { heb:"מהש", meaning:"Courage to face", use:"clarity", practice:"Name the avoided thing. Do 3 minutes now. Contact over completion.", note:"Pattern tool for avoidance." },
-    { heb:"סאל", meaning:"Inner certainty", use:"clarity", practice:"Speak one truth gently without defense or over-explaining.", note:"Pattern tool for approval." },
-    { heb:"ההע", meaning:"Trust / surrender", use:"control", practice:"Release one lever. Make one clear request, then let it unfold.", note:"Pattern tool for control." },
-    { heb:"נלך", meaning:"Restore dignity", use:"shame", practice:"Posture up. Say: “I am not my story.” Do one brave action.", note:"Pattern tool for shame." },
-    { heb:"ללה", meaning:"Expansion / abundance", use:"fear", practice:"Give first without credit. Watch contraction dissolve.", note:"Pattern tool for scarcity." },
-    { heb:"כהת", meaning:"Transform criticism", use:"compassion", practice:"Ask: “What am I not seeing?” before concluding.", note:"Pattern tool for judgment." },
-    { heb:"אלד", meaning:"Protection / boundaries", use:"fear", practice:"Define one boundary with warmth. Soft heart, strong spine.", note:"Useful for overwhelm." },
-    { heb:"מבה", meaning:"Healing / renewal", use:"compassion", practice:"Name what hurts. Bring compassion + one action of repair.", note:"Supportive for recovery." },
-    { heb:"הזי", meaning:"Clarity in confusion", use:"clarity", practice:"Write the true sentence. Remove the story. Act from the sentence.", note:"For mental fog." },
-    { heb:"סיט", meaning:"Remove negativity", use:"anger", practice:"Notice the negative loop. Interrupt with breath + blessing + restraint.", note:"For spirals." }
-  ];
+    function safeJSONParse(s, fallback){
+      try{ return JSON.parse(s); }catch{ return fallback; }
+    }
 
-  // Profile + astrology
-  function sunSignFromBirthdate(iso){
-    if(!iso) return "—";
-    const d = new Date(iso + "T00:00:00");
-    const m = d.getMonth()+1, day = d.getDate();
-    if((m==3 && day>=21) || (m==4 && day<=19)) return "Aries";
-    if((m==4 && day>=20) || (m==5 && day<=20)) return "Taurus";
-    if((m==5 && day>=21) || (m==6 && day<=20)) return "Gemini";
-    if((m==6 && day>=21) || (m==7 && day<=22)) return "Cancer";
-    if((m==7 && day>=23) || (m==8 && day<=22)) return "Leo";
-    if((m==8 && day>=23) || (m==9 && day<=22)) return "Virgo";
-    if((m==9 && day>=23) || (m==10 && day<=22)) return "Libra";
-    if((m==10 && day>=23) || (m==11 && day<=21)) return "Scorpio";
-    if((m==11 && day>=22) || (m==12 && day<=21)) return "Sagittarius";
-    if((m==12 && day>=22) || (m==1 && day<=19)) return "Capricorn";
-    if((m==1 && day>=20) || (m==2 && day<=18)) return "Aquarius";
-    return "Pisces";
-  }
-  const ASTRO_PROMPTS = {
-    Aries: "Act without forcing.",
-    Taurus: "Slow the moment. Deepen certainty.",
-    Gemini: "Say less. Mean more.",
-    Cancer: "Witness emotion without obeying it.",
-    Leo: "Lead with dignity, not dominance.",
-    Virgo: "Refine one thing only.",
-    Libra: "Stop bargaining for approval.",
-    Scorpio: "Sweeten judgment; transmute intensity.",
-    Sagittarius: "Aim higher, move smaller.",
-    Capricorn: "Structure creates freedom.",
-    Aquarius: "Detach from reactivity; choose future.",
-    Pisces: "Compassion with boundaries."
-  };
+    function setActiveTab(tab){
+      document.querySelectorAll(".tab").forEach(el=>{
+        el.classList.toggle("active", el.dataset.tab === tab);
+      });
+      document.querySelectorAll("[data-pane]").forEach(p=>{
+        p.style.display = (p.dataset.pane === tab) ? "" : "none";
+      });
+      // remember last tab
+      localStorage.setItem("kai_last_tab_v1", tab);
+    }
 
-  // Gematria
-  const GEMATRIA = {
-    "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
-    "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,"ע":70,
-    "פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,"ש":300,"ת":400
-  };
-  function gematriaCalc(s){
-    const chars = [...(s||"")];
-    let total = 0;
-    const parts = [];
-    for(const ch of chars){
-      const v = GEMATRIA[ch];
-      if(v){
-        total += v;
-        parts.push(`${ch}=${v}`);
+    function computeSunSign(dateStr){
+      if(!dateStr) return "";
+      const d = new Date(dateStr + "T12:00:00");
+      const m = d.getUTCMonth()+1, day = d.getUTCDate();
+      // Simple western sun sign ranges
+      const ranges = [
+        ["Capricorn", 12, 22, 1, 19],
+        ["Aquarius", 1, 20, 2, 18],
+        ["Pisces", 2, 19, 3, 20],
+        ["Aries", 3, 21, 4, 19],
+        ["Taurus", 4, 20, 5, 20],
+        ["Gemini", 5, 21, 6, 20],
+        ["Cancer", 6, 21, 7, 22],
+        ["Leo", 7, 23, 8, 22],
+        ["Virgo", 8, 23, 9, 22],
+        ["Libra", 9, 23, 10, 22],
+        ["Scorpio", 10, 23, 11, 21],
+        ["Sagittarius", 11, 22, 12, 21]
+      ];
+      // handle Capricorn spanning year end
+      if((m===12 && day>=22) || (m===1 && day<=19)) return "Capricorn";
+      for(const [name, sm, sd, em, ed] of ranges){
+        if(m===sm && day>=sd) return name;
+        if(m===em && day<=ed) return name;
+        if(m>sm && m<em) return name;
+      }
+      return "";
+    }
+
+    function astroPrompt(sign){
+      if(!sign) return "";
+      const map = {
+        "Taurus":"Steady certainty: slow down, choose one clean restriction, then act.",
+        "Aries":"Don’t sprint first. Pause, then choose precision over speed.",
+        "Gemini":"Name the pattern in one sentence. Reduce words, increase truth.",
+        "Cancer":"Hold the heart without gripping. Respond from care, not fear.",
+        "Leo":"Lead with dignity, not dominance. Make the Light bigger than the ego.",
+        "Virgo":"Simplify. Choose the smallest restriction that changes the day.",
+        "Libra":"Choose balance over approval. One boundary is love.",
+        "Scorpio":"Transmute intensity. Use restriction to turn heat into clarity.",
+        "Sagittarius":"Aim the arrow carefully. Delay response before sending.",
+        "Capricorn":"Structure wins. Commit to one restriction and track the streak.",
+        "Aquarius":"Detach from reactivity. Ask a question first.",
+        "Pisces":"Breathe first. Let the wave pass, then speak."
+      };
+      return map[sign] || "Choose one restriction move and witness the effect.";
+    }
+
+    function loadProfile(){
+      const p = safeJSONParse(localStorage.getItem(keyProfile), {
+        name:"Bernard",
+        birth:"",
+        focus:"",
+        outcome:"",
+        mode:"Simple + Powerful",
+        enable:"Core + Tools"
+      });
+      $("pName").value = p.name || "";
+      $("pBirth").value = p.birth || "";
+      $("pFocus").value = p.focus || "";
+      $("pOutcome").value = p.outcome || "";
+      $("pMode").value = p.mode || "Simple + Powerful";
+      $("pEnable").value = p.enable || "Core + Tools";
+      return p;
+    }
+
+    function saveProfile(){
+      const p = {
+        name: $("pName").value.trim() || "—",
+        birth: $("pBirth").value || "",
+        focus: $("pFocus").value || "",
+        outcome: $("pOutcome").value.trim() || "",
+        mode: $("pMode").value || "Simple + Powerful",
+        enable: $("pEnable").value || "Core + Tools"
+      };
+      localStorage.setItem(keyProfile, JSON.stringify(p));
+      return p;
+    }
+
+    function loadDay(d){
+      return safeJSONParse(localStorage.getItem(dayKey(d)), {
+        date:d,
+        morning:{},
+        restriction:{},
+        evening:{},
+        chosenName:null,
+        zohar:"",
+        savedAt:null
+      });
+    }
+
+    function saveDay(d, obj){
+      obj.savedAt = new Date().toISOString();
+      localStorage.setItem(dayKey(d), JSON.stringify(obj));
+    }
+
+    function loadStreak(){
+      return safeJSONParse(localStorage.getItem(keyStreak), {
+        count:0,
+        lastCompletedDate:null,
+        lastCelebratedDate:null
+      });
+    }
+
+    function saveStreak(s){
+      localStorage.setItem(keyStreak, JSON.stringify(s));
+    }
+
+    function isYesterday(a,b){
+      // true if b is exactly 1 day after a (YYYY-MM-DD)
+      const da = new Date(a+"T12:00:00Z").getTime();
+      const db = new Date(b+"T12:00:00Z").getTime();
+      const diff = Math.round((db-da)/(1000*60*60*24));
+      return diff === 1;
+    }
+
+    function bumpStreakIfCompleted(d){
+      // Completed means: Restriction action chosen (or one-tap used) AND saved day.
+      const day = loadDay(d);
+      const action = (day.restriction && day.restriction.action) ? day.restriction.action : "";
+      if(!action) return {changed:false, streak: loadStreak()};
+
+      const s = loadStreak();
+      if(s.lastCompletedDate === d){
+        return {changed:false, streak:s};
+      }
+      if(!s.lastCompletedDate){
+        s.count = 1;
+      }else if(isYesterday(s.lastCompletedDate, d)){
+        s.count += 1;
+      }else{
+        s.count = 1;
+      }
+      s.lastCompletedDate = d;
+      saveStreak(s);
+      return {changed:true, streak:s};
+    }
+
+    function openCelebration(streakCount){
+      // avoid repeating celebration on refresh
+      const s = loadStreak();
+      const d = todayISO();
+      if(s.lastCelebratedDate === d) return;
+      s.lastCelebratedDate = d;
+      saveStreak(s);
+
+      $("modalTitle").textContent = `🔥 Streak: ${streakCount}`;
+      $("modalBody").textContent = "You did today’s restriction. Light recorded. Keep going.";
+
+      const back = $("modalBackdrop");
+      back.style.display = "flex";
+
+      // confetti-ish sparks
+      const modal = $("modal");
+      // remove old sparks
+      modal.querySelectorAll(".spark").forEach(x=>x.remove());
+      for(let i=0;i<18;i++){
+        const sp = document.createElement("div");
+        sp.className = "spark";
+        sp.style.left = Math.random()*100 + "%";
+        sp.style.top = "-20px";
+        sp.style.animationDelay = (Math.random()*0.8) + "s";
+        sp.style.opacity = (0.65 + Math.random()*0.35).toFixed(2);
+        sp.style.transform = `translateY(-30px) rotate(${Math.random()*180}deg)`;
+        modal.appendChild(sp);
       }
     }
-    return { total, parts };
-  }
 
-  // Entry fields
-  const fields = [
-    "reactive_where","pattern","certainty","energy","intention","trigger_forecast","micro_choice",
-    "restriction_action","restriction_where","restriction_conf","replacement","mini_script",
-    "evening_witness","insight","certainty_pm","gratitude","tomorrow"
-  ];
+    function closeCelebration(){
+      $("modalBackdrop").style.display = "none";
+    }
 
-  // Profile fields
-  function collectProfile(){
-    return {
-      name: ($("p_name").value || "").trim(),
-      birth: $("p_birth").value || "",
-      focus: $("p_focus").value || "",
-      outcome: ($("p_outcome").value || "").trim(),
-      intensity: $("p_intensity").value || "Simple + Powerful",
-      features: $("p_features").value || "core_tools",
-      _updatedAt: new Date().toISOString()
+    // ---------- 72 Names starter set (curated) ----------
+    const NAMES = [
+      {he:"והו", en:"Soften forcing", use:["urgency","pressure","forcing"], practice:"Breathe slow for 60s. Release the need to force. Take one clean action."},
+      {he:"ילי", en:"Sweeten judgment", use:["anger","judgment","critic"], practice:"Soften throat/face. Reduce words. Choose dignity over victory."},
+      {he:"מהש", en:"Courage to face", use:["avoidance","fear","clarity"], practice:"Name the avoided thing. Do 3 minutes now. Contact over completion."},
+      {he:"סאל", en:"Inner certainty", use:["doubt","noise","certainty"], practice:"One sentence truth. Then one step. No extra explanations today."},
+      {he:"הרח", en:"Trust / surrender", use:["control","anxiety","grip"], practice:"Relax hands/feet. Say: ‘I don’t need to win this moment.’ Choose one restriction."},
+      {he:"נלר", en:"Restore dignity", use:["shame","reactivity","self-talk"], practice:"Speak to yourself as a soul. Replace attack with instruction."}
+    ];
+
+    const ONE_TAPS = [
+      {k:"Pause 10s", action:"Pause (10 seconds)", replace:"Count 10 breaths before responding. Let the first heat pass.", script:"“Give me a moment to respond clearly.”"},
+      {k:"Delay 10m", action:"Delay response (10 minutes)", replace:"Set a 10-minute timer. Respond only after it ends.", script:"“I hear you. Give me 10 minutes to reply with clarity.”"},
+      {k:"Lower volume", action:"Lower volume (voice/text)", replace:"Shorten the message by 50%. Remove ‘because.’", script:"“Got it. Here’s what I can do next:”"},
+      {k:"Ask first", action:"Ask a question first", replace:"Ask one clarifying question before stating your position.", script:"“Quick question so I understand: what outcome do you want?”"},
+      {k:"One breath", action:"One breath before sending", replace:"One full inhale + exhale before pressing send.", script:"(silent)"},
+      {k:"Choose dignity", action:"Choose dignity over victory", replace:"Drop the sharp line. Keep the boundary.", script:"“I’m not available for that, and I care about us.”"}
+    ];
+
+    // ---------- State ----------
+    const state = {
+      date: todayISO(),
+      profile: null,
+      day: null,
+      dailyRestrict: false
     };
-  }
-  function getProfile(){ return readJSON(STORAGE_PROFILE, {}); }
-  function setProfile(p){ writeJSON(STORAGE_PROFILE, p); }
 
-  // Entries
-  function getTodayEntry(){
-    const all = readJSON(STORAGE_ENTRIES, {});
-    return all[todayKey] || {};
-  }
-  function setTodayEntry(entry){
-    const all = readJSON(STORAGE_ENTRIES, {});
-    all[todayKey] = entry;
-    writeJSON(STORAGE_ENTRIES, all);
-  }
+    function hydrateUI(){
+      $("chipDate").textContent = state.date;
+      $("chipProfile").textContent = state.profile?.name || "—";
 
-  // Tool override (from Library)
-  function getToolOverride(){ return readJSON(STORAGE_TOOL_OVERRIDE, null); }
-  function setToolOverride(obj){ writeJSON(STORAGE_TOOL_OVERRIDE, obj); }
-  function clearToolOverride(){ localStorage.removeItem(STORAGE_TOOL_OVERRIDE); }
+      const s = loadStreak();
+      $("chipStreak").textContent = s.count || 0;
 
-  // Streak
-  function updateStreakOnSave(){
-    const streak = readJSON(STORAGE_STREAK, { lastSaved:"", count:0 });
-    const last = streak.lastSaved;
-    if(last !== todayKey){
-      const y = new Date(now); y.setDate(y.getDate()-1);
-      const yKey = `${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,"0")}-${String(y.getDate()).padStart(2,"0")}`;
-      streak.count = (last === yKey) ? (streak.count||0)+1 : 1;
-      streak.lastSaved = todayKey;
-      writeJSON(STORAGE_STREAK, streak);
-    }
-    const s2 = readJSON(STORAGE_STREAK, {count:0});
-    $("streakBadge").textContent = `Streak: ${s2.count || 0}`;
-  }
+      $("chipDailyRestrict").textContent = state.dailyRestrict ? "ON" : "OFF";
 
-  // Collect entry
-  function collectEntry(){
-    const e = {};
-    fields.forEach(f => e[f] = (($(f)?.value ?? "") + "").trim());
-    e._updatedAt = new Date().toISOString();
-    return e;
-  }
+      // Load day into fields
+      const d = state.day;
 
-  // Guidance selection: override > pattern mapping
-  function guidanceFor(patternKey){
-    return PATTERNS[patternKey] || PATTERNS.other;
-  }
-  function getCurrentTool(entry){
-    const override = getToolOverride();
-    if(override && override.heb) return { ...override, source:"override" };
+      $("mWhere").value = d.morning.where || "";
+      $("mPattern").value = d.morning.pattern || "";
+      $("mCert").value = d.morning.certainty || "";
+      $("mEnergy").value = d.morning.energy || "";
+      $("mIntent").value = d.morning.intention || "";
 
-    const g = guidanceFor(entry.pattern || "other");
-    return { ...g.name, source:"pattern" };
-  }
+      $("rAction").value = d.restriction.action || "";
+      $("rWhere").value = d.restriction.where || "";
+      $("rConf").value = d.restriction.confidence || "";
+      $("rReplace").value = d.restriction.replace || "";
+      $("rScript").value = d.restriction.script || "";
 
-  // Build share texts
-  function buildKaiCard(entry, profile){
-    const g = guidanceFor(entry.pattern || "other");
-    const tool = getCurrentTool(entry);
-    const sign = sunSignFromBirthdate(profile.birth);
+      $("eWitness").value = d.evening.witness || "";
+      $("eShift").value = d.evening.shift || "";
 
-    const am = entry.certainty || "—";
-    const pm = entry.certainty_pm || "—";
-    const delta = (isFinite(+am) && isFinite(+pm)) ? (Number(pm)-Number(am)) : null;
-    const deltaTxt = (delta===null) ? "—" : (delta>0 ? `+${delta}` : `${delta}`);
+      $("prevZohar").value = d.zohar || "";
 
-    return [
-      `KAI · ${todayKey}`,
-      `${profile.name ? "From " + profile.name : "Daily"}${profile.focus ? " · " + profile.focus : ""}`,
-      ``,
-      `Pattern: ${g.label}`,
-      `Tool: ${tool.heb} · ${tool.meaning}`,
-      `Restriction: ${entry.restriction_action || g.restriction}`,
-      `Certainty: AM ${am} → PM ${pm} (Δ ${deltaTxt})`,
-      `Astro: ${sign} · ${ASTRO_PROMPTS[sign] || "—"}`
-    ].join("\n");
-  }
+      // Preview data
+      const pattern = (d.morning.pattern || "—").trim() || "—";
+      $("prevPattern").textContent = pattern;
 
-  function buildTeacherPacket(entry, profile){
-    const g = guidanceFor(entry.pattern || "other");
-    const tool = getCurrentTool(entry);
-    const sign = sunSignFromBirthdate(profile.birth);
+      // chosen name
+      if(d.chosenName){
+        $("prevNameMeaning").textContent = `${d.chosenName.he} • ${d.chosenName.en}`;
+        $("libChosen").textContent = `${d.chosenName.he} • ${d.chosenName.en}`;
+        $("libPractice").textContent = d.chosenName.practice;
+      }else{
+        $("prevNameMeaning").textContent = "Choose a tool";
+        $("libChosen").textContent = "—";
+        $("libPractice").textContent = "Select a Name to see its practice.";
+      }
 
-    return [
-      `KAI · ${todayKey}`,
-      `Name: ${profile.name || "—"} · Focus: ${profile.focus || "—"} · Sun: ${sign}`,
-      ``,
-      `Morning`,
-      `• Reactive: ${entry.reactive_where || "—"}`,
-      `• Pattern: ${g.label}`,
-      `• Certainty: ${entry.certainty || "—"} / 10`,
-      `• Energy: ${entry.energy || "—"} / 10`,
-      `• Intention: ${entry.intention || "—"}`,
-      ``,
-      `Tooling`,
-      `• Sefirah lens: ${g.sefirah}`,
-      `• 72 Name: ${tool.heb} (${tool.meaning}) ${tool.source==="override" ? "[Library chosen]" : "[Pattern mapped]"}`,
-      `• Practice: ${tool.practice || "—"}`,
-      `• Zohar lens: ${g.zohar}`,
-      ``,
-      `Restriction`,
-      `• Action: ${entry.restriction_action || "—"}`,
-      `• Where: ${entry.restriction_where || "—"}`,
-      `• Confidence: ${entry.restriction_conf || "—"} / 10`,
-      ``,
-      `Evening`,
-      `• Witness: ${entry.evening_witness || "—"}`,
-      `• Insight: ${entry.insight || "—"}`,
-      `• Certainty now: ${entry.certainty_pm || "—"} / 10`,
-      `• Gratitude: ${entry.gratitude || "—"}`,
-      `• Tomorrow: ${entry.tomorrow || "—"}`
-    ].join("\n");
-  }
+      // Suggested restriction
+      $("prevSuggest").value = d.suggestedRestriction || "Choose one restriction move and witness the effect.";
+      $("rSuggested").textContent = `Suggested (from tool): ${$("prevSuggest").value}`;
 
-  // Refresh UI engine
-  function refreshGuidance(){
-    const profile = collectProfile();
-    const savedProfile = getProfile();
-    const effective = (profile.name || profile.birth || profile.focus || profile.outcome) ? profile : savedProfile;
+      // Astrology
+      const sign = computeSunSign(state.profile?.birth || "");
+      $("aSign").textContent = sign || "—";
+      $("aPrompt").textContent = sign ? astroPrompt(sign) : "—";
 
-    $("profileBadge").textContent = `Profile: ${effective.name || "—"}`;
-    $("kaiMode").textContent = effective.intensity || "Simple + Powerful";
-    const sign = sunSignFromBirthdate(effective.birth);
-    $("sunSign").textContent = sign;
-    $("a_sign").textContent = sign;
-    $("a_prompt").textContent = ASTRO_PROMPTS[sign] || "—";
-    $("a_teaching").textContent = sign==="—"
-      ? "Set your birthdate in Start to activate astrology."
-      : `Today’s prompt: ${ASTRO_PROMPTS[sign]} (A light personalization layer; practice remains pattern → restriction → witness.)`;
+      // Share text box
+      $("shareTextBox").textContent = buildShareText();
 
-    const entry = collectEntry();
-    const g = guidanceFor(entry.pattern || "other");
-    const tool = getCurrentTool(entry);
+      // Save state indicator
+      $("saveState").textContent = d.savedAt ? `● Saved. (${new Date(d.savedAt).toLocaleTimeString()})` : "● Not saved yet.";
 
-    $("dominantPattern").textContent = g.label;
-    $("t_pattern").textContent = g.label;
-
-    $("nameHeb").textContent = tool.heb || "—";
-    $("nameMeaning").textContent = tool.meaning || "—";
-    $("nameHow").textContent = tool.source==="override"
-      ? "Chosen from Library (override)."
-      : "Pattern-mapped tool.";
-
-    $("t_nameHeb").textContent = tool.heb || "—";
-    $("t_nameMeaning").textContent = tool.meaning || "—";
-    $("t_namePractice").textContent = tool.practice || "—";
-
-    $("m_nameBrief").textContent = `${tool.heb || "—"} · ${tool.meaning || "—"}`;
-    $("m_namePractice").textContent = tool.practice || "Select a pattern or choose a Name in Library.";
-
-    $("zoharLens").textContent = `Sefirah lens: ${g.sefirah}\n\n${g.zohar}\n\n(Teacher can later attach exact Zohar references.)`;
-    $("m_zoharTag").textContent = g.sefirah;
-    $("m_zoharText").textContent = `${g.zohar}\n\nReflection: “What would restriction look like here?”`;
-
-    $("suggestedRestriction").textContent = g.restriction;
-    $("r_suggested").textContent = g.restriction;
-
-    $("personalPrompt").textContent = `${effective.focus ? "Focus: "+effective.focus+". " : ""}${g.restriction}`;
-
-    const card = buildKaiCard(entry, effective);
-    const packet = buildTeacherPacket(entry, effective);
-    $("kaiCard").textContent = card;
-    $("cardPreview").textContent = card;
-    $("packetPreview").textContent = packet;
-
-    // Share card debug text
-    $("cardTextForDebug").textContent = card;
-
-    // Features gating
-    const feat = effective.features || "core_tools";
-    const toolsTab = document.querySelector('.tab[data-screen="tools"]');
-    const learnTab = document.querySelector('.tab[data-screen="learn"]');
-    toolsTab.style.display = (feat==="core") ? "none" : "inline-block";
-    learnTab.style.display = (feat==="core_tools_learn") ? "inline-block" : "none";
-
-    // Library selection UI
-    const ov = getToolOverride();
-    $("chosenNameLabel").textContent = ov ? `${ov.heb} · ${ov.meaning}` : "—";
-    $("chosenNamePractice").textContent = ov ? (ov.practice || "—") : "Select a Name to see its practice.";
-  }
-
-  // Save
-  function saveAll(){
-    const entry = collectEntry();
-    setTodayEntry(entry);
-
-    const p = collectProfile();
-    setProfile(p);
-
-    setSavedUI(true, "Saved.");
-    toast("Saved.");
-    updateStreakOnSave();
-
-    refreshGuidance();
-    renderSavedDays();
-    renderHistoryIntelligence();
-  }
-
-  // Reset day
-  function resetDay(){
-    fields.forEach(f => { if($(f)) $(f).value = ""; });
-    setSavedUI(false, "Cleared inputs. (Tap Save to overwrite today.)");
-    refreshGuidance();
-  }
-
-  // Copy/Export/Share text
-  async function copyText(){
-    const profile = getProfile();
-    const entry = collectEntry();
-    const text = buildKaiCard(entry, profile) + "\n\n" + buildTeacherPacket(entry, profile);
-    try{
-      await navigator.clipboard.writeText(text);
-      toast("Copied.");
-      setSavedUI(true, "Copied to clipboard.");
-    } catch {
-      window.prompt("Copy this:", text);
-    }
-  }
-
-  function exportText(){
-    const profile = getProfile();
-    const entry = collectEntry();
-    const text = buildKaiCard(entry, profile) + "\n\n" + buildTeacherPacket(entry, profile);
-    const blob = new Blob([text], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `KAI_${todayKey}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-    toast("Exported.");
-    setSavedUI(true, "Exported .txt");
-  }
-
-  async function shareText(){
-    const profile = getProfile();
-    const entry = collectEntry();
-    const card = buildKaiCard(entry, profile);
-    const packet = buildTeacherPacket(entry, profile);
-    const text = card + "\n\n" + packet;
-
-    if(navigator.share){
-      try{
-        await navigator.share({ title:"KAI", text });
-        toast("Shared.");
-      } catch {}
-    } else {
-      await copyText();
-      toast("Share not supported; copied instead.");
-    }
-  }
-
-  // Gematria UI
-  function updateGematria(){
-    const s = ($("g_input").value || "").trim();
-    const { total, parts } = gematriaCalc(s);
-    $("g_total").value = s ? total : "";
-    $("g_breakdown").textContent = s
-      ? `Total: ${total}\nBreakdown: ${parts.join(" + ")}`
-      : "Type Hebrew letters above to see breakdown.";
-  }
-
-  // Learn lessons
-  const LESSONS = [
-    { title:"Restriction is the engine", body:"Restriction is not suppression. It is choosing response over reflex. One small restriction can unlock a new timeline." },
-    { title:"Name the pattern", body:"A named pattern becomes workable. Without naming, you repeat it. With naming, you can choose." },
-    { title:"Certainty is measurable", body:"Certainty is not mood. It is inner alignment. Track it like a vital sign." },
-    { title:"72 Names are tools", body:"A Name is not a charm. It’s a focus that helps access correction at the trigger point." },
-    { title:"Sweeten Gevurah", body:"Discipline becomes holy when blended with compassion. Sharpness without warmth is judgment." },
-    { title:"Witnessing edits the future", body:"Evening witness is the mind’s edit. You teach the nervous system what you want to become real." }
-  ];
-  let lessonIndex = 0;
-  function refreshLesson(seedDaily){
-    if(seedDaily){
-      const p = getProfile();
-      const seed = `${todayKey}|${p.name||"anon"}|${p.birth||"0"}`;
-      let h = 0; for (let i=0;i<seed.length;i++) h = (h*31 + seed.charCodeAt(i)) >>> 0;
-      lessonIndex = h % LESSONS.length;
-    }
-    const L = LESSONS[lessonIndex];
-    $("l_title").textContent = L.title;
-    $("l_body").textContent = L.body + "\n\nPractice: pattern → restriction → witness.";
-  }
-
-  // History intelligence + list
-  function renderHistoryIntelligence(){
-    const all = readJSON(STORAGE_ENTRIES, {});
-    const dates = Object.keys(all).sort().reverse().slice(0,14);
-    const counts = {};
-    let deltaSum = 0, deltaN = 0;
-
-    for(const d of dates){
-      const e = all[d] || {};
-      const pk = (e.pattern || "").trim();
-      if(pk) counts[pk] = (counts[pk]||0) + 1;
-
-      const am = +e.certainty, pm = +e.certainty_pm;
-      if(isFinite(am) && isFinite(pm)){ deltaSum += (pm-am); deltaN += 1; }
+      // Toggle
+      $("dailyRestrictToggle").checked = state.dailyRestrict;
     }
 
-    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-    const top = sorted[0]?.[0] || "";
-    $("h_topPattern").textContent = top ? (PATTERNS[top]?.label || top) : "—";
+    function buildShareText(){
+      const d = state.day;
+      const p = state.profile || {};
+      const sign = computeSunSign(p.birth || "");
+      const nameLine = p.name ? `${p.name}` : "—";
 
-    $("h_countsTag").textContent = sorted.length ? `${sorted.length} patterns` : "—";
-    $("h_counts").textContent = sorted.length
-      ? sorted.map(([k,v]) => `${PATTERNS[k]?.label || k}: ${v}`).join("\n")
-      : "No data yet.";
+      const pattern = d.morning.pattern ? d.morning.pattern : "—";
+      const action  = d.restriction.action ? d.restriction.action : "—";
+      const tool    = d.chosenName ? `${d.chosenName.he} • ${d.chosenName.en}` : "—";
+      const restrict = d.restriction.replace ? d.restriction.replace : "—";
 
-    const avg = deltaN ? (deltaSum/deltaN) : null;
-    const avgTxt = (avg===null) ? "—" : (avg>0 ? `+${avg.toFixed(1)}` : `${avg.toFixed(1)}`);
-
-    let insight = "Save a few days and KAI will surface trend insights.\n\n";
-    if(top){
-      const g = guidanceFor(top);
-      insight += `• Top pattern: ${PATTERNS[top]?.label}\n`;
-      insight += `• Avg certainty Δ: ${avgTxt}\n\n`;
-      insight += `Suggestion:\n${g.restriction}\n\nTool:\n${g.name.heb} · ${g.name.meaning}`;
-    }
-    $("h_insights").textContent = insight;
-  }
-
-  function renderSavedDays(){
-    const all = readJSON(STORAGE_ENTRIES, {});
-    const dates = Object.keys(all).sort().reverse();
-    const list = $("historyList");
-    list.innerHTML = "";
-
-    if(dates.length === 0){
-      const empty = document.createElement("div");
-      empty.className = "muted";
-      empty.textContent = "No saved days yet. Tap Save.";
-      list.appendChild(empty);
-      return;
+      return [
+        `KAI • ${state.date}`,
+        `Name: ${nameLine}`,
+        `Pattern: ${pattern}`,
+        `Tool: ${tool}`,
+        `Restriction: ${action}`,
+        `Replacement: ${restrict}`,
+        `Certainty: ${d.morning.certainty || "—"} • Energy: ${d.morning.energy || "—"}`,
+        `Astro: ${sign || "—"}`
+      ].join("\n");
     }
 
-    dates.forEach(date => {
-      const e = all[date] || {};
-      const g = guidanceFor((e.pattern||"other").trim() || "other");
-      const item = document.createElement("div");
-      item.className = "hitem";
+    function renderLibrary(filterText=""){
+      const grid = $("libGrid");
+      grid.innerHTML = "";
+      const q = (filterText || "").trim().toLowerCase();
 
-      const left = document.createElement("div");
-      const am = e.certainty || "—";
-      const pm = e.certainty_pm || "—";
-      left.innerHTML = `
-        <div class="hdate">${date}</div>
-        <div class="hmeta">Pattern: ${(g.label || "—")} · Cert: ${am}→${pm}</div>
-      `;
+      const shown = NAMES.filter(n=>{
+        if(!q) return true;
+        return (
+          n.he.includes(q) ||
+          n.en.toLowerCase().includes(q) ||
+          n.use.some(u=>u.includes(q))
+        );
+      });
 
-      const btn = document.createElement("button");
-      btn.className = "hbtn";
-      btn.textContent = "Load";
-      btn.onclick = () => loadDate(date);
-
-      item.appendChild(left);
-      item.appendChild(btn);
-      list.appendChild(item);
-    });
-  }
-
-  function loadDate(date){
-    const all = readJSON(STORAGE_ENTRIES, {});
-    const e = all[date] || {};
-    fields.forEach(f => { if($(f)) $(f).value = e[f] ?? ""; });
-    refreshGuidance();
-    showScreen("evening");
-    toast(`Loaded ${date}`);
-    setSavedUI(true, `Loaded ${date} (review).`);
-  }
-
-  // Library rendering + selection
-  function renderLibrary(){
-    const q = ($("lib_search").value || "").toLowerCase().trim();
-    const filter = $("lib_filter").value || "all";
-    const grid = $("libGrid");
-    grid.innerHTML = "";
-
-    const results = NAME_LIBRARY.filter(n => {
-      const hay = `${n.heb} ${n.meaning} ${n.use} ${n.practice} ${n.note}`.toLowerCase();
-      const passQ = q ? hay.includes(q) : true;
-      const passF = (filter==="all") ? true : (n.use === filter);
-      return passQ && passF;
-    });
-
-    if(results.length === 0){
-      const div = document.createElement("div");
-      div.className = "muted";
-      div.textContent = "No matches. Try a different search or filter.";
-      grid.appendChild(div);
-      return;
-    }
-
-    results.forEach(n => {
-      const card = document.createElement("div");
-      card.className = "libCard";
-      card.innerHTML = `
-        <div class="libTop">
-          <div>
-            <div class="libHeb">${n.heb}</div>
-            <div class="libMeaning">${n.meaning}</div>
-            <div class="libUse">Use-case: ${n.use} · <span class="chip">${n.note || ""}</span></div>
+      shown.forEach(n=>{
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div style="display:flex;gap:10px;align-items:baseline;justify-content:space-between">
+            <div>
+              <div style="font-size:24px;font-weight:900;color:var(--gold);letter-spacing:.04em">${n.he}</div>
+              <div style="font-weight:700">${n.en}</div>
+              <div class="hint" style="margin:6px 0 0">Use-case: ${n.use.join(" • ")}</div>
+            </div>
+            <button class="btn" style="height:44px">Select</button>
           </div>
-        </div>
-        <div style="height:10px"></div>
-        <div class="mono">${n.practice}</div>
-        <div class="libBtns">
-          <button class="btn secondary">Select</button>
-        </div>
-      `;
-      card.querySelector("button").onclick = () => {
-        setToolOverride({ heb:n.heb, meaning:n.meaning, use:n.use, practice:n.practice });
-        toast(`Selected ${n.heb}`);
-        refreshGuidance();
+          <div class="mono" style="margin-top:10px">${n.practice}</div>
+        `;
+        card.querySelector("button").onclick = ()=>{
+          state.day.chosenName = n;
+          toast(`Selected ${n.he} • ${n.en}`);
+          hydrateUI();
+        };
+        grid.appendChild(card);
+      });
+    }
+
+    function renderOneTaps(){
+      const g = $("oneTapGrid");
+      g.innerHTML = "";
+      ONE_TAPS.forEach(t=>{
+        const b = document.createElement("button");
+        b.className = "oneTap";
+        b.innerHTML = `<div class="k">${t.k}</div><div class="s">${t.action}</div>`;
+        b.onclick = ()=>{
+          // auto-fill restriction
+          state.day.restriction.action = t.action;
+          state.day.restriction.replace = t.replace;
+          state.day.restriction.script = t.script;
+          state.day.suggestedRestriction = t.replace;
+          toast(`One-tap set: ${t.action}`);
+          // Jump to restriction tab so it feels “real”
+          setActiveTab("restriction");
+          hydrateUI();
+        };
+        g.appendChild(b);
+      });
+    }
+
+    function setDailyRestrict(on){
+      state.dailyRestrict = !!on;
+      localStorage.setItem(keyDailyRestrict, state.dailyRestrict ? "1" : "0");
+      hydrateUI();
+      toast(`Daily Restrict ${state.dailyRestrict ? "ON" : "OFF"}`);
+    }
+
+    // ---------- Save / Reset ----------
+    function collectFromFields(){
+      // Morning
+      state.day.morning = {
+        where: $("mWhere").value.trim(),
+        pattern: $("mPattern").value.trim(),
+        certainty: $("mCert").value.trim(),
+        energy: $("mEnergy").value.trim(),
+        intention: $("mIntent").value.trim()
       };
-      grid.appendChild(card);
-    });
-  }
-
-  $("useChosenBtn").addEventListener("click", () => {
-    const ov = getToolOverride();
-    if(!ov){ toast("No Name selected."); return; }
-    toast("Using chosen Name today.");
-    refreshGuidance();
-    showScreen("morning");
-  });
-
-  $("clearChosenBtn").addEventListener("click", () => {
-    clearToolOverride();
-    toast("Cleared selection.");
-    refreshGuidance();
-    renderLibrary();
-  });
-
-  $("lib_search").addEventListener("input", renderLibrary);
-  $("lib_filter").addEventListener("change", renderLibrary);
-
-  // Share Card (PNG) generation
-  function drawRoundedRect(ctx, x, y, w, h, r){
-    const rr = Math.min(r, w/2, h/2);
-    ctx.beginPath();
-    ctx.moveTo(x+rr, y);
-    ctx.arcTo(x+w, y, x+w, y+h, rr);
-    ctx.arcTo(x+w, y+h, x, y+h, rr);
-    ctx.arcTo(x, y+h, x, y, rr);
-    ctx.arcTo(x, y, x+w, y, rr);
-    ctx.closePath();
-  }
-
-  function makeCardText(entry, profile){
-    const g = guidanceFor(entry.pattern || "other");
-    const tool = getCurrentTool(entry);
-
-    const am = entry.certainty || "—";
-    const pm = entry.certainty_pm || "—";
-    const delta = (isFinite(+am) && isFinite(+pm)) ? (Number(pm)-Number(am)) : null;
-    const deltaTxt = (delta===null) ? "—" : (delta>0 ? `+${delta}` : `${delta}`);
-
-    return {
-      title: "KAI",
-      tagline: ($("card_tagline").value || "Kabbalah Always Illuminates").trim(),
-      date: todayKey,
-      name: profile.name || "—",
-      focus: profile.focus || "—",
-      pattern: g.label,
-      sefirah: g.sefirah,
-      toolHeb: tool.heb,
-      toolMeaning: tool.meaning,
-      restriction: (entry.restriction_action || g.restriction),
-      witness: entry.evening_witness || "",
-      certainty: `AM ${am} → PM ${pm} (Δ ${deltaTxt})`
-    };
-  }
-
-  function generateCardPNG(){
-    const canvas = $("cardCanvas");
-    const ctx = canvas.getContext("2d");
-    const style = $("card_style").value || "darkgold";
-    const include = $("card_include").value || "balanced";
-
-    const profile = getProfile();
-    const entry = collectEntry();
-    const t = makeCardText(entry, profile);
-
-    // Background
-    if(style==="noir"){
-      ctx.fillStyle = "#050506";
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-    } else {
-      const g1 = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
-      g1.addColorStop(0, "#050506");
-      g1.addColorStop(0.55, "#0a0a0c");
-      g1.addColorStop(1, "#050506");
-      ctx.fillStyle = g1;
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-
-      // subtle glow
-      const rad = ctx.createRadialGradient(260,240,10,260,240,520);
-      rad.addColorStop(0, "rgba(214,179,106,0.18)");
-      rad.addColorStop(1, "rgba(214,179,106,0)");
-      ctx.fillStyle = rad;
-      ctx.fillRect(0,0,canvas.width,canvas.height);
+      // Restriction
+      state.day.restriction = {
+        action: $("rAction").value,
+        where: $("rWhere").value.trim(),
+        confidence: $("rConf").value.trim(),
+        replace: $("rReplace").value.trim(),
+        script: $("rScript").value.trim()
+      };
+      // Evening
+      state.day.evening = {
+        witness: $("eWitness").value.trim(),
+        shift: $("eShift").value.trim()
+      };
+      state.day.zohar = $("prevZohar").value.trim();
+      state.day.suggestedRestriction = $("prevSuggest").value.trim();
     }
 
-    // Card panel
-    const pad = 80;
-    const x = pad, y = 90, w = canvas.width - pad*2, h = canvas.height - 160;
-    ctx.save();
-    drawRoundedRect(ctx, x, y, w, h, 36);
-    ctx.fillStyle = "rgba(15,15,17,0.92)";
-    ctx.fill();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = "rgba(214,179,106,0.35)";
-    ctx.stroke();
-    ctx.restore();
+    function doSave(){
+      state.profile = saveProfile();
+      collectFromFields();
+      saveDay(state.date, state.day);
 
-    // Header
-    ctx.fillStyle = "#f2d9a6";
-    ctx.font = "900 80px -apple-system, BlinkMacSystemFont, system-ui";
-    ctx.fillText(t.title, x+60, y+120);
+      // Streak logic (only celebrate when restriction exists + saved)
+      const {changed, streak} = bumpStreakIfCompleted(state.date);
 
-    ctx.fillStyle = "rgba(242,217,166,0.9)";
-    ctx.font = "600 30px -apple-system, BlinkMacSystemFont, system-ui";
-    ctx.fillText(t.tagline, x+60, y+165);
+      hydrateUI();
+      toast("Saved.");
 
-    // Right header chips
-    ctx.fillStyle = "rgba(214,179,106,0.18)";
-    drawRoundedRect(ctx, x+w-350, y+70, 290, 58, 22);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(214,179,106,0.35)";
-    ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "rgba(242,243,245,0.92)";
-    ctx.font = "700 26px -apple-system, BlinkMacSystemFont, system-ui";
-    ctx.fillText(t.date, x+w-330, y+108);
-
-    // Body sections
-    const leftX = x+60;
-    const rightX = x+w/2 + 10;
-    let yy = y+240;
-
-    function label(txt, lx, ly){
-      ctx.fillStyle = "rgba(167,167,173,0.9)";
-      ctx.font = "600 24px -apple-system, BlinkMacSystemFont, system-ui";
-      ctx.fillText(txt, lx, ly);
-    }
-    function value(txt, lx, ly, big=false){
-      ctx.fillStyle = "rgba(243,243,245,0.96)";
-      ctx.font = (big ? "800 30px" : "650 28px") + " -apple-system, BlinkMacSystemFont, system-ui";
-      wrapText(ctx, txt, lx, ly, (w/2)-90, 34, 3);
+      if(state.dailyRestrict && changed){
+        openCelebration(streak.count);
+      }
     }
 
-    function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines){
-      const words = (text||"—").split(" ");
+    function doResetDay(){
+      // clears TODAY only
+      const d = state.date;
+      localStorage.removeItem(dayKey(d));
+      state.day = loadDay(d);
+      // also clear “not saved” state
+      state.day.savedAt = null;
+      hydrateUI();
+      toast("Reset today.");
+    }
+
+    // ---------- Export ----------
+    function doExport(){
+      collectFromFields();
+      const payload = {
+        date: state.date,
+        profile: state.profile,
+        dailyRestrict: state.dailyRestrict,
+        day: state.day,
+        streak: loadStreak()
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `KAI_${state.date}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("Exported JSON.");
+    }
+
+    // ---------- Share text ----------
+    async function copyText(txt){
+      try{
+        await navigator.clipboard.writeText(txt);
+        toast("Copied.");
+      }catch{
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        toast("Copied.");
+      }
+    }
+
+    // ---------- Share card PNG ----------
+    function renderCard(){
+      const c = $("cardCanvas");
+      const ctx = c.getContext("2d");
+      const W = c.width, H = c.height;
+
+      // background
+      ctx.fillStyle = "#08080a";
+      ctx.fillRect(0,0,W,H);
+
+      // soft gold glow
+      const grd = ctx.createRadialGradient(260,160,20,260,160,700);
+      grd.addColorStop(0,"rgba(200,162,74,.22)");
+      grd.addColorStop(1,"rgba(200,162,74,0)");
+      ctx.fillStyle = grd;
+      ctx.fillRect(0,0,W,H);
+
+      // frame
+      ctx.strokeStyle = "rgba(200,162,74,.35)";
+      ctx.lineWidth = 4;
+      roundRect(ctx, 32, 32, W-64, H-64, 28);
+      ctx.stroke();
+
+      // header
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "900 56px system-ui, -apple-system";
+      ctx.fillText("KAI", 86, 125);
+
+      ctx.fillStyle = "rgba(255,255,255,.75)";
+      ctx.font = "500 24px system-ui, -apple-system";
+      ctx.fillText(($("sTag").value || "Kabbalah Always Illuminates"), 86, 162);
+
+      // content
+      const d = state.day;
+      const p = state.profile || {};
+      const tool = d.chosenName ? `${d.chosenName.he} • ${d.chosenName.en}` : "—";
+      const pattern = d.morning.pattern || "—";
+      const action = d.restriction.action || "—";
+      const replace = d.restriction.replace || "—";
+
+      const blocks = [
+        ["Date", state.date],
+        ["Name", p.name || "—"],
+        ["Pattern", pattern],
+        ["Tool", tool],
+        ["Restriction", action],
+        ["Replacement", replace]
+      ];
+
+      const leftX = 86, topY = 230, boxW = W-172, boxH = H-290;
+      ctx.fillStyle = "rgba(255,255,255,.03)";
+      ctx.strokeStyle = "rgba(255,255,255,.08)";
+      ctx.lineWidth = 2;
+      roundRect(ctx, leftX, topY, boxW, boxH, 22);
+      ctx.fill();
+      ctx.stroke();
+
+      let y = topY + 62;
+      blocks.forEach(([k,v], idx)=>{
+        ctx.fillStyle = "rgba(200,162,74,.95)";
+        ctx.font = "800 22px system-ui, -apple-system";
+        ctx.fillText(k.toUpperCase(), leftX + 34, y);
+
+        ctx.fillStyle = "rgba(255,255,255,.92)";
+        ctx.font = "600 30px system-ui, -apple-system";
+        wrapText(ctx, v, leftX + 34, y + 38, boxW - 68, 38);
+
+        y += 108;
+      });
+
+      ctx.fillStyle = "rgba(255,255,255,.55)";
+      ctx.font = "500 20px system-ui, -apple-system";
+      ctx.fillText("kabbalah always illuminates", W-430, H-82);
+    }
+
+    function roundRect(ctx, x, y, w, h, r){
+      const rr = Math.min(r, w/2, h/2);
+      ctx.beginPath();
+      ctx.moveTo(x+rr, y);
+      ctx.arcTo(x+w, y, x+w, y+h, rr);
+      ctx.arcTo(x+w, y+h, x, y+h, rr);
+      ctx.arcTo(x, y+h, x, y, rr);
+      ctx.arcTo(x, y, x+w, y, rr);
+      ctx.closePath();
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+      const words = String(text).split(" ");
       let line = "";
-      let lines = 0;
       for(let n=0;n<words.length;n++){
         const testLine = line + words[n] + " ";
         const metrics = ctx.measureText(testLine);
-        if(metrics.width > maxWidth && n>0){
-          ctx.fillText(line.trim(), x, y + (lines*lineHeight));
+        if(metrics.width > maxWidth && n > 0){
+          ctx.fillText(line, x, y);
           line = words[n] + " ";
-          lines++;
-          if(lines >= (maxLines-1)) break;
-        } else {
+          y += lineHeight;
+        }else{
           line = testLine;
         }
       }
-      if(lines < maxLines){
-        ctx.fillText(line.trim(), x, y + (lines*lineHeight));
-      }
+      ctx.fillText(line, x, y);
     }
 
-    // Left: Pattern / Tool / Restriction
-    label("Pattern", leftX, yy);
-    value(t.pattern, leftX, yy+40, true);
-
-    yy += 120;
-    label("72 Name Tool", leftX, yy);
-    ctx.fillStyle = "#f2d9a6";
-    ctx.font = "900 64px -apple-system, BlinkMacSystemFont, system-ui";
-    ctx.fillText(t.toolHeb || "—", leftX, yy+70);
-    ctx.fillStyle = "rgba(243,243,245,0.96)";
-    ctx.font = "700 28px -apple-system, BlinkMacSystemFont, system-ui";
-    wrapText(ctx, t.toolMeaning || "—", leftX+140, yy+58, (w/2)-230, 34, 2);
-
-    yy += 140;
-    label("Restriction", leftX, yy);
-    value(t.restriction, leftX, yy+40);
-
-    // Right column
-    let ry = y+240;
-    label("Sefirah lens", rightX, ry);
-    value(t.sefirah, rightX, ry+40);
-
-    ry += 120;
-    label("Certainty", rightX, ry);
-    value(t.certainty, rightX, ry+40);
-
-    ry += 120;
-    if(include !== "minimal"){
-      label("Witness (short)", rightX, ry);
-      const wtxt = (t.witness || "").trim();
-      value(wtxt ? wtxt : "—", rightX, ry+40);
-      ry += 160;
+    function downloadPNG(){
+      renderCard();
+      const c = $("cardCanvas");
+      const a = document.createElement("a");
+      a.download = `KAI_${state.date}.png`;
+      a.href = c.toDataURL("image/png");
+      a.click();
+      toast("Downloaded PNG.");
     }
 
-    // Footer identity
-    ctx.fillStyle = "rgba(214,179,106,0.18)";
-    drawRoundedRect(ctx, x+60, y+h-120, w-120, 72, 22);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(214,179,106,0.25)";
-    ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "rgba(243,243,245,0.92)";
-    ctx.font = "700 26px -apple-system, BlinkMacSystemFont, system-ui";
-    const who = `${t.name} · Focus: ${t.focus}`;
-    ctx.fillText(who, x+84, y+h-73);
-
-    // Make PNG link
-    const dataURL = canvas.toDataURL("image/png");
-    const link = $("downloadLink");
-    link.href = dataURL;
-    link.style.display = "inline-block";
-    $("cardStatus").textContent = "Generated.";
-    toast("Card generated.");
-  }
-
-  async function shareCardPNG(){
-    const canvas = $("cardCanvas");
-    const dataURL = canvas.toDataURL("image/png");
-    // Convert to Blob
-    const res = await fetch(dataURL);
-    const blob = await res.blob();
-    const file = new File([blob], `KAI_${todayKey}.png`, { type: "image/png" });
-
-    if(navigator.canShare && navigator.canShare({ files:[file] }) && navigator.share){
-      try{
-        await navigator.share({ title:"KAI", files:[file], text:"KAI Daily Card" });
-        toast("Shared PNG.");
-        return;
-      } catch {}
+    // ---------- History ----------
+    function listSavedDays(){
+      const keys = Object.keys(localStorage).filter(k=>k.startsWith("kai_day_") && k.endsWith("_v1"));
+      const days = keys.map(k=>k.replace("kai_day_","").replace("_v1","")).sort().reverse();
+      $("historyBox").textContent = days.length ? days.join("\n") : "(none yet)";
     }
-    toast("PNG share may be blocked. Use Download then share from Photos/Files.");
-  }
 
-  // Wire share card buttons
-  $("genCardBtn").addEventListener("click", () => {
-    const p = collectProfile();
-    setProfile(p);
-    generateCardPNG();
-  });
-  $("shareCardBtn").addEventListener("click", shareCardPNG);
-
-  // Save/load
-  function loadToday(){
-    const entry = getTodayEntry();
-    fields.forEach(f => { if($(f)) $(f).value = entry[f] ?? ""; });
-
-    const p = getProfile();
-    $("p_name").value = p.name ?? "";
-    $("p_birth").value = p.birth ?? "";
-    $("p_focus").value = p.focus ?? "";
-    $("p_outcome").value = p.outcome ?? "";
-    $("p_intensity").value = p.intensity ?? "Simple + Powerful";
-    $("p_features").value = p.features ?? "core_tools";
-
-    const streak = readJSON(STORAGE_STREAK, {count:0});
-    $("streakBadge").textContent = `Streak: ${streak.count || 0}`;
-
-    // Defaults for share card controls
-    if(!$("card_tagline").value) $("card_tagline").value = "Kabbalah Always Illuminates";
-
-    setSavedUI(!!Object.keys(entry).length, !!Object.keys(entry).length ? "Loaded saved entry." : "Not saved yet.");
-    refreshGuidance();
-    renderSavedDays();
-    renderHistoryIntelligence();
-    updateGematria();
-    refreshLesson(true);
-    renderLibrary();
-
-    $("cardStatus").textContent = "Not generated yet.";
-    $("downloadLink").style.display = "none";
-  }
-
-  // Feature gating
-  function applyFeatureGating(){
-    const profile = getProfile();
-    const feat = profile.features || "core_tools";
-    const toolsTab = document.querySelector('.tab[data-screen="tools"]');
-    const learnTab = document.querySelector('.tab[data-screen="learn"]');
-    toolsTab.style.display = (feat==="core") ? "none" : "inline-block";
-    learnTab.style.display = (feat==="core_tools_learn") ? "inline-block" : "none";
-  }
-
-  // Events
-  fields.forEach(f => {
-    const el = $(f);
-    if(!el) return;
-    el.addEventListener("input", () => {
-      setSavedUI(false, "Unsaved changes.");
-      refreshGuidance();
-    });
-  });
-
-  ["p_name","p_birth","p_focus","p_outcome","p_intensity","p_features"].forEach(id => {
-    $(id).addEventListener("input", () => {
-      setSavedUI(false, "Profile changed (unsaved).");
-      refreshGuidance();
-      applyFeatureGating();
-    });
-  });
-
-  $("g_input").addEventListener("input", updateGematria);
-  $("lessonNext").addEventListener("click", () => {
-    lessonIndex = (lessonIndex + 1) % LESSONS.length;
-    refreshLesson(false);
-  });
-
-  $("saveBtn").addEventListener("click", () => { saveAll(); applyFeatureGating(); });
-  $("resetBtn").addEventListener("click", resetDay);
-  $("copyBtn").addEventListener("click", copyText);
-  $("exportBtn").addEventListener("click", exportText);
-  $("shareBtn").addEventListener("click", shareText);
-
-  // Learn
-  function refreshLesson(seedDaily){
-    if(seedDaily){
-      const p = getProfile();
-      const seed = `${todayKey}|${p.name||"anon"}|${p.birth||"0"}`;
-      let h = 0; for (let i=0;i<seed.length;i++) h = (h*31 + seed.charCodeAt(i)) >>> 0;
-      lessonIndex = h % LESSONS.length;
+    function nukeAll(){
+      if(!confirm("Delete ALL KAI data on this device?")) return;
+      Object.keys(localStorage).forEach(k=>{
+        if(k.startsWith("kai_")) localStorage.removeItem(k);
+      });
+      state.profile = loadProfile();
+      state.dailyRestrict = (localStorage.getItem(keyDailyRestrict) === "1");
+      state.day = loadDay(state.date);
+      hydrateUI();
+      toast("All data deleted.");
     }
-    const L = LESSONS[lessonIndex];
-    $("l_title").textContent = L.title;
-    $("l_body").textContent = L.body + "\n\nPractice: pattern → restriction → witness.";
-  }
 
-  // Load
-  loadToday();
-  applyFeatureGating();
-</script>
+    // ---------- Init ----------
+    (function init(){
+      // Date chip
+      state.date = todayISO();
+      state.profile = loadProfile();
+      state.dailyRestrict = (localStorage.getItem(keyDailyRestrict) === "1");
+      state.day = loadDay(state.date);
+
+      // tabs
+      $("tabs").addEventListener("click", (e)=>{
+        const t = e.target.closest(".tab");
+        if(!t) return;
+        setActiveTab(t.dataset.tab);
+      });
+      const last = localStorage.getItem("kai_last_tab_v1") || "start";
+      setActiveTab(last);
+
+      // toggles + inputs
+      $("dailyRestrictToggle").addEventListener("change",(e)=> setDailyRestrict(e.target.checked));
+
+      // buttons
+      $("btnSave").onclick = doSave;
+      $("btnResetDay").onclick = doResetDay;
+      $("btnExport").onclick = doExport;
+      $("btnCopy").onclick = ()=> copyText(buildShareText());
+      $("btnShareText").onclick = ()=> copyText(buildShareText());
+      $("btnLoadToday").onclick = ()=>{
+        state.day = loadDay(state.date);
+        hydrateUI();
+        toast("Loaded today.");
+      };
+      $("btnListDays").onclick = listSavedDays;
+      $("btnNukeAll").onclick = nukeAll;
+
+      // share card
+      $("btnRender").onclick = renderCard;
+      $("btnDownload").onclick = downloadPNG;
+
+      // library
+      renderLibrary("");
+      $("libSearch").addEventListener("input", (e)=> renderLibrary(e.target.value));
+      $("btnUseToday").onclick = ()=>{
+        if(!state.day.chosenName){ toast("Select a Name first."); return; }
+        toast("Name set for today.");
+        hydrateUI();
+      };
+      $("btnClearName").onclick = ()=>{
+        state.day.chosenName = null;
+        toast("Cleared Name.");
+        hydrateUI();
+      };
+
+      // gematria
+      const gemMap = {
+        "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
+        "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,
+        "ס":60,"ע":70,"פ":80,"ף":80,"צ":90,"ץ":90,
+        "ק":100,"ר":200,"ש":300,"ת":400
+      };
+      $("gText").addEventListener("input", ()=>{
+        const s = ($("gText").value || "").trim();
+        let total = 0;
+        const parts = [];
+        for(const ch of s){
+          const v = gemMap[ch] || 0;
+          if(v){
+            total += v;
+            parts.push(`${ch}=${v}`);
+          }
+        }
+        $("gTotal").value = total ? String(total) : "—";
+        $("gBreak").value = parts.length ? parts.join(" • ") : "—";
+      });
+
+      // modal close
+      $("modalClose").onclick = closeCelebration;
+      $("modalOk").onclick = closeCelebration;
+      $("modalBackdrop").addEventListener("click",(e)=>{
+        if(e.target.id==="modalBackdrop") closeCelebration();
+      });
+
+      // one taps
+      renderOneTaps();
+
+      hydrateUI();
+      renderCard();
+    })();
+  </script>
 </body>
 </html>
