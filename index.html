@@ -1412,7 +1412,14 @@
 
       // one taps
       renderOneTaps();
-
+// Wire tab clicks
+document.querySelectorAll(".tab").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const tab = btn.dataset.tab;
+    setActiveTab(tab);
+  });
+});
+      toast("tabs found: " + document.querySelectorAll(".tab").length);
       hydrateUI();
       renderCard();
     })();
