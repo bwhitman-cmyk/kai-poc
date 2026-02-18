@@ -2,20 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-
-  <!-- PWA / iOS -->
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b0b0c" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="KAI" />
 
-  <!-- Icons -->
-  <link rel="apple-touch-icon" href="/kai-icon.png?v=1" />
-  <link rel="icon" type="image/png" href="/kai-icon.png?v=1" />
-
-  <!-- Manifest -->
-  <link rel="manifest" href="/manifest.webmanifest?v=1" />
+  <!-- iOS Home Screen icon (must exist at site root) -->
+  <link rel="apple-touch-icon" href="/kai-icon.png?v=10" />
+  <!-- PWA manifest (must exist at site root) -->
+  <link rel="manifest" href="/manifest.webmanifest?v=10" />
 
   <title>KAI</title>
 
@@ -23,213 +19,398 @@
     :root{
       --bg:#070708;
       --panel:#0e0f12;
-      --panel2:#0b0c0e;
-      --line:rgba(255,255,255,.08);
+      --panel2:#0b0b0c;
       --text:#f3f3f4;
       --muted:#b3b3b7;
+      --line:rgba(255,255,255,.09);
+      --line2:rgba(255,255,255,.14);
       --gold:#c8a24a;
       --gold2:#8f6f2a;
-      --shadow: 0 18px 50px rgba(0,0,0,.55);
-      --radius:22px;
+      --good:#2ad07f;
+      --warn:#ffcc66;
+      --bad:#ff5b5b;
+      --shadow: 0 18px 70px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 22px;
+      --pad: 18px;
+      --max: 1200px;
     }
 
-    html,body{
-      height:100%;
-      background: var(--bg);
-      color: var(--text);
+    * { box-sizing: border-box; }
+    html, body { height:100%; }
+    body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(900px 520px at 18% 14%, rgba(200,162,74,.18), transparent 58%),
+        radial-gradient(900px 520px at 85% 10%, rgba(200,162,74,.08), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overscroll-behavior: none;
     }
 
-    /* Prevent iOS “double tap zoom” vibes on interactive UI */
-    *{ -webkit-tap-highlight-color: transparent; }
-    button, .tab, .btn { touch-action: manipulation; }
+    /* iOS “feels like a photo” fix helpers */
+    button, .tabBtn, .chipBtn, .btn{
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
 
     .wrap{
-      max-width: 1200px;
+      max-width: var(--max);
       margin: 0 auto;
-      padding: 18px 18px 28px;
+      padding: 20px 16px 110px;
     }
 
     .top{
       display:flex;
-      justify-content: space-between;
-      align-items:flex-start;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 12px;
+      margin: 10px 0 18px;
     }
 
     .brand h1{
       margin:0;
-      font-size: 44px;
-      letter-spacing:.04em;
+      letter-spacing:.08em;
+      font-size: 34px;
       font-weight: 800;
     }
     .sub{
       margin-top:6px;
       color: var(--muted);
-      font-size: 14px;
-      letter-spacing:.03em;
+      font-size: 13px;
+      letter-spacing:.02em;
     }
 
     .chips{
       display:flex;
       gap:10px;
       flex-wrap: wrap;
-      align-items:center;
       justify-content:flex-end;
-      max-width: 520px;
     }
     .chip{
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 8px 12px;
-      background: rgba(255,255,255,.02);
+      background: rgba(255,255,255,.03);
+      border:1px solid var(--line);
       color: var(--muted);
-      font-size: 13px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      box-shadow: 0 8px 26px rgba(0,0,0,.25);
+      user-select:none;
     }
-    .chip b{ color: var(--gold); font-weight: 700; }
+    .chip b{ color: var(--text); font-weight: 700; }
 
     .tabs{
       display:flex;
-      gap:10px;
       flex-wrap: wrap;
-      margin: 14px 0 16px;
+      gap: 10px;
+      margin: 10px 0 16px;
     }
-
-    /* REAL buttons = reliable taps on iPad */
-    .tab{
-      appearance:none;
+    .tabBtn{
       border: 1px solid var(--line);
       background: rgba(255,255,255,.02);
       color: var(--text);
-      border-radius: 999px;
       padding: 10px 14px;
+      border-radius: 999px;
       font-size: 14px;
-      letter-spacing:.02em;
       cursor:pointer;
       user-select:none;
-      -webkit-user-select:none;
+      transition: transform .08s ease, border-color .15s ease, background .15s ease;
     }
-    .tab.active{
-      border-color: rgba(200,162,74,.55);
-      box-shadow: 0 0 0 1px rgba(200,162,74,.25) inset;
-      background: radial-gradient(140px 70px at 30% 30%, rgba(200,162,74,.18), rgba(255,255,255,.02));
-      color: #fff;
+    .tabBtn:active{ transform: scale(.98); }
+    .tabBtn.active{
+      border-color: rgba(200,162,74,.45);
+      background: rgba(200,162,74,.08);
+      box-shadow: 0 18px 55px rgba(0,0,0,.35);
     }
 
     .panel{
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 18px;
       background:
-        radial-gradient(900px 420px at 30% 20%, rgba(200,162,74,.12), transparent 58%),
-        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+        radial-gradient(900px 420px at 30% 20%, rgba(200,162,74,.10), transparent 58%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015)),
+        rgba(10,10,12,.65);
+      border: 1px solid var(--line);
+      border-radius: var(--radius2);
       box-shadow: var(--shadow);
-      display:none;
-    }
-    .panel.active{ display:block; }
-
-    h2{
-      margin:0 0 12px;
-      color: var(--gold);
-      font-size: 18px;
-      letter-spacing:.02em;
+      padding: 18px;
     }
 
     .grid{
       display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 14px;
     }
-    @media (max-width: 900px){
+    @media (max-width: 980px){
       .grid{ grid-template-columns: 1fr; }
+      .top{ flex-direction: column; align-items:flex-start; }
       .chips{ justify-content:flex-start; }
     }
 
-    .field{
-      display:flex;
-      flex-direction: column;
-      gap: 6px;
+    .sectionTitle{
+      color: var(--gold);
+      font-weight: 800;
+      letter-spacing:.02em;
+      margin: 0 0 10px;
+      font-size: 16px;
     }
-    label{
+
+    .field label{
+      display:block;
+      font-size: 12px;
       color: var(--muted);
-      font-size: 13px;
+      margin-bottom: 7px;
+      letter-spacing:.02em;
     }
     input, select, textarea{
-      border: 1px solid var(--line);
+      width:100%;
+      background: rgba(0,0,0,.35);
+      border: 1px solid var(--line2);
       border-radius: 14px;
       padding: 12px 12px;
-      background: rgba(0,0,0,.35);
       color: var(--text);
-      font-size: 16px;
-      outline:none;
+      font-size: 15px;
+      outline: none;
     }
     textarea{ min-height: 110px; resize: vertical; }
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(200,162,74,.45);
+      box-shadow: 0 0 0 3px rgba(200,162,74,.08);
+    }
 
-    .row{
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 980px){
+      .row2{ grid-template-columns: 1fr; }
+    }
+
+    .bar{
       display:flex;
       gap: 10px;
       flex-wrap: wrap;
-      align-items:center;
       margin-top: 14px;
     }
-
     .btn{
-      appearance:none;
-      border: 1px solid var(--line);
+      border:1px solid var(--line2);
       background: rgba(255,255,255,.03);
       color: var(--text);
+      padding: 11px 14px;
       border-radius: 999px;
-      padding: 12px 16px;
-      font-size: 14px;
       cursor:pointer;
+      font-size: 14px;
       user-select:none;
-      -webkit-user-select:none;
+      transition: transform .08s ease, border-color .15s ease, background .15s ease;
     }
-    .btn.gold{
+    .btn:active{ transform: scale(.98); }
+    .btn.primary{
       border-color: rgba(200,162,74,.55);
-      box-shadow: 0 0 0 1px rgba(200,162,74,.18) inset;
+      background: rgba(200,162,74,.09);
     }
-    .btn.danger{
-      border-color: rgba(255,90,90,.35);
-      color: #ffd5d5;
+    .btn.good{
+      border-color: rgba(42,208,127,.45);
+      background: rgba(42,208,127,.07);
     }
+    .btn.bad{
+      border-color: rgba(255,91,91,.45);
+      background: rgba(255,91,91,.07);
+    }
+
+    .hint{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .split{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 980px){
+      .split{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.25);
+      padding: 14px;
+    }
+
+    .miniTitle{
+      font-weight: 800;
+      color: rgba(255,255,255,.92);
+      margin: 0 0 10px;
+      font-size: 14px;
+      letter-spacing:.01em;
+    }
+
+    .toggleRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(0,0,0,.22);
+      margin-top: 10px;
+    }
+    .toggleRow .label{
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+    .switch{
+      width: 48px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid var(--line2);
+      background: rgba(255,255,255,.06);
+      position: relative;
+      cursor:pointer;
+      flex: none;
+    }
+    .switch .dot{
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      position:absolute;
+      top: 2px;
+      left: 2px;
+      transition: left .16s ease, background .16s ease;
+    }
+    .switch.on{
+      border-color: rgba(200,162,74,.55);
+      background: rgba(200,162,74,.12);
+    }
+    .switch.on .dot{ left: 24px; background: rgba(200,162,74,.95); }
 
     .toast{
       position: fixed;
       left: 50%;
-      bottom: 18px;
+      bottom: 20px;
       transform: translateX(-50%);
-      background: rgba(0,0,0,.72);
-      border: 1px solid var(--line);
+      background: rgba(0,0,0,.78);
+      border: 1px solid rgba(255,255,255,.12);
       color: var(--text);
-      padding: 10px 14px;
+      padding: 11px 14px;
       border-radius: 999px;
       font-size: 13px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.55);
       display:none;
       z-index: 9999;
+      max-width: min(92vw, 680px);
+      text-align:center;
+      user-select:none;
     }
 
-    .mutedNote{
+    /* Celebration modal */
+    .modalBackdrop{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.65);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 99999;
+    }
+    .modal{
+      width: min(760px, 100%);
+      background:
+        radial-gradient(900px 420px at 30% 20%, rgba(200,162,74,.20), transparent 58%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid rgba(200,162,74,.35);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
+      position:relative;
+      overflow:hidden;
+    }
+    .modal h3{ margin: 0 0 6px; font-size: 20px; }
+    .modal p{ margin: 0 0 14px; color: var(--muted); }
+    .xClose{
+      position:absolute;
+      right:12px;
+      top:10px;
+      background: transparent;
+      border: 1px solid var(--line);
+      color: #fff;
+      border-radius: 999px;
+      width: 38px;
+      height: 38px;
+      cursor:pointer;
+    }
+
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .item{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(0,0,0,.22);
+      padding: 12px;
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      align-items:flex-start;
+    }
+    .item .left{
+      display:flex;
+      flex-direction:column;
+      gap: 4px;
+    }
+    .item .date{
+      font-weight: 800;
+      color: rgba(255,255,255,.92);
+      letter-spacing:.01em;
+    }
+    .item .meta{
       color: var(--muted);
       font-size: 12px;
-      margin-top: 8px;
+      line-height: 1.3;
+      white-space: pre-wrap;
+    }
+    .pill{
+      font-size: 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: var(--muted);
+      background: rgba(255,255,255,.03);
+      user-select:none;
+    }
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-
     <div class="top">
       <div class="brand">
         <h1>KAI</h1>
         <div class="sub">Kabbalah Always Illuminates • Alignment • Restriction • Witnessing</div>
       </div>
 
-      <div class="chips">
+      <div class="chips" aria-label="status">
         <div class="chip">Date: <b id="chipDate">—</b></div>
         <div class="chip">Profile: <b id="chipProfile">—</b></div>
         <div class="chip">Streak: <b id="chipStreak">—</b></div>
@@ -238,167 +419,308 @@
     </div>
 
     <div class="tabs" id="tabs">
-      <button type="button" class="tab active" data-tab="start">Start</button>
-      <button type="button" class="tab" data-tab="morning">Morning</button>
-      <button type="button" class="tab" data-tab="restriction">Restriction</button>
-      <button type="button" class="tab" data-tab="evening">Evening</button>
-      <button type="button" class="tab" data-tab="share">Share Card</button>
-      <button type="button" class="tab" data-tab="library">Library</button>
-      <button type="button" class="tab" data-tab="tools">Tools</button>
-      <button type="button" class="tab" data-tab="history">History</button>
+      <button class="tabBtn active" data-tab="start" type="button">Start</button>
+      <button class="tabBtn" data-tab="morning" type="button">Morning</button>
+      <button class="tabBtn" data-tab="restriction" type="button">Restriction</button>
+      <button class="tabBtn" data-tab="evening" type="button">Evening</button>
+      <button class="tabBtn" data-tab="share" type="button">Share Card</button>
+      <button class="tabBtn" data-tab="library" type="button">Library</button>
+      <button class="tabBtn" data-tab="tools" type="button">Tools</button>
+      <button class="tabBtn" data-tab="history" type="button">History</button>
     </div>
 
     <!-- START -->
-    <section class="panel active" data-pane="start">
-      <h2>Profile and Intent</h2>
+    <section class="panel" data-pane="start">
+      <div class="sectionTitle">Profile and Intent</div>
+
       <div class="grid">
         <div class="field">
-          <label>Your name</label>
-          <input id="name" placeholder="Bernard" />
+          <label for="pName">Your name</label>
+          <input id="pName" placeholder="Bernard" />
         </div>
 
         <div class="field">
-          <label>Birthdate (astrology layer)</label>
-          <input id="birthdate" placeholder="YYYY-MM-DD" />
+          <label for="pBirth">Birthdate (astrology layer)</label>
+          <input id="pBirth" type="date" />
         </div>
 
         <div class="field">
-          <label>Primary focus</label>
-          <select id="focus">
+          <label for="pFocus">Primary focus</label>
+          <select id="pFocus">
             <option value="">Select…</option>
             <option>Certainty</option>
-            <option>Restriction</option>
-            <option>Relationship</option>
+            <option>Restriction (Reactivity)</option>
+            <option>Love (Ahavah)</option>
+            <option>Unity (Achdut)</option>
+            <option>Faith (Emunah)</option>
+            <option>Discipline</option>
             <option>Leadership</option>
-            <option>Health</option>
+            <option>Health / Strength</option>
+            <option>Relationships</option>
           </select>
         </div>
 
         <div class="field">
-          <label>30-day outcome (one sentence)</label>
-          <input id="outcome" placeholder="Increase certainty and reduce urgency" />
+          <label for="pOutcome">30-day outcome (one sentence)</label>
+          <input id="pOutcome" placeholder="Increase certainty and reduce urgency" />
         </div>
 
         <div class="field">
-          <label>Preferred intensity</label>
-          <select id="intensity">
+          <label for="pIntensity">Preferred intensity</label>
+          <select id="pIntensity">
             <option>Simple + Powerful</option>
-            <option>Deep + Precise</option>
-            <option>Gentle + Consistent</option>
+            <option>Deep + Detailed</option>
+            <option>Fast + Tactical</option>
+            <option>Gentle + Grounding</option>
           </select>
         </div>
 
         <div class="field">
-          <label>Enable</label>
-          <select id="enable">
+          <label for="pEnable">Enable</label>
+          <select id="pEnable">
             <option>Core + Tools</option>
-            <option>Core only</option>
+            <option>Core Only</option>
             <option>Core + Tools + Library</option>
           </select>
         </div>
       </div>
 
-      <div class="row">
-        <button class="btn gold" id="saveProfile">Save</button>
-        <button class="btn" id="copyProfile">Copy</button>
-        <button class="btn" id="exportProfile">Export</button>
+      <div class="toggleRow" style="margin-top:16px;">
+        <div class="label">
+          <b style="color:var(--gold);">Daily Restrict Mode</b><br/>
+          One restriction per day, celebrated + streak tracked. 🔥
+        </div>
+        <div class="switch" id="dailyRestrictSwitch" role="switch" aria-checked="false" tabindex="0">
+          <div class="dot"></div>
+        </div>
       </div>
 
-      <div class="mutedNote">If this page responds to taps and saves your fields, the app is alive ✅</div>
+      <div class="split">
+        <div class="card">
+          <div class="miniTitle">Daily Guidance Preview</div>
+          <div class="row2">
+            <div class="field">
+              <label for="gPattern">Pattern (choose in Morning)</label>
+              <input id="gPattern" placeholder="Pattern: —" disabled />
+            </div>
+            <div class="field">
+              <label for="gRestrict">Suggested restriction</label>
+              <input id="gRestrict" placeholder="Choose one restriction move and witness the effect" disabled />
+            </div>
+          </div>
+          <div class="hint">
+            This POC keeps Zohar references high-level on purpose. Exact citations can be teacher-attached later.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="miniTitle">Quick Controls</div>
+          <div class="bar">
+            <button class="btn primary" id="saveAllBtn" type="button">Save</button>
+            <button class="btn" id="copySummaryBtn" type="button">Copy</button>
+            <button class="btn" id="exportBtn" type="button">Export</button>
+            <button class="btn bad" id="resetDayBtn" type="button">Reset Day</button>
+          </div>
+          <div class="hint">
+            Save persists: profile, today’s entries, streak + history. Reset clears today only.
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- MORNING -->
-    <section class="panel" data-pane="morning">
-      <h2>Morning</h2>
-      <div class="grid">
+    <section class="panel" data-pane="morning" style="display:none;">
+      <div class="sectionTitle">Morning</div>
+
+      <div class="row2">
         <div class="field">
-          <label>Certainty (0–10)</label>
-          <input id="certainty" type="number" min="0" max="10" placeholder="0–10" />
+          <label for="mCertainty">Certainty (0–10)</label>
+          <input id="mCertainty" type="number" min="0" max="10" step="1" placeholder="0–10" />
         </div>
         <div class="field">
-          <label>Energy (0–10)</label>
-          <input id="energy" type="number" min="0" max="10" placeholder="0–10" />
-        </div>
-        <div class="field">
-          <label>Intention (one line)</label>
-          <input id="intention" placeholder="Today I choose…" />
+          <label for="mEnergy">Energy (0–10)</label>
+          <input id="mEnergy" type="number" min="0" max="10" step="1" placeholder="0–10" />
         </div>
       </div>
 
-      <div class="row">
-        <button class="btn gold" id="saveMorning">Save</button>
-        <button class="btn" id="resetMorning">Reset</button>
+      <div class="row2" style="margin-top:14px;">
+        <div class="field">
+          <label for="mIntention">Intention (one sentence)</label>
+          <input id="mIntention" placeholder="Today I choose…" />
+        </div>
+        <div class="field">
+          <label for="mPattern">Pattern</label>
+          <select id="mPattern">
+            <option value="">Select…</option>
+            <option>Urgency → Certainty</option>
+            <option>Reactivity → Restriction</option>
+            <option>Judgment → Compassion</option>
+            <option>Overthinking → Action</option>
+            <option>Fear → Faith</option>
+            <option>Control → Trust</option>
+            <option>Isolation → Connection</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:14px;">
+        <label for="mWitness">What would “witnessing” look like today?</label>
+        <textarea id="mWitness" placeholder="If I’m being honest…"></textarea>
+      </div>
+
+      <div class="bar">
+        <button class="btn primary" id="saveMorningBtn" type="button">Save Morning</button>
+        <button class="btn" id="copyMorningBtn" type="button">Copy Morning</button>
       </div>
     </section>
 
     <!-- RESTRICTION -->
-    <section class="panel" data-pane="restriction">
-      <h2>Restriction</h2>
-      <div class="grid">
-        <div class="field" style="grid-column: 1 / -1;">
-          <label>One restriction move (what + why)</label>
-          <textarea id="restrictMove" placeholder="Example: Pause before responding. Restrict reactivity."></textarea>
+    <section class="panel" data-pane="restriction" style="display:none;">
+      <div class="sectionTitle">Restriction</div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="rMove">One restriction move</label>
+          <input id="rMove" placeholder="Example: pause before responding…" />
+        </div>
+        <div class="field">
+          <label for="rTrigger">Primary trigger</label>
+          <input id="rTrigger" placeholder="What would normally set you off?" />
         </div>
       </div>
 
-      <div class="row">
-        <button class="btn gold" id="saveRestrict">Save</button>
-        <button class="btn" id="markDone">Mark done</button>
+      <div class="field" style="margin-top:14px;">
+        <label for="rNote">Witnessing note (what happened, what changed?)</label>
+        <textarea id="rNote" placeholder="I felt the surge… I restricted… the result was…"></textarea>
+      </div>
+
+      <div class="toggleRow">
+        <div class="label">
+          <b style="color:var(--gold);">Mark today’s restriction as completed</b><br/>
+          This increments streak once per day in Daily Restrict Mode.
+        </div>
+        <button class="btn good" id="completeRestrictBtn" type="button">Complete ✅</button>
+      </div>
+
+      <div class="bar">
+        <button class="btn primary" id="saveRestrictionBtn" type="button">Save Restriction</button>
+        <button class="btn" id="copyRestrictionBtn" type="button">Copy Restriction</button>
       </div>
     </section>
 
     <!-- EVENING -->
-    <section class="panel" data-pane="evening">
-      <h2>Evening</h2>
-      <div class="grid">
-        <div class="field" style="grid-column: 1 / -1;">
-          <label>Witnessing (what did you notice?)</label>
-          <textarea id="witness" placeholder="I noticed…"></textarea>
+    <section class="panel" data-pane="evening" style="display:none;">
+      <div class="sectionTitle">Evening</div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="eResult">Result (one sentence)</label>
+          <input id="eResult" placeholder="Today I learned…" />
+        </div>
+        <div class="field">
+          <label for="eGrade">Integrity grade (0–10)</label>
+          <input id="eGrade" type="number" min="0" max="10" step="1" placeholder="0–10" />
         </div>
       </div>
-      <div class="row">
-        <button class="btn gold" id="saveEvening">Save</button>
-        <button class="btn" id="resetEvening">Reset</button>
+
+      <div class="field" style="margin-top:14px;">
+        <label for="eRepair">Repair (one thing to fix tomorrow)</label>
+        <textarea id="eRepair" placeholder="Tomorrow I’ll repair by…"></textarea>
+      </div>
+
+      <div class="bar">
+        <button class="btn primary" id="saveEveningBtn" type="button">Save Evening</button>
+        <button class="btn" id="copyEveningBtn" type="button">Copy Evening</button>
       </div>
     </section>
 
     <!-- SHARE -->
-    <section class="panel" data-pane="share">
-      <h2>Share Card</h2>
-      <div class="grid">
-        <div class="field" style="grid-column: 1 / -1;">
-          <label>Share text (auto-built)</label>
-          <textarea id="shareText" readonly></textarea>
+    <section class="panel" data-pane="share" style="display:none;">
+      <div class="sectionTitle">Share Card</div>
+
+      <div class="split">
+        <div class="card">
+          <div class="miniTitle">KAI Card (shareable text)</div>
+          <textarea id="shareCard" placeholder="Tap 'Build Card'…"></textarea>
+
+          <div class="bar">
+            <button class="btn primary" id="buildCardBtn" type="button">Build Card</button>
+            <button class="btn" id="copyCardBtn" type="button">Copy</button>
+            <button class="btn" id="shareTextBtn" type="button">Share Text</button>
+          </div>
+
+          <div class="hint">
+            On iOS: Share Text opens the system share sheet (when supported).
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <button class="btn" id="copyShare">Copy</button>
-        <button class="btn gold" id="nativeShare">Share</button>
+
+        <div class="card">
+          <div class="miniTitle">What gets included</div>
+          <div class="hint mono" id="includedList">
+• Name + Focus + Pattern
+• Restriction move + result note
+• One-line intention
+• Streak (if enabled)
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- LIBRARY -->
-    <section class="panel" data-pane="library">
-      <h2>Library</h2>
-      <div class="mutedNote">Placeholder. Later: 72 Names, Zohar bites, patterns.</div>
+    <section class="panel" data-pane="library" style="display:none;">
+      <div class="sectionTitle">Library</div>
+      <div class="card">
+        <div class="miniTitle">72 Names + Zohar lens (stub, expandable)</div>
+        <div class="hint">
+          This is wired for expansion. Next step: add a simple JSON list of Names + meanings + “when to use,” then a filter by Pattern.
+        </div>
+      </div>
     </section>
 
     <!-- TOOLS -->
-    <section class="panel" data-pane="tools">
-      <h2>Tools</h2>
-      <div class="mutedNote">Placeholder. Later: gematria, astrology, streak logic, export.</div>
+    <section class="panel" data-pane="tools" style="display:none;">
+      <div class="sectionTitle">Tools</div>
+
+      <div class="split">
+        <div class="card">
+          <div class="miniTitle">Gematria</div>
+          <div class="field">
+            <label for="gText">Enter Hebrew (basic mapping)</label>
+            <input id="gText" placeholder="אהבה" />
+          </div>
+          <div class="row2" style="margin-top:12px;">
+            <div class="field">
+              <label for="gTotal">Total</label>
+              <input id="gTotal" disabled />
+            </div>
+            <div class="field">
+              <label for="gBreak">Breakdown</label>
+              <input id="gBreak" disabled />
+            </div>
+          </div>
+          <div class="hint">Basic values included. Final forms mapped to standard values.</div>
+        </div>
+
+        <div class="card">
+          <div class="miniTitle">72 Name lookup (placeholder)</div>
+          <div class="field">
+            <label for="nQuery">Search</label>
+            <input id="nQuery" placeholder="Type: protection, certainty, healing…" />
+          </div>
+          <div class="hint">
+            Next: attach a JSON library + simple search index. (I’ll do that once this foundation is locked.)
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- HISTORY -->
-    <section class="panel" data-pane="history">
-      <h2>History</h2>
-      <div class="field">
-        <label>Raw saved JSON (for sanity checking)</label>
-        <textarea id="historyDump" readonly></textarea>
-      </div>
-      <div class="row">
-        <button class="btn" id="refreshHistory">Refresh</button>
-        <button class="btn danger" id="nuke">Reset Day</button>
+    <section class="panel" data-pane="history" style="display:none;">
+      <div class="sectionTitle">History</div>
+      <div class="card">
+        <div class="miniTitle">Saved days</div>
+        <div class="hint">Tap “Load” on any day to bring it into the app view (read/write).</div>
+        <div class="list" id="historyList"></div>
       </div>
     </section>
 
@@ -406,212 +728,539 @@
 
   <div class="toast" id="toast"></div>
 
+  <div class="modalBackdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <button class="xClose" id="modalClose" aria-label="Close">×</button>
+      <h3 id="modalTitle">🔥 Streak!</h3>
+      <p id="modalBody">You completed today’s restriction. Light recorded. Keep going.</p>
+      <div class="bar">
+        <button class="btn primary" id="modalOk" type="button">OK</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // ---------- helpers ----------
-    const $ = (id) => document.getElementById(id);
+    // ======= Helpers =======
+    const $ = (id)=>document.getElementById(id);
+    const todayISO = ()=> new Date().toISOString().slice(0,10);
+
+    const keyProfile = "kai_profile_v2";
+    const keyStreak  = "kai_streak_v2";
+    const keyDailyRestrict = "kai_daily_restrict_v2";
+    const dayKey = (d)=> `kai_day_${d}_v2`;
+    const keyLastTab = "kai_last_tab_v2";
 
     function toast(msg){
       const t = $("toast");
       t.textContent = msg;
       t.style.display = "block";
       clearTimeout(window.__tmo);
-      window.__tmo = setTimeout(()=> t.style.display="none", 1800);
+      window.__tmo = setTimeout(()=> t.style.display="none", 2200);
     }
 
-    const todayISO = () => new Date().toISOString().slice(0,10);
-
-    const KEY = "kai_state_v1";
-
-    function readState(){
-      try{ return JSON.parse(localStorage.getItem(KEY) || "{}"); }
-      catch{ return {}; }
-    }
-    function writeState(patch){
-      const s = readState();
-      const next = { ...s, ...patch, updatedAt: new Date().toISOString() };
-      localStorage.setItem(KEY, JSON.stringify(next));
-      renderChips();
-      renderShare();
-      return next;
-    }
-
-    function renderChips(){
-      const s = readState();
-      $("chipDate").textContent = todayISO();
-      $("chipProfile").textContent = s.name || "—";
-      $("chipStreak").textContent = s.streak ?? "—";
-      $("chipDailyRestrict").textContent = s.doneToday ? "✅" : "—";
+    function safeJSONParse(s, fallback){
+      try { return JSON.parse(s); } catch { return fallback; }
     }
 
     function setActiveTab(tab){
-      document.querySelectorAll(".tab").forEach(el => {
-        el.classList.toggle("active", el.dataset.tab === tab);
+      // Buttons
+      document.querySelectorAll(".tabBtn").forEach(btn=>{
+        btn.classList.toggle("active", btn.dataset.tab === tab);
       });
-      document.querySelectorAll("[data-pane]").forEach(p => {
-        p.classList.toggle("active", p.dataset.pane === tab);
+      // Panels
+      document.querySelectorAll("[data-pane]").forEach(p=>{
+        p.style.display = (p.dataset.pane === tab) ? "" : "none";
       });
-      localStorage.setItem("kai_last_tab_v1", tab);
+      localStorage.setItem(keyLastTab, tab);
+    }
+
+    function getProfile(){
+      return safeJSONParse(localStorage.getItem(keyProfile), {
+        name:"", birth:"", focus:"", outcome:"", intensity:"Simple + Powerful", enable:"Core + Tools"
+      });
+    }
+    function setProfile(p){
+      localStorage.setItem(keyProfile, JSON.stringify(p));
+    }
+
+    function getDay(d = todayISO()){
+      return safeJSONParse(localStorage.getItem(dayKey(d)), {
+        date: d,
+        morning: { certainty:"", energy:"", intention:"", pattern:"", witness:"" },
+        restriction: { move:"", trigger:"", note:"", completed:false, completedAt:"" },
+        evening: { result:"", grade:"", repair:"" }
+      });
+    }
+    function setDay(data){
+      localStorage.setItem(dayKey(data.date), JSON.stringify(data));
+    }
+
+    function getStreak(){
+      return safeJSONParse(localStorage.getItem(keyStreak), { count:0, lastCompleted:"" });
+    }
+    function setStreak(s){
+      localStorage.setItem(keyStreak, JSON.stringify(s));
+    }
+
+    function getDailyRestrict(){
+      return localStorage.getItem(keyDailyRestrict) === "1";
+    }
+    function setDailyRestrict(on){
+      localStorage.setItem(keyDailyRestrict, on ? "1" : "0");
+    }
+
+    function updateChips(){
+      const d = todayISO();
+      const p = getProfile();
+      const s = getStreak();
+      const dr = getDailyRestrict();
+
+      $("chipDate").textContent = d;
+      $("chipProfile").textContent = p.name ? p.name : "—";
+      $("chipStreak").textContent = String(s.count ?? 0);
+      $("chipDailyRestrict").textContent = dr ? "On" : "Off";
     }
 
     function hydrateUI(){
-      const s = readState();
-      $("name").value = s.name || "Bernard";
-      $("birthdate").value = s.birthdate || "";
-      $("focus").value = s.focus || "";
-      $("outcome").value = s.outcome || "Increase certainty and reduce urgency";
-      $("intensity").value = s.intensity || "Simple + Powerful";
-      $("enable").value = s.enable || "Core + Tools";
+      // Profile
+      const p = getProfile();
+      $("pName").value = p.name || "";
+      $("pBirth").value = p.birth || "";
+      $("pFocus").value = p.focus || "";
+      $("pOutcome").value = p.outcome || "";
+      $("pIntensity").value = p.intensity || "Simple + Powerful";
+      $("pEnable").value = p.enable || "Core + Tools";
 
-      $("certainty").value = s.certainty ?? "";
-      $("energy").value = s.energy ?? "";
-      $("intention").value = s.intention ?? "";
+      // Daily restrict switch
+      const dr = getDailyRestrict();
+      const sw = $("dailyRestrictSwitch");
+      sw.classList.toggle("on", dr);
+      sw.setAttribute("aria-checked", dr ? "true" : "false");
 
-      $("restrictMove").value = s.restrictMove || "";
-      $("witness").value = s.witness || "";
+      // Day
+      const day = getDay();
+      $("mCertainty").value = day.morning.certainty ?? "";
+      $("mEnergy").value = day.morning.energy ?? "";
+      $("mIntention").value = day.morning.intention ?? "";
+      $("mPattern").value = day.morning.pattern ?? "";
+      $("mWitness").value = day.morning.witness ?? "";
 
-      $("historyDump").value = JSON.stringify(s, null, 2);
+      $("rMove").value = day.restriction.move ?? "";
+      $("rTrigger").value = day.restriction.trigger ?? "";
+      $("rNote").value = day.restriction.note ?? "";
+
+      $("eResult").value = day.evening.result ?? "";
+      $("eGrade").value = day.evening.grade ?? "";
+      $("eRepair").value = day.evening.repair ?? "";
+
+      // Preview fields
+      $("gPattern").value = day.morning.pattern ? `Pattern: ${day.morning.pattern}` : "Pattern: —";
+      $("gRestrict").value = day.restriction.move ? day.restriction.move : "Choose one restriction move and witness the effect";
+
+      updateChips();
+      renderHistory();
     }
 
-    function renderShare(){
-      const s = readState();
-      const lines = [];
-      lines.push(`KAI • ${todayISO()}`);
-      if(s.name) lines.push(`Name: ${s.name}`);
-      if(s.focus) lines.push(`Focus: ${s.focus}`);
-      if(s.outcome) lines.push(`30-day: ${s.outcome}`);
-      if(s.intention) lines.push(`Intention: ${s.intention}`);
-      if(s.restrictMove) lines.push(`Restriction: ${s.restrictMove}`);
-      if(s.witness) lines.push(`Witness: ${s.witness}`);
-      $("shareText").value = lines.join("\n");
+    function collectProfileFromUI(){
+      return {
+        name: $("pName").value.trim(),
+        birth: $("pBirth").value,
+        focus: $("pFocus").value,
+        outcome: $("pOutcome").value.trim(),
+        intensity: $("pIntensity").value,
+        enable: $("pEnable").value
+      };
     }
 
-    function wireTabs(){
-      // click + touchend to beat iOS weirdness
-      document.querySelectorAll(".tab").forEach(btn => {
-        const handler = (e) => {
-          e.preventDefault();
-          setActiveTab(btn.dataset.tab);
-        };
-        btn.addEventListener("click", handler, { passive:false });
-        btn.addEventListener("touchend", handler, { passive:false });
-      });
-    }
-
-    // ---------- actions ----------
-    $("saveProfile").onclick = () => {
-      writeState({
-        name: $("name").value.trim(),
-        birthdate: $("birthdate").value.trim(),
-        focus: $("focus").value,
-        outcome: $("outcome").value.trim(),
-        intensity: $("intensity").value,
-        enable: $("enable").value
-      });
-      toast("Saved ✅");
-      hydrateUI();
-    };
-
-    $("copyProfile").onclick = async () => {
-      const s = readState();
-      const txt = `KAI Profile\nName: ${s.name||""}\nBirthdate: ${s.birthdate||""}\nFocus: ${s.focus||""}\n30-day: ${s.outcome||""}`;
-      await navigator.clipboard.writeText(txt);
-      toast("Copied ✅");
-    };
-
-    $("exportProfile").onclick = async () => {
-      const s = readState();
-      await navigator.clipboard.writeText(JSON.stringify(s, null, 2));
-      toast("Export copied ✅");
-    };
-
-    $("saveMorning").onclick = () => {
-      writeState({
-        certainty: $("certainty").value === "" ? null : Number($("certainty").value),
-        energy: $("energy").value === "" ? null : Number($("energy").value),
-        intention: $("intention").value.trim()
-      });
-      toast("Saved ✅");
-      hydrateUI();
-    };
-    $("resetMorning").onclick = () => {
-      writeState({ certainty:null, energy:null, intention:"" });
-      toast("Reset ✅");
-      hydrateUI();
-    };
-
-    $("saveRestrict").onclick = () => {
-      writeState({ restrictMove: $("restrictMove").value.trim() });
-      toast("Saved ✅");
-      hydrateUI();
-    };
-
-    $("markDone").onclick = () => {
-      const s = readState();
-      const nextStreak = (s.streak || 0) + 1;
-      writeState({ doneToday:true, streak: nextStreak });
-      toast("Done ✅");
-      hydrateUI();
-    };
-
-    $("saveEvening").onclick = () => {
-      writeState({ witness: $("witness").value.trim() });
-      toast("Saved ✅");
-      hydrateUI();
-    };
-    $("resetEvening").onclick = () => {
-      writeState({ witness:"" });
-      toast("Reset ✅");
-      hydrateUI();
-    };
-
-    $("copyShare").onclick = async () => {
-      await navigator.clipboard.writeText($("shareText").value);
-      toast("Copied ✅");
-    };
-
-    $("nativeShare").onclick = async () => {
-      const txt = $("shareText").value;
-      if(navigator.share){
-        try{
-          await navigator.share({ text: txt });
-          toast("Shared ✅");
-        } catch(e){
-          toast("Share canceled");
+    function collectDayFromUI(d = todayISO()){
+      const existing = getDay(d);
+      return {
+        ...existing,
+        date: d,
+        morning: {
+          certainty: $("mCertainty").value,
+          energy: $("mEnergy").value,
+          intention: $("mIntention").value.trim(),
+          pattern: $("mPattern").value,
+          witness: $("mWitness").value.trim()
+        },
+        restriction: {
+          ...existing.restriction,
+          move: $("rMove").value.trim(),
+          trigger: $("rTrigger").value.trim(),
+          note: $("rNote").value.trim()
+        },
+        evening: {
+          result: $("eResult").value.trim(),
+          grade: $("eGrade").value,
+          repair: $("eRepair").value.trim()
         }
-      } else {
-        await navigator.clipboard.writeText(txt);
-        toast("No native share. Copied ✅");
+      };
+    }
+
+    function saveAll(){
+      const p = collectProfileFromUI();
+      const d = collectDayFromUI();
+      setProfile(p);
+      setDay(d);
+      hydrateUI();
+      toast("Saved ✅");
+    }
+
+    function resetToday(){
+      const d = todayISO();
+      localStorage.removeItem(dayKey(d));
+      hydrateUI();
+      toast("Today reset 🧼");
+    }
+
+    function copyText(text){
+      navigator.clipboard?.writeText(text).then(
+        ()=>toast("Copied ✅"),
+        ()=>toast("Copy blocked (iOS permission) ⚠️")
+      );
+    }
+
+    function buildShareCard(){
+      const p = getProfile();
+      const d = getDay();
+      const s = getStreak();
+      const dr = getDailyRestrict();
+
+      const lines = [];
+      lines.push(`KAI • ${d.date}`);
+      if (p.name) lines.push(`Name: ${p.name}`);
+      if (p.focus) lines.push(`Focus: ${p.focus}`);
+      if (d.morning.pattern) lines.push(`Pattern: ${d.morning.pattern}`);
+      if (d.morning.intention) lines.push(`Intention: ${d.morning.intention}`);
+      if (d.restriction.move) lines.push(`Restriction: ${d.restriction.move}`);
+      if (d.restriction.note) lines.push(`Witness: ${d.restriction.note}`);
+      if (dr) lines.push(`Streak: ${s.count}`);
+
+      $("shareCard").value = lines.join("\n");
+      toast("Card built ✨");
+    }
+
+    async function shareText(text){
+      try{
+        if (navigator.share){
+          await navigator.share({ text });
+        } else {
+          copyText(text);
+          toast("Share not supported here, copied instead ✅");
+        }
+      }catch{
+        toast("Share canceled");
       }
-    };
+    }
 
-    $("refreshHistory").onclick = () => {
+    function showModal(title, body){
+      $("modalTitle").textContent = title;
+      $("modalBody").textContent = body;
+      $("modalBackdrop").style.display = "flex";
+    }
+    function closeModal(){
+      $("modalBackdrop").style.display = "none";
+    }
+
+    function completeRestriction(){
+      const dr = getDailyRestrict();
+      const d = getDay();
+      const iso = d.date;
+
+      // mark complete
+      if (!d.restriction.completed){
+        d.restriction.completed = true;
+        d.restriction.completedAt = new Date().toISOString();
+        setDay(d);
+      }
+
+      if (!dr){
+        toast("Completed ✅ (Daily Restrict Mode is Off)");
+        hydrateUI();
+        return;
+      }
+
+      // streak rules: only increment once/day
+      const s = getStreak();
+      if (s.lastCompleted === iso){
+        toast("Already counted for today ✅");
+        hydrateUI();
+        return;
+      }
+
+      s.count = (s.count || 0) + 1;
+      s.lastCompleted = iso;
+      setStreak(s);
       hydrateUI();
-      toast("Refreshed ✅");
+      showModal("🔥 Streak!", "You completed today’s restriction. Light recorded. Keep going.");
+    }
+
+    function exportData(){
+      const p = getProfile();
+      const s = getStreak();
+      const dr = getDailyRestrict();
+
+      // gather all saved days
+      const days = [];
+      for (let i=0; i<localStorage.length; i++){
+        const k = localStorage.key(i);
+        if (k && k.startsWith("kai_day_") && k.endsWith("_v2")){
+          const obj = safeJSONParse(localStorage.getItem(k), null);
+          if (obj) days.push(obj);
+        }
+      }
+      days.sort((a,b)=> (a.date || "").localeCompare(b.date || ""));
+
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        profile: p,
+        dailyRestrict: dr,
+        streak: s,
+        days
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `kai-export-${todayISO()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast("Exported JSON ✅");
+    }
+
+    function renderHistory(){
+      const list = $("historyList");
+      if (!list) return;
+      list.innerHTML = "";
+
+      const keys = [];
+      for (let i=0; i<localStorage.length; i++){
+        const k = localStorage.key(i);
+        if (k && k.startsWith("kai_day_") && k.endsWith("_v2")) keys.push(k);
+      }
+      keys.sort();
+
+      if (keys.length === 0){
+        list.innerHTML = `<div class="hint">No saved days yet.</div>`;
+        return;
+      }
+
+      keys.reverse().forEach(k=>{
+        const d = safeJSONParse(localStorage.getItem(k), null);
+        if (!d) return;
+
+        const meta = [];
+        if (d.morning?.pattern) meta.push(`Pattern: ${d.morning.pattern}`);
+        if (d.restriction?.move) meta.push(`Restriction: ${d.restriction.move}`);
+        if (d.evening?.result) meta.push(`Result: ${d.evening.result}`);
+        const done = d.restriction?.completed ? "Completed" : "—";
+
+        const row = document.createElement("div");
+        row.className = "item";
+        row.innerHTML = `
+          <div class="left">
+            <div class="date">${d.date || "—"}</div>
+            <div class="meta">${meta.join("\n") || "—"}</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-end;">
+            <div class="pill">${done}</div>
+            <button class="btn" type="button" data-load="${d.date}">Load</button>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+
+      list.querySelectorAll("[data-load]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const date = btn.getAttribute("data-load");
+          if (!date) return;
+          // load day into UI by copying into today slot? NO: better to just hydrate fields from that day
+          const d = getDay(date);
+          // push values into UI inputs (without overwriting stored date)
+          $("mCertainty").value = d.morning.certainty ?? "";
+          $("mEnergy").value = d.morning.energy ?? "";
+          $("mIntention").value = d.morning.intention ?? "";
+          $("mPattern").value = d.morning.pattern ?? "";
+          $("mWitness").value = d.morning.witness ?? "";
+
+          $("rMove").value = d.restriction.move ?? "";
+          $("rTrigger").value = d.restriction.trigger ?? "";
+          $("rNote").value = d.restriction.note ?? "";
+
+          $("eResult").value = d.evening.result ?? "";
+          $("eGrade").value = d.evening.grade ?? "";
+          $("eRepair").value = d.evening.repair ?? "";
+
+          $("gPattern").value = d.morning.pattern ? `Pattern: ${d.morning.pattern}` : "Pattern: —";
+          $("gRestrict").value = d.restriction.move ? d.restriction.move : "Choose one restriction move and witness the effect";
+
+          toast(`Loaded ${date} (edit + Save will save as TODAY)`);
+          setActiveTab("start");
+        });
+      });
+    }
+
+    // ======= Gematria =======
+    const gemMap = {
+      "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
+      "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,
+      "ס":60,"ע":70,"פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,
+      "ש":300,"ת":400
     };
 
-    $("nuke").onclick = () => {
-      localStorage.removeItem(KEY);
-      localStorage.removeItem("kai_last_tab_v1");
-      toast("Reset Day ✅");
-      hydrateUI();
-      renderChips();
-      renderShare();
-    };
+    function wireGematria(){
+      $("gText").addEventListener("input", ()=>{
+        const s = ($("gText").value || "").trim();
+        let total = 0;
+        const parts = [];
+        for (const ch of s){
+          const v = gemMap[ch] || 0;
+          if (v){
+            total += v;
+            parts.push(`${ch}=${v}`);
+          }
+        }
+        $("gTotal").value = total ? String(total) : "—";
+        $("gBreak").value = parts.length ? parts.join(" • ") : "—";
+      });
+    }
 
-    // ---------- boot ----------
-    (function(){
+    // ======= Wire events =======
+    function wireTabs(){
+      document.querySelectorAll(".tabBtn").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          setActiveTab(btn.dataset.tab);
+        });
+      });
+    }
+
+    function wireButtons(){
+      $("saveAllBtn").addEventListener("click", saveAll);
+      $("exportBtn").addEventListener("click", exportData);
+      $("resetDayBtn").addEventListener("click", resetToday);
+      $("copySummaryBtn").addEventListener("click", ()=>{
+        const p = getProfile();
+        const d = getDay();
+        const s = getStreak();
+        const dr = getDailyRestrict();
+        const txt =
+`KAI • ${d.date}
+Name: ${p.name || "—"}
+Focus: ${p.focus || "—"}
+Pattern: ${d.morning.pattern || "—"}
+Restriction: ${d.restriction.move || "—"}
+Streak: ${dr ? s.count : "Off"}`;
+        copyText(txt);
+      });
+
+      $("saveMorningBtn").addEventListener("click", ()=>{
+        setProfile(collectProfileFromUI());
+        setDay(collectDayFromUI());
+        hydrateUI();
+        toast("Morning saved ✅");
+      });
+      $("copyMorningBtn").addEventListener("click", ()=>{
+        const d = getDay();
+        const txt =
+`Morning • ${d.date}
+Certainty: ${d.morning.certainty || "—"}
+Energy: ${d.morning.energy || "—"}
+Intention: ${d.morning.intention || "—"}
+Pattern: ${d.morning.pattern || "—"}
+Witness: ${d.morning.witness || "—"}`;
+        copyText(txt);
+      });
+
+      $("saveRestrictionBtn").addEventListener("click", ()=>{
+        setProfile(collectProfileFromUI());
+        setDay(collectDayFromUI());
+        hydrateUI();
+        toast("Restriction saved ✅");
+      });
+      $("copyRestrictionBtn").addEventListener("click", ()=>{
+        const d = getDay();
+        const txt =
+`Restriction • ${d.date}
+Move: ${d.restriction.move || "—"}
+Trigger: ${d.restriction.trigger || "—"}
+Witness: ${d.restriction.note || "—"}
+Completed: ${d.restriction.completed ? "Yes" : "No"}`;
+        copyText(txt);
+      });
+
+      $("saveEveningBtn").addEventListener("click", ()=>{
+        setProfile(collectProfileFromUI());
+        setDay(collectDayFromUI());
+        hydrateUI();
+        toast("Evening saved ✅");
+      });
+      $("copyEveningBtn").addEventListener("click", ()=>{
+        const d = getDay();
+        const txt =
+`Evening • ${d.date}
+Result: ${d.evening.result || "—"}
+Integrity: ${d.evening.grade || "—"}
+Repair: ${d.evening.repair || "—"}`;
+        copyText(txt);
+      });
+
+      $("completeRestrictBtn").addEventListener("click", completeRestriction);
+
+      $("buildCardBtn").addEventListener("click", buildShareCard);
+      $("copyCardBtn").addEventListener("click", ()=> copyText($("shareCard").value || ""));
+      $("shareTextBtn").addEventListener("click", ()=> shareText($("shareCard").value || ""));
+
+      $("modalClose").addEventListener("click", closeModal);
+      $("modalOk").addEventListener("click", closeModal);
+      $("modalBackdrop").addEventListener("click", (e)=>{
+        if (e.target.id === "modalBackdrop") closeModal();
+      });
+
+      // Live preview updates
+      ["mPattern","rMove"].forEach(id=>{
+        $(id).addEventListener("input", ()=>{
+          const d = collectDayFromUI();
+          $("gPattern").value = d.morning.pattern ? `Pattern: ${d.morning.pattern}` : "Pattern: —";
+          $("gRestrict").value = d.restriction.move ? d.restriction.move : "Choose one restriction move and witness the effect";
+        });
+      });
+    }
+
+    function wireDailyRestrictSwitch(){
+      const sw = $("dailyRestrictSwitch");
+      function toggle(){
+        const on = !getDailyRestrict();
+        setDailyRestrict(on);
+        hydrateUI();
+        toast(`Daily Restrict ${on ? "On" : "Off"}`);
+      }
+      sw.addEventListener("click", toggle);
+      sw.addEventListener("keydown", (e)=>{
+        if (e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          toggle();
+        }
+      });
+    }
+
+    // ======= Boot =======
+    (function boot(){
       wireTabs();
+      wireButtons();
+      wireDailyRestrictSwitch();
+      wireGematria();
+
+      hydrateUI();
 
       // restore last tab
-      const last = localStorage.getItem("kai_last_tab_v1") || "start";
-      setActiveTab(last);
+      const last = localStorage.getItem(keyLastTab);
+      if (last) setActiveTab(last);
 
-      renderChips();
-      hydrateUI();
-      renderShare();
-
-      // quick sanity ping (non-annoying)
-      setTimeout(()=>toast("KAI live ✅"), 250);
+      toast("KAI JS is alive ✅");
     })();
   </script>
 </body>
