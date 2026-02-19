@@ -1379,7 +1379,7 @@ function wireLibrary(){
   const clr = document.getElementById("libClear");
   const copySug = document.getElementById("libCopySuggested");
 
-  if (!search || !pat || !pick || !clr) return;
+  if (!search || !pat || !pick || !clr || !copySug) return;
 
   function refresh(){
     const items = libFilterItems(search.value, pat.value);
@@ -1391,6 +1391,7 @@ function wireLibrary(){
 
   pick.addEventListener("click", ()=>{
     libPickForMe(pat.value);
+    
   });
 
   clr.addEventListener("click", ()=>{
@@ -1411,7 +1412,7 @@ function wireLibrary(){
   }
 
   // initial render
-  refresh();
+  refresh(); toast("Library wired ✅");
 }
       $("saveMorningBtn").addEventListener("click", ()=>{
         setProfile(collectProfileFromUI());
@@ -1509,7 +1510,8 @@ Repair: ${d.evening.repair || "—"}`;
       wireButtons();
       wireDailyRestrictSwitch();
       wireGematria();
-
+      wireLibrary(); // ✅ ADD THIS
+      
       hydrateUI();
 
       // restore last tab
