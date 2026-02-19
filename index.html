@@ -799,6 +799,31 @@
       clearTimeout(window.__tmo);
       window.__tmo = setTimeout(()=> t.style.display="none", 2200);
     }
+
+    function wireMorning(){
+  const save = $("saveMorningBtn");
+  if (save) save.addEventListener("click", ()=>{
+    setProfile(collectProfileFromUI());
+    setDay(collectDayFromUI());
+    hydrateUI();
+    toast("Morning saved ✅");
+  });
+
+  const copy = $("copyMorningBtn");
+  if (copy) copy.addEventListener("click", ()=>{
+    const d = getDay();
+    const txt =
+`Morning • ${d.date}
+Certainty: ${d.morning?.certainty || "—"}
+Energy: ${d.morning?.energy || "—"}
+Intention: ${d.morning?.intention || "—"}
+Pattern: ${d.morning?.pattern || "—"}
+Witness: ${d.morning?.witness || "—"}`;
+
+    navigator.clipboard?.writeText(txt);
+    toast("Copied ✅");
+  });
+}
 // ===== Library v1 (72 Names starter) =====
 // IMPORTANT: This is a starter library with "common themes" for practice.
 // Meanings and usage vary across traditions; teacher guidance is recommended.
