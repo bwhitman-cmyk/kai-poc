@@ -666,17 +666,59 @@
       </div>
     </section>
 
-    <!-- LIBRARY -->
-    <section class="panel" data-pane="library" style="display:none;">
-      <div class="sectionTitle">Library</div>
-      <div class="card">
-        <div class="miniTitle">72 Names + Zohar lens (stub, expandable)</div>
-        <div class="hint">
-          This is wired for expansion. Next step: add a simple JSON list of Names + meanings + “when to use,” then a filter by Pattern.
+<!-- LIBRARY -->
+<section class="panel" data-pane="library" style="display:none;">
+  <div class="sectionTitle">Library</div>
+
+  <div class="split">
+    <div class="card">
+      <div class="miniTitle">72 Names Library</div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="libSearch">Search (theme, tag, letters)</label>
+          <input id="libSearch" placeholder="Try: certainty, protection, healing, אהבה…" />
+        </div>
+
+        <div class="field">
+          <label for="libPattern">Filter by your Pattern</label>
+          <select id="libPattern">
+            <option value="">All patterns…</option>
+            <option>Urgency → Certainty</option>
+            <option>Reactivity → Restriction</option>
+            <option>Judgment → Compassion</option>
+            <option>Overthinking → Action</option>
+            <option>Fear → Faith</option>
+            <option>Control → Trust</option>
+            <option>Isolation → Connection</option>
+          </select>
         </div>
       </div>
-    </section>
 
+      <div class="bar">
+        <button class="btn primary" id="libPick" type="button">Pick for me</button>
+        <button class="btn" id="libClear" type="button">Clear</button>
+      </div>
+
+      <div class="hint">
+        Notes: themes are common associations used in practice. Final “which Name” choices should be confirmed with a teacher when stakes are high.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="miniTitle">Suggested Practice</div>
+      <textarea id="libSuggested" placeholder="Tap 'Pick for me'…" readonly></textarea>
+      <div class="bar">
+        <button class="btn" id="libCopySuggested" type="button">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;" class="card">
+    <div class="miniTitle">Results</div>
+    <div class="list" id="libResults"></div>
+  </div>
+</section>
     <!-- TOOLS -->
     <section class="panel" data-pane="tools" style="display:none;">
       <div class="sectionTitle">Tools</div>
@@ -757,7 +799,181 @@
       clearTimeout(window.__tmo);
       window.__tmo = setTimeout(()=> t.style.display="none", 2200);
     }
+// ===== Library v1 (72 Names starter) =====
+// IMPORTANT: This is a starter library with "common themes" for practice.
+// Meanings and usage vary across traditions; teacher guidance is recommended.
 
+const KAI_72_LIBRARY = [
+  // Format: { name: "###", tags:[...], patterns:[...], use:"...", practice:"..." }
+
+  { name:"והו", tags:["certainty","calm","clarity"], patterns:["Urgency → Certainty","Overthinking → Action"],
+    use:"Return to certainty, reduce spinning mind.", practice:"Breathe 4-4-6. Visualize letters above the heart. Ask: What is the next right action?" },
+
+  { name:"סאל", tags:["healing","stability","repair"], patterns:["Fear → Faith","Control → Trust"],
+    use:"Support healing and inner repair.", practice:"Three breaths. On exhale, release tension. On inhale, invite restorative light." },
+
+  { name:"מהש", tags:["healing","compassion","softening"], patterns:["Judgment → Compassion","Reactivity → Restriction"],
+    use:"Soften harshness; open compassion.", practice:"Name the judgment. Restrict it. Replace with one compassionate sentence." },
+
+  { name:"מבה", tags:["protection","boundaries","safety"], patterns:["Fear → Faith","Control → Trust"],
+    use:"Strengthen spiritual boundaries.", practice:"Imagine a quiet gold boundary around you. Speak: 'Only what serves Light may enter'." },
+
+  { name:"אכא", tags:["forgiveness","release","repair"], patterns:["Judgment → Compassion","Isolation → Connection"],
+    use:"Release resentment; open repair.", practice:"Write: 'I release __.' Then: one concrete repair action within 24 hours." },
+
+  { name:"ההע", tags:["clarity","truth","discernment"], patterns:["Overthinking → Action","Urgency → Certainty"],
+    use:"Discern signal from noise.", practice:"Ask: What is true right now? What is story? Choose one move aligned to truth." },
+
+  { name:"להח", tags:["love","connection","unity"], patterns:["Isolation → Connection","Fear → Faith"],
+    use:"Open the heart; strengthen connection.", practice:"Send one message of appreciation. No agenda. Just light." },
+
+  { name:"אום", tags:["discipline","restraint","restriction"], patterns:["Reactivity → Restriction","Control → Trust"],
+    use:"Support restriction and restraint.", practice:"Before speaking/acting: pause 2 seconds. Feel the impulse. Choose restriction." },
+
+  { name:"מנד", tags:["balance","tiferet","integration"], patterns:["Judgment → Compassion","Urgency → Certainty"],
+    use:"Balance extremes; return to center.", practice:"Place attention on spine/center line. Repeat: 'Center. Balance. Presence.' 7 times." },
+
+  { name:"ננא", tags:["protection","sleep","calm"], patterns:["Fear → Faith","Urgency → Certainty"],
+    use:"Calm nervous system; protection for rest.", practice:"3-minute downshift: inhale 4, hold 2, exhale 8. Visualize letters like a soft veil." },
+
+  { name:"הקם", tags:["confidence","courage","action"], patterns:["Overthinking → Action","Fear → Faith"],
+    use:"Move from thought to action.", practice:"Pick one action that takes < 5 minutes. Do it now. Then witness: did fear shrink?" },
+
+  { name:"יזל", tags:["abundance","flow","support"], patterns:["Control → Trust","Overthinking → Action"],
+    use:"Allow flow; reduce gripping.", practice:"Choose one place you’re gripping. Release 10%. Take one aligned step, not ten." },
+
+  { name:"לוו", tags:["truth","integrity","alignment"], patterns:["Urgency → Certainty","Control → Trust"],
+    use:"Align actions with truth.", practice:"Ask: What would integrity do today? Then choose one uncomfortable honest action." },
+
+  { name:"כאע", tags:["humility","ego","restriction"], patterns:["Reactivity → Restriction","Judgment → Compassion"],
+    use:"Reduce ego noise; increase humility.", practice:"Replace 'I must be right' with 'I choose connection.' Act accordingly once today." },
+
+  { name:"פהל", tags:["breakthrough","new path","opening"], patterns:["Overthinking → Action","Isolation → Connection"],
+    use:"Open a new possibility.", practice:"Write 3 new options. Circle 1. Take the first micro-step in 2 minutes." },
+
+  { name:"מיק", tags:["order","structure","stabilize"], patterns:["Urgency → Certainty","Control → Trust"],
+    use:"Bring order and stability.", practice:"Make a 3-item list. Only 3. Complete #1 before adding anything else." },
+
+  { name:"סיט", tags:["protection","remove negativity","shield"], patterns:["Fear → Faith","Reactivity → Restriction"],
+    use:"Reduce negative influence; strengthen shield.", practice:"Visualize a gold shield. Restrict gossip/doomscrolling for 1 hour." },
+
+  { name:"חלב", tags:["gratitude","joy","lightness"], patterns:["Isolation → Connection","Urgency → Certainty"],
+    use:"Shift heaviness into gratitude.", practice:"List 3 gratitudes. Send 1 gratitude outward to another person." },
+
+  { name:"קלי", tags:["clarity","simplicity","focus"], patterns:["Overthinking → Action","Urgency → Certainty"],
+    use:"Cut through complexity.", practice:"Ask: What is the ONE thing? Then do only that for 20 minutes." },
+
+  { name:"רכב", tags:["healing","support","endurance"], patterns:["Fear → Faith","Control → Trust"],
+    use:"Support endurance through challenge.", practice:"Choose perseverance: one small act of strength, repeated daily." },
+
+  { name:"שאה", tags:["compassion","mercy","soften"], patterns:["Judgment → Compassion"],
+    use:"Shift Din toward mercy.", practice:"When judging: replace with one curious question. Stay present for the answer." },
+
+  { name:"דני", tags:["boundaries","discernment","clean"], patterns:["Reactivity → Restriction","Control → Trust"],
+    use:"Discern + hold boundaries without drama.", practice:"Say no once kindly. No explanation spiral. Witness the freedom." }
+];
+
+// Map Pattern -> preferred tags (simple heuristic)
+const KAI_PATTERN_TAGS = {
+  "Urgency → Certainty": ["certainty","clarity","calm","structure"],
+  "Reactivity → Restriction": ["restriction","discipline","boundaries","ego"],
+  "Judgment → Compassion": ["compassion","forgiveness","softening"],
+  "Overthinking → Action": ["action","clarity","focus","breakthrough"],
+  "Fear → Faith": ["protection","calm","courage","healing"],
+  "Control → Trust": ["trust","flow","release","stability"],
+  "Isolation → Connection": ["love","connection","gratitude","forgiveness"]
+};
+
+function libNormalize(s){ return (s || "").toLowerCase().trim(); }
+
+function libFilterItems(query, pattern){
+  const q = libNormalize(query);
+  const p = (pattern || "").trim();
+
+  return KAI_72_LIBRARY.filter(it=>{
+    const matchesQuery = !q || (
+      libNormalize(it.name).includes(q) ||
+      it.tags.some(t=>libNormalize(t).includes(q)) ||
+      libNormalize(it.use).includes(q) ||
+      libNormalize(it.practice).includes(q)
+    );
+
+    const matchesPattern = !p || (it.patterns || []).includes(p);
+
+    return matchesQuery && matchesPattern;
+  });
+}
+
+function libRenderResults(items){
+  const root = document.getElementById("libResults");
+  if (!root) return;
+  root.innerHTML = "";
+
+  if (!items.length){
+    root.innerHTML = `<div class="hint">No matches. Try a broader search (e.g., “clarity” or “protection”).</div>`;
+    return;
+  }
+
+  items.forEach(it=>{
+    const el = document.createElement("div");
+    el.className = "item";
+    el.innerHTML = `
+      <div class="left">
+        <div class="date">72 Name: <span class="mono">${it.name}</span></div>
+        <div class="meta"><b>Themes:</b> ${it.tags.join(", ")}\n<b>When:</b> ${it.use}\n<b>Practice:</b> ${it.practice}</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-end;">
+        <div class="pill">${it.tags[0] || "practice"}</div>
+        <button class="btn" type="button" data-libcopy="1">Copy</button>
+      </div>
+    `;
+
+    el.querySelector('[data-libcopy="1"]').addEventListener("click", ()=>{
+      const txt =
+`72 Name: ${it.name}
+Themes: ${it.tags.join(", ")}
+When: ${it.use}
+Practice: ${it.practice}`;
+      navigator.clipboard?.writeText(txt);
+      toast("Copied ✅");
+    });
+
+    root.appendChild(el);
+  });
+}
+
+function libPickForMe(pattern){
+  const tags = KAI_PATTERN_TAGS[pattern] || [];
+  const pool = KAI_72_LIBRARY
+    .filter(it => !pattern || (it.patterns || []).includes(pattern))
+    .sort((a,b)=>0.5 - Math.random());
+
+  // pick 3 with tag overlap
+  const picks = [];
+  for (const it of pool){
+    const overlap = it.tags.some(t=>tags.includes(t));
+    if (overlap || tags.length === 0){
+      picks.push(it);
+    }
+    if (picks.length >= 3) break;
+  }
+
+  const lines = [];
+  lines.push(`Suggested Practice${pattern ? " • " + pattern : ""}`);
+  lines.push("────────────");
+  picks.forEach((it, i)=>{
+    lines.push(`${i+1}) ${it.name}  (${it.tags.join(", ")})`);
+    lines.push(`   When: ${it.use}`);
+    lines.push(`   Do: ${it.practice}`);
+    lines.push("");
+  });
+  lines.push("Note: confirm high-stakes guidance with a teacher.");
+
+  const box = document.getElementById("libSuggested");
+  if (box) box.value = lines.join("\n");
+
+  libRenderResults(picks.length ? picks : pool.slice(0,6));
+}
     function safeJSONParse(s, fallback){
       try { return JSON.parse(s); } catch { return fallback; }
     }
@@ -1156,7 +1372,47 @@ Restriction: ${d.restriction.move || "—"}
 Streak: ${dr ? s.count : "Off"}`;
         copyText(txt);
       });
+function wireLibrary(){
+  const search = document.getElementById("libSearch");
+  const pat = document.getElementById("libPattern");
+  const pick = document.getElementById("libPick");
+  const clr = document.getElementById("libClear");
+  const copySug = document.getElementById("libCopySuggested");
 
+  if (!search || !pat || !pick || !clr) return;
+
+  function refresh(){
+    const items = libFilterItems(search.value, pat.value);
+    libRenderResults(items);
+  }
+
+  search.addEventListener("input", refresh);
+  pat.addEventListener("change", refresh);
+
+  pick.addEventListener("click", ()=>{
+    libPickForMe(pat.value);
+  });
+
+  clr.addEventListener("click", ()=>{
+    search.value = "";
+    pat.value = "";
+    const box = document.getElementById("libSuggested");
+    if (box) box.value = "";
+    refresh();
+  });
+
+  if (copySug){
+    copySug.addEventListener("click", ()=>{
+      const box = document.getElementById("libSuggested");
+      if (!box) return;
+      navigator.clipboard?.writeText(box.value || "");
+      toast("Copied ✅");
+    });
+  }
+
+  // initial render
+  refresh();
+}
       $("saveMorningBtn").addEventListener("click", ()=>{
         setProfile(collectProfileFromUI());
         setDay(collectDayFromUI());
