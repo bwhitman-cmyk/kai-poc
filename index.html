@@ -1396,6 +1396,31 @@ Pattern: ${d.morning.pattern || "—"}
 Restriction: ${d.restriction.move || "—"}
 Streak: ${dr ? s.count : "Off"}`;
         copyText(txt);
+  const saveMorning = $("saveMorningBtn");
+  if (saveMorning){
+    saveMorning.addEventListener("click", ()=>{
+      setProfile(collectProfileFromUI());
+      setDay(collectDayFromUI());
+      hydrateUI();
+      toast("Morning saved ✅");
+    });
+  }
+
+  const copyMorning = $("copyMorningBtn");
+  if (copyMorning){
+    copyMorning.addEventListener("click", ()=>{
+      const d = getDay();
+      const txt =
+`Morning • ${d.date}
+Certainty: ${d.morning?.certainty ?? "—"}
+Energy: ${d.morning?.energy ?? "—"}
+Intention: ${d.morning?.intention ?? "—"}
+Pattern: ${d.morning?.pattern ?? "—"}
+Witness: ${d.morning?.witness ?? "—"}`;
+      navigator.clipboard?.writeText(txt);
+      toast("Copied ✅");
+    });
+  }
       });
 function wireLibrary(){
   const search = document.getElementById("libSearch");
