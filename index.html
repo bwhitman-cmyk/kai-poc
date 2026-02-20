@@ -645,14 +645,6 @@
       window.__tmo = setTimeout(()=> t.style.display="none", 2200);
     }
 
-    function todayISO(){
-      const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth()+1).padStart(2,"0");
-      const dd = String(d.getDate()).padStart(2,"0");
-      return `${yyyy}-${mm}-${dd}`;
-    }
-
     function safeJSONParse(s, fallback){
       try { return JSON.parse(s); } catch(e){ return fallback; }
     }
@@ -661,6 +653,22 @@
     const keyProfile = "kai_profile_v3";
     const keyMeta    = "kai_meta_v3";
     const keyDay     = (iso) => `kai_day_${iso}_v3`;
+
+    const keyActiveDate = "kai_active_date_v1";
+
+function todayISO(){
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0,10);
+}
+
+function getActiveDate(){
+  return localStorage.getItem(keyActiveDate) || todayISO();
+}
+
+function setActiveDate(dateStr){
+  localStorage.setItem(keyActiveDate, dateStr || todayISO());
+}
 
     // ---------- Models ----------
     function defaultProfile(){
@@ -693,18 +701,53 @@
     function getMeta(){ return safeJSONParse(localStorage.getItem(keyMeta), defaultMeta()); }
     function setMeta(m){ localStorage.setItem(keyMeta, JSON.stringify(m)); }
 
-    function getDay(iso=todayISO()){ return safeJSONParse(localStorage.getItem(keyDay(iso)), defaultDay(iso)); }
-    function setDay(d){ localStorage.setItem(keyDay(d.date), JSON.stringify(d)); }
+  const keyActiveDate = "kai_active_date_v1";
 
-    function listSavedDays(){
-      const days = [];
-      for(let i=0;i<localStorage.length;i++){
-        const k = localStorage.key(i);
-        if(k && k.startsWith("kai_day_") && k.endsWith("_v3")){
-          const iso = k.replace("kai_day_","").replace("_v3","");
-          days.push(iso);
-        }
-      }
+function getActiveDate(){
+  return localStorage.getItem(keyActiveDate) || todayISO();
+}
+function setActiveDate(iso){
+  localStorage.setItem(keyActiveDate, iso || todayISO());
+}
+
+// IMPORTANT: use ONE suffix everywhere
+const DAY_SUFFIX = "_v3"; // keep v3 since your storage already uses it
+
+function dayKey(iso){
+  return "kai_day_" + iso + DAY_SUFFIX;
+}
+
+function getDay(){
+  const iso = getActiveDate();
+  const raw = localStorage.getItem(dayKey(iso));
+  const d = raw ? safeJSONParse(raw, defaultDay(iso)) : defaultDay(iso);
+
+  // force structure + date consistency
+  d.date = iso;
+  d.morning = d.morning || {};
+  d.restriction = d.restriction || {};
+  d.evening = d.evening || {};
+  return d;
+}
+
+function setDay(d){
+  const iso = d?.date || getActiveDate() || todayISO();
+  setActiveDate(iso);
+  d.date = iso;
+  localStorage.setItem(dayKey(iso), JSON.stringify(d));
+}
+
+function listSavedDays(){
+  const days = [];
+  for(let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith("kai_day_") && k.endsWith(DAY_SUFFIX)){
+      const iso = k.replace("kai_day_","").replace(DAY_SUFFIX,"");
+      days.push(iso);
+    }
+  }
+  return days.sort().reverse();
+}
       days.sort().reverse();
       return days;
     }
