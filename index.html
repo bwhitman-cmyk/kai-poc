@@ -807,6 +807,23 @@ function listSavedDays(){
   <label for="activeDate">Active date</label>
   <input id="activeDate" type="date" />
 </div>
+
+    function wireActiveDate(){
+  const inp = document.getElementById("ActiveDate"); // <-- change to your real id
+  if(!inp) return;
+
+  inp.value = getActiveDate();
+
+  inp.addEventListener("change", ()=>{
+    const iso = inp.value || todayISO();
+    setActiveDate(iso);
+
+    hydrateUI();
+    hydrateHistory?.();
+
+    toast(`Date → ${iso} ✅`);
+  });
+}
     
     function hydrateProfileUI(){
       const p = getProfile();
@@ -1773,6 +1790,7 @@ SEAL
 
       wireTabs();
       wireButtons();
+      wireActiveDate();
       wireDailyRestrictSwitch();
       wireRestrictionDoneSwitch();
       wireLibrary();
