@@ -1464,23 +1464,6 @@ function wireLibrary(){
   // initial render
   refresh(); toast("Library wired ✅");
 }
-      $("saveMorningBtn").addEventListener("click", ()=>{
-        setProfile(collectProfileFromUI());
-        setDay(collectDayFromUI());
-        hydrateUI();
-        toast("Morning saved ✅");
-      });
-      $("copyMorningBtn").addEventListener("click", ()=>{
-        const d = getDay();
-        const txt =
-`Morning • ${d.date}
-Certainty: ${d.morning.certainty || "—"}
-Energy: ${d.morning.energy || "—"}
-Intention: ${d.morning.intention || "—"}
-Pattern: ${d.morning.pattern || "—"}
-Witness: ${d.morning.witness || "—"}`;
-        copyText(txt);
-      });
 
       $("saveRestrictionBtn").addEventListener("click", ()=>{
         setProfile(collectProfileFromUI());
