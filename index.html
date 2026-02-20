@@ -644,7 +644,13 @@
       clearTimeout(window.__tmo);
       window.__tmo = setTimeout(()=> t.style.display="none", 2200);
     }
-
+// ---------- Crash visibility ----------
+window.addEventListener("error", (e)=>{
+  try { toast("JS error: " + (e?.message || "unknown")); } catch {}
+});
+window.addEventListener("unhandledrejection", (e)=>{
+  try { toast("Promise error: " + (e?.reason?.message || e?.reason || "unknown")); } catch {}
+});
     function safeJSONParse(s, fallback){
       try { return JSON.parse(s); } catch(e){ return fallback; }
     }
