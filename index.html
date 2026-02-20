@@ -1569,15 +1569,6 @@ SEAL
         copyText($("cardOut").value || "");
       }, { passive:false });
 
-      $("saveCardBtn").addEventListener("click",(e)=>{
-        e.preventDefault(); e.stopPropagation();
-        const d = getDay();
-        d.shareCard = $("cardOut").value || "";
-        setDay(d);
-        toast("Card saved ✅");
-        hydrateHistory();
-      }, { passive:false });
-
       // export/reset
       $("exportBtn").addEventListener("click",(e)=>{
         e.preventDefault(); e.stopPropagation();
