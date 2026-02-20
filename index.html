@@ -1236,6 +1236,74 @@
       setMeta(meta);
     }
 
+function wireShareCard(){
+  const buildBtn = document.getElementById("buildCardBtn");
+  const copyBtn  = document.getElementById("copyCardBtn");
+  const saveBtn  = document.getElementById("saveCardBtn");
+  const outBox   = document.getElementById("cardOut");
+
+  // If the Share Card UI isn't present, don't crash the whole app
+  if (!buildBtn || !copyBtn || !saveBtn || !outBox) {
+    // toast("Share Card UI missing ⚠️"); // optional
+    return;
+  }
+
+  function buildCardText(){
+    const p = getProfile?.() || {};
+    const m = getMeta?.() || {};
+    const d = getDay?.() || { date: new Date().toISOString().slice(0,10) };
+
+    const fullName = `${p.first||""} ${p.last||""}`.trim() || (p.name || "—");
+
+    return `KAI • ${d.date}
+Name: ${fullName}
+Focus: ${p.focus || "—"}
+Pattern: ${d.morning?.pattern || m.selectedPattern || "—"}
+72 Name: ${m.selectedName || "—"}
+
+ALIGN (Morning)
+• Certainty: ${d.morning?.certainty ?? "—"}  Energy: ${d.morning?.energy ?? "—"}
+• Intention: ${d.morning?.intention || "—"}
+
+RESTRICT (Day)
+• Move: ${d.restriction?.move || "—"}
+• Witness: ${d.restriction?.note || "—"}
+• Completed: ${d.restriction?.completed ? "Yes" : "No"}
+
+WITNESS (Evening)
+• Win: ${d.evening?.win || "—"}
+• Lesson: ${d.evening?.lesson || "—"}
+
+SEAL
+• ${d.evening?.seal || "—"}`;
+  }
+
+  buildBtn.addEventListener("click", (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    outBox.value = buildCardText();
+    toast?.("Card built ✅");
+  }, { passive:false });
+
+  copyBtn.addEventListener("click", (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    const txt = outBox.value || "";
+    (navigator.clipboard?.writeText?.(txt) || Promise.resolve())
+      .then(()=>toast?.("Copied ✅"))
+      .catch(()=>toast?.("Copy blocked ⚠️"));
+  }, { passive:false });
+
+  saveBtn.addEventListener("click", (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    const d = getDay?.() || {};
+    d.shareCard = outBox.value || "";
+    setDay?.(d);
+    toast?.("Card saved ✅");
+  }, { passive:false });
+
+  // Optional: prove wiring happened
+  // toast?.("Share wired ✅");
+}
+    
     function wireGematriaInsightEngine(){
       const inp = $("gText");
       const mode = $("gMode");
@@ -1637,6 +1705,7 @@ SEAL
 
       wireTabs();
       wireButtons();
+      wireShareCard();
       wireDailyRestrictSwitch();
       wireRestrictionDoneSwitch();
       wireLibrary();
