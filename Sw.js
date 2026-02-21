@@ -1,14 +1,10 @@
-const CACHE = "kai-cache-v3";
+const CACHE = "kai-cache-v4";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./sw.js",
-  "./icon-192-v2.png",
-  "./icon-512-v2.png",
-  "./apple-touch-icon-v2.png"
+  "./Sw.js"
 ];
-
 self.addEventListener("install", (e)=>{
   e.waitUntil(caches.open(CACHE).then(c=> c.addAll(ASSETS)).then(()=> self.skipWaiting()));
 });
