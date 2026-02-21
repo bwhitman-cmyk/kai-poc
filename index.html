@@ -2,1347 +2,964 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0b0c" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="KAI" />
 
-  <!-- iOS Home Screen icon (must exist at site root) -->
-  <link rel="apple-touch-icon" href="/kai-icon.png?v=10" />
-  <!-- PWA manifest (must exist at site root) -->
-  <link rel="manifest" href="/manifest.webmanifest?v=10" />
-
   <title>KAI</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 
   <style>
     :root{
-      --bg:#070708;
-      --panel:#0e0f12;
-      --panel2:#0b0b0c;
-      --text:#f3f3f4;
-      --muted:#b3b3b7;
-      --line:rgba(255,255,255,.10);
-      --line2:rgba(255,255,255,.16);
-      --gold1:#d8c27a;
-      --gold2:#a8832a;
-      --good:#1ecb74;
-      --bad:#ff5b5b;
-      --shadow:0 18px 70px rgba(0,0,0,.55);
-      --radius:18px;
-      --radius2:22px;
-      --pad:18px;
-      --max:1180px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      --bg:#000;
+      --panel:#0b0b0b;
+      --panel2:#0f0f0f;
+      --text:#f4f1e6;
+      --muted:#b8b2a3;
+      --gold:#d6b25e;
+      --gold2:#b9923b;
+      --danger:#ff6464;
+      --ok:#7CFF9B;
+      --line:rgba(214,178,94,.22);
+      --shadow: 0 12px 30px rgba(0,0,0,.55);
+      --r:18px;
+      --pad:16px;
+      --tap:52px;
+      --max:980px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, system-ui, sans-serif;
     }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      font-family:var(--sans);
+      font-family: var(--sans);
+      background: radial-gradient(1200px 900px at 50% -10%, rgba(214,178,94,.18), transparent 55%),
+                  radial-gradient(900px 700px at 20% 10%, rgba(214,178,94,.10), transparent 60%),
+                  var(--bg);
       color:var(--text);
-      background:
-        radial-gradient(1200px 800px at 25% -10%, rgba(216,194,122,.16), transparent 60%),
-        radial-gradient(1100px 700px at 80% 10%, rgba(168,131,42,.14), transparent 55%),
-        radial-gradient(900px 700px at 50% 80%, rgba(255,255,255,.06), transparent 60%),
-        var(--bg);
+      overflow-x:hidden;
+    }
+    a{ color:var(--gold); text-decoration:none; }
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding: env(safe-area-inset-top) var(--pad) calc(88px + env(safe-area-inset-bottom)) var(--pad);
+    }
+    header{
+      position: sticky;
+      top:0;
+      z-index: 20;
+      background: linear-gradient(to bottom, rgba(0,0,0,.92), rgba(0,0,0,.62), rgba(0,0,0,0));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: env(safe-area-inset-top) var(--pad) 10px var(--pad);
+      border-bottom: 1px solid rgba(214,178,94,.10);
+    }
+    .headRow{
+      max-width:var(--max);
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+    }
+    .logo{
+      font-weight:800;
+      letter-spacing:.22em;
+      color:var(--gold);
+      font-size:22px;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:13px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border:1px solid rgba(214,178,94,.26);
+      background: rgba(15,15,15,.65);
+      border-radius:999px;
+      box-shadow: var(--shadow);
+    }
+    .pill b{ color:var(--gold); font-weight:700; }
+    .btn{
+      min-height: var(--tap);
+      padding: 12px 14px;
+      border-radius: 14px;
+      border:1px solid rgba(214,178,94,.28);
+      background: linear-gradient(180deg, rgba(214,178,94,.14), rgba(214,178,94,.06));
+      color: var(--text);
+      font-weight: 650;
+      letter-spacing:.02em;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.secondary{
+      background: rgba(15,15,15,.65);
+      border:1px solid rgba(214,178,94,.20);
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .btn.danger{
+      border:1px solid rgba(255,100,100,.35);
+      background: rgba(255,100,100,.10);
+      color:#ffd6d6;
     }
 
-    .wrap{max-width:var(--max); margin:0 auto; padding:20px 18px 80px}
-    .top{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
-      padding:18px; border:1px solid var(--line); border-radius:var(--radius2);
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      box-shadow:var(--shadow);
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top: 14px;
     }
-    .brand{display:flex; flex-direction:column; gap:6px}
-    .k{font-weight:800; letter-spacing:.10em}
-    .sub{color:var(--muted); font-size:13px}
-    .chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end}
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 12px; border-radius:999px;
-      border:1px solid var(--line); background:rgba(0,0,0,.25);
-      font-size:13px; color:var(--muted);
-      backdrop-filter: blur(6px);
+    @media (min-width: 860px){
+      .grid{ grid-template-columns: 1.3fr .7fr; }
     }
-    .chip b{color:var(--text); font-weight:700}
+
+    .card{
+      background: linear-gradient(180deg, rgba(15,15,15,.85), rgba(10,10,10,.70));
+      border:1px solid rgba(214,178,94,.16);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:14px 14px 10px 14px;
+      border-bottom:1px solid rgba(214,178,94,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .title{
+      font-size:15px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--gold);
+      font-weight:800;
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:.02em;
+      line-height:1.35;
+    }
+    .body{ padding:14px; }
+
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:.04em;
+      margin: 12px 0 6px;
+      text-transform:uppercase;
+    }
+    input, textarea, select{
+      width:100%;
+      font: inherit;
+      color: var(--text);
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(214,178,94,.18);
+      border-radius: 14px;
+      padding: 14px 14px;
+      outline:none;
+    }
+    textarea{ min-height: 120px; resize: vertical; }
+    input:focus, textarea:focus, select:focus{ border-color: rgba(214,178,94,.48); }
+
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    .row > *{ flex: 1 1 auto; }
+
     .tabs{
-      display:flex; gap:10px; flex-wrap:wrap;
-      padding:14px 0 0;
+      position:fixed;
+      left:0; right:0;
+      bottom:0;
+      z-index:30;
+      padding: 10px var(--pad) calc(10px + env(safe-area-inset-bottom)) var(--pad);
+      background: linear-gradient(to top, rgba(0,0,0,.95), rgba(0,0,0,.74), rgba(0,0,0,0));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(214,178,94,.10);
+    }
+    .tabbar{
+      max-width:var(--max);
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
     }
     .tab{
-      padding:10px 14px; border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(0,0,0,.22);
-      color:var(--muted);
+      min-height:54px;
+      border-radius:16px;
+      border:1px solid rgba(214,178,94,.16);
+      background: rgba(12,12,12,.65);
+      color: var(--muted);
+      font-weight:650;
+      letter-spacing:.02em;
       cursor:pointer;
-      user-select:none;
-      font-size:14px;
     }
     .tab.active{
-      color:var(--text);
-      border-color:rgba(216,194,122,.55);
-      box-shadow:0 0 0 1px rgba(168,131,42,.25) inset;
+      color: var(--text);
+      border-color: rgba(214,178,94,.38);
+      background: linear-gradient(180deg, rgba(214,178,94,.14), rgba(214,178,94,.06));
     }
 
-    section.panel{
-      display:none;
-      margin-top:14px;
-      padding:18px;
-      border-radius:var(--radius2);
-      border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
-      box-shadow:var(--shadow);
-    }
-    section.panel.active{display:block}
+    .section{ display:none; }
+    .section.active{ display:block; }
 
-    .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:14px}
-    .card{
-      grid-column:span 12;
-      padding:16px;
-      border-radius:var(--radius);
-      border:1px solid var(--line);
-      background:rgba(0,0,0,.22);
+    .mini{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(244,241,230,.82);
+      background: rgba(0,0,0,.25);
+      border:1px solid rgba(214,178,94,.14);
+      padding: 10px 12px;
+      border-radius: 14px;
+      line-height:1.45;
+      white-space: pre-wrap;
     }
-    .title{margin:0 0 10px; letter-spacing:.06em; font-weight:800; font-size:12px; color:var(--muted)}
-    .miniTitle{margin:0 0 10px; font-weight:800; font-size:14px; color:var(--text)}
-    .hint{color:var(--muted); font-size:12px; line-height:1.35}
-
-    .field{display:flex; flex-direction:column; gap:6px}
-    label{font-size:12px; color:var(--muted)}
-    input, select, textarea{
-      width:100%;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid var(--line2);
-      background:rgba(0,0,0,.35);
-      color:var(--text);
-      outline:none;
-      font-size:16px;
+    .kpi{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
     }
-    textarea{min-height:120px; resize:vertical}
-    .bar{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    .btn{
-      padding:10px 14px;
-      border-radius:14px;
-      border:1px solid var(--line2);
-      background:rgba(0,0,0,.24);
-      color:var(--text);
-      cursor:pointer;
-      user-select:none;
-      font-weight:700;
+    .kpi .chip{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(214,178,94,.18);
+      background: rgba(0,0,0,.25);
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing:.02em;
     }
-    .btn.primary{
-      border-color:rgba(216,194,122,.55);
-      background:linear-gradient(180deg, rgba(216,194,122,.18), rgba(168,131,42,.10));
-    }
-    .btn:active{transform:translateY(1px)}
-    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
-    .mono{font-family:var(--mono); font-size:13px; color:var(--muted)}
-    .pill{
-      padding:6px 10px; border-radius:999px;
-      border:1px solid var(--line); background:rgba(0,0,0,.25);
-      color:var(--muted); font-size:12px;
-    }
-
-    .libList{display:flex; flex-direction:column; gap:10px; margin-top:12px}
-    .libItem{
-      display:flex; justify-content:space-between; gap:12px;
-      border:1px solid var(--line); border-radius:16px; padding:12px;
-      background:rgba(0,0,0,.20);
-    }
-    .libLeft{display:flex; flex-direction:column; gap:6px}
-    .libName{font-weight:800}
-    .libMeta{font-size:12px; color:var(--muted)}
-    .libDesc{color:var(--text); font-size:14px; line-height:1.35}
-    .libBtns{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
-
+    .kpi .chip b{ color: var(--gold); }
     .toast{
-      position:fixed; left:50%; transform:translateX(-50%);
-      bottom:18px; z-index:9999;
-      max-width:min(760px, 92vw);
-      padding:12px 14px;
-      border-radius:14px;
-      border:1px solid var(--line2);
-      background:rgba(0,0,0,.72);
-      color:var(--text);
+      position:fixed;
+      left:50%;
+      transform: translateX(-50%);
+      bottom: 90px;
+      z-index: 99;
+      background: rgba(0,0,0,.88);
+      border:1px solid rgba(214,178,94,.22);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      max-width: min(92vw, 680px);
       display:none;
-      box-shadow:var(--shadow);
-      backdrop-filter: blur(10px);
-      font-size:14px;
+      font-size: 13px;
     }
+    .divider{
+      height:1px;
+      background: rgba(214,178,94,.10);
+      margin: 12px 0;
+    }
+    .small{ font-size:12px; color: var(--muted); line-height:1.4; }
+    .rightCol .card{ position: sticky; top: 86px; }
 
-    @media (min-width: 860px){
-      .card.span6{grid-column:span 6}
-      .card.span4{grid-column:span 4}
-      .card.span8{grid-column:span 8}
-    }
+    canvas{ width:100%; height:auto; border-radius: 16px; border:1px solid rgba(214,178,94,.16); background:#000; }
+
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="top">
+  <header>
+    <div class="headRow">
       <div class="brand">
-        <div class="k">KAI</div>
-        <div class="sub">Align → Restrict → Witness → Illuminate → Seal</div>
+        <div class="logo">KAI</div>
+        <div class="sub">Kabbalah Always Illuminates</div>
       </div>
-
-      <div class="chips">
-        <div class="chip">Date: <b id="chipDate">—</b></div>
-        <div class="chip">Profile: <b id="chipProfile">—</b></div>
-        <div class="chip">Streak: <b id="chipStreak">—</b></div>
-        <div class="chip">Daily Restrict: <b id="chipDailyRestrict">—</b></div>
-        <div class="chip">72 Name: <b id="chipName">—</b></div>
+      <div class="pill" title="Local mode only (no servers, no accounts)">
+        <span>Today</span>
+        <b id="todayLabel">...</b>
       </div>
     </div>
+  </header>
 
-    <div class="tabs" id="tabs">
-      <div class="tab active" data-tab="start">Start</div>
-      <div class="tab" data-tab="morning">Morning</div>
-      <div class="tab" data-tab="restriction">Restriction</div>
-      <div class="tab" data-tab="evening">Evening</div>
-      <div class="tab" data-tab="share">Share Card</div>
-      <div class="tab" data-tab="library">Library</div>
-      <div class="tab" data-tab="tools">Tools</div>
-      <div class="tab" data-tab="history">History</div>
+  <div class="wrap">
+
+    <!-- MAIN GRID -->
+    <div class="grid">
+
+      <!-- LEFT: RITUAL -->
+      <div class="leftCol">
+
+        <section id="sec-ritual" class="section active">
+          <div class="card">
+            <div class="hd">
+              <div>
+                <div class="title">Daily Ritual</div>
+                <div class="hint">Align → Restrict → Witness → Illuminate → Seal</div>
+              </div>
+              <div class="row" style="justify-content:flex-end;">
+                <button class="btn secondary" id="btnLoad">Load</button>
+                <button class="btn" id="btnSave">Save</button>
+              </div>
+            </div>
+            <div class="body">
+
+              <!-- STATE CHECK -->
+              <label for="state">State Check</label>
+              <select id="state">
+                <option value="stable">Stable</option>
+                <option value="tight">Tight</option>
+                <option value="overstimulated">Overstimulated</option>
+                <option value="doubting">Doubting</option>
+                <option value="heavy">Heavy</option>
+                <option value="clear">Clear</option>
+                <option value="expansive">Expansive</option>
+              </select>
+
+              <div class="divider"></div>
+
+              <!-- ALIGN -->
+              <div class="kpi" style="margin-top:2px;">
+                <div class="chip"><b>ALIGN</b> intention + source</div>
+                <div class="chip"><b>RESTRICT</b> dignified restraint</div>
+                <div class="chip"><b>WITNESS</b> truth over story</div>
+                <div class="chip"><b>ILLUMINATE</b> next 4 hours</div>
+                <div class="chip"><b>SEAL</b> 72 name + breath</div>
+              </div>
+
+              <label for="kavanah">Kavanah (One sentence)</label>
+              <input id="kavanah" placeholder="Example: I choose momentum through alignment, not force." />
+
+              <label for="zoharHeb">Zohar (Hebrew)</label>
+              <textarea id="zoharHeb" placeholder="Paste Hebrew source here (short)."></textarea>
+
+              <label for="zoharEng">Zohar (Translation / meaning)</label>
+              <textarea id="zoharEng" placeholder="Short translation or paraphrase."></textarea>
+
+              <label for="leadershipFrame">Leadership frame (today)</label>
+              <textarea id="leadershipFrame" placeholder="How does this apply to leadership, decisions, team, structure, momentum?"></textarea>
+
+              <label for="nervousFrame">Nervous system frame (today)</label>
+              <textarea id="nervousFrame" placeholder="How does this apply to your body, PD rhythm, overstimulation, tightness, steadiness?"></textarea>
+
+              <div class="divider"></div>
+
+              <!-- RESTRICT -->
+              <label for="reactive">Where is reactive energy trying to drive you today?</label>
+              <select id="reactive">
+                <option value="">Select…</option>
+                <option value="control">Control</option>
+                <option value="impatience">Impatience</option>
+                <option value="fear">Fear</option>
+                <option value="overdrive">Overdrive</option>
+                <option value="withdrawal">Withdrawal</option>
+                <option value="ego">Ego</option>
+                <option value="chaos">Chaos</option>
+                <option value="other">Other</option>
+              </select>
+
+              <label for="restriction">Restriction (dignified restraint)</label>
+              <textarea id="restriction" placeholder="What would dignified restraint look like? Where do you hold the line, softly but firmly?"></textarea>
+
+              <div class="divider"></div>
+
+              <!-- WITNESS -->
+              <label for="physical">Witness: What is physically happening?</label>
+              <textarea id="physical" placeholder="Body, movement, breath, tightness, fatigue, overstimulation…"></textarea>
+
+              <label for="emotional">Witness: What is emotionally happening?</label>
+              <textarea id="emotional" placeholder="Mood, shame, rage, fear, pride, hope, tenderness…"></textarea>
+
+              <label for="story">Witness: What is the story?</label>
+              <textarea id="story" placeholder="The narrative that wants to run the show…"></textarea>
+
+              <label for="truth">Witness: What is the truth?</label>
+              <textarea id="truth" placeholder="A cleaner, simpler truth. No drama."></textarea>
+
+              <label for="tiferet">What would Tiferet do?</label>
+              <textarea id="tiferet" placeholder="What is the balanced move? What does harmony look like in action?"></textarea>
+
+              <div class="divider"></div>
+
+              <!-- ILLUMINATE -->
+              <label for="next4">Illuminate: One concrete move in the next 4 hours</label>
+              <input id="next4" placeholder="Example: Send Parker the model request + schedule 30 min review." />
+
+              <label for="notes">Notes (optional)</label>
+              <textarea id="notes" placeholder="Any extra thoughts, but keep it clean."></textarea>
+
+              <div class="divider"></div>
+
+              <!-- SEAL -->
+              <label for="name72">Seal: 72 Name focus</label>
+              <input id="name72" placeholder="Example: וול (Defying Gravity)" />
+
+              <label for="breath">Seal: Breath / Shirah cue</label>
+              <input id="breath" placeholder="Example: inhale 4, hold 2, exhale 6. Hum on exhale." />
+
+              <div class="row" style="margin-top:12px;">
+                <button class="btn" id="btnShare">Generate Share Card</button>
+                <button class="btn secondary" id="btnClear">Clear Fields</button>
+              </div>
+
+              <div class="small" style="margin-top:10px;">
+                Everything saves locally on this device only. If iOS clears storage, data can disappear. Export/share cards for anything mission-critical.
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- SHARE -->
+        <section id="sec-share" class="section">
+          <div class="card">
+            <div class="hd">
+              <div>
+                <div class="title">Share Card</div>
+                <div class="hint">A clean artifact of today’s alignment.</div>
+              </div>
+              <div class="row" style="justify-content:flex-end;">
+                <button class="btn secondary" id="btnBackToRitual">Back</button>
+                <button class="btn" id="btnDownload">Save Image</button>
+              </div>
+            </div>
+            <div class="body">
+              <canvas id="cardCanvas" width="1200" height="1600"></canvas>
+              <div class="small" style="margin-top:10px;">
+                On iPad: tap “Save Image”, then share or save to Photos. If the share sheet appears, choose what you want.
+              </div>
+              <div class="mini" id="shareDebug" style="margin-top:10px; display:none;"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- LIBRARY -->
+        <section id="sec-library" class="section">
+          <div class="card">
+            <div class="hd">
+              <div>
+                <div class="title">Library</div>
+                <div class="hint">Sources, themes, and anchors. (We expand this next.)</div>
+              </div>
+              <button class="btn secondary" id="btnLibSeed">Load Starter Library</button>
+            </div>
+            <div class="body">
+              <label for="libQuery">Search</label>
+              <input id="libQuery" placeholder="Try: Atika, Din, Tiferet, Vav, Restriction…" />
+              <div class="divider"></div>
+              <div id="libList" class="mini">Library is empty. Tap “Load Starter Library”.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section id="sec-history" class="section">
+          <div class="card">
+            <div class="hd">
+              <div>
+                <div class="title">History</div>
+                <div class="hint">Your saved days on this device.</div>
+              </div>
+              <button class="btn secondary" id="btnRefreshHistory">Refresh</button>
+            </div>
+            <div class="body">
+              <div id="historyList" class="mini">No history yet.</div>
+              <div class="small" style="margin-top:10px;">
+                Tip: if you want “export all”, we can add it in the next pass.
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT: STATUS / QUICK VIEW -->
+      <div class="rightCol">
+        <div class="card">
+          <div class="hd">
+            <div>
+              <div class="title">Status</div>
+              <div class="hint">Fast pulse-check.</div>
+            </div>
+            <button class="btn secondary" id="btnQuickFill">Quick Fill (demo)</button>
+          </div>
+          <div class="body">
+            <div class="kpi">
+              <div class="chip"><b>State</b> <span id="kState">…</span></div>
+              <div class="chip"><b>Saved</b> <span id="kSaved">No</span></div>
+              <div class="chip"><b>Version</b> <span id="kVer">v2</span></div>
+            </div>
+            <div class="divider"></div>
+            <div class="small">Kavanah</div>
+            <div id="kKavanah" class="mini" style="margin-top:6px;">…</div>
+            <div class="divider"></div>
+            <div class="small">Next 4 hours</div>
+            <div id="kNext4" class="mini" style="margin-top:6px;">…</div>
+            <div class="divider"></div>
+            <div class="small">Seal</div>
+            <div id="kSeal" class="mini" style="margin-top:6px;">…</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+  </div><!-- /wrap -->
+
+  <!-- BOTTOM TABS -->
+  <div class="tabs">
+    <div class="tabbar">
+      <button class="tab active" data-tab="ritual">Ritual</button>
+      <button class="tab" data-tab="share">Share</button>
+      <button class="tab" data-tab="library">Library</button>
+      <button class="tab" data-tab="history">History</button>
     </div>
-
-    <!-- START -->
-    <section class="panel active" data-pane="start">
-      <div class="grid">
-        <div class="card span6">
-          <p class="title">ACTIVE DAY</p>
-          <div class="field">
-            <label for="activeDate">Working date (this drives all save/history)</label>
-            <input id="activeDate" type="date" />
-          </div>
-          <div class="bar">
-            <button class="btn primary" id="setTodayBtn" type="button">Set to today</button>
-            <button class="btn" id="newDayBtn" type="button">New blank day</button>
-          </div>
-          <div class="hint" style="margin-top:10px">
-            If anything feels “not saving”, check this date first. KAI saves per-day under the hood.
-          </div>
-        </div>
-
-        <div class="card span6">
-          <p class="title">PROFILE</p>
-          <div class="grid">
-            <div class="field" style="grid-column:span 6">
-              <label for="pFirst">First</label>
-              <input id="pFirst" placeholder="Bernard" />
-            </div>
-            <div class="field" style="grid-column:span 6">
-              <label for="pLast">Last</label>
-              <input id="pLast" placeholder="Whitman" />
-            </div>
-            <div class="field" style="grid-column:span 12">
-              <label for="pFocus">Primary focus (today)</label>
-              <input id="pFocus" placeholder="Atika Kadisha: certainty, unity, restriction, love" />
-            </div>
-          </div>
-          <div class="bar">
-            <button class="btn primary" id="saveProfileBtn" type="button">Save profile</button>
-            <button class="btn" id="copyProfileBtn" type="button">Copy profile</button>
-          </div>
-        </div>
-
-        <div class="card span12">
-          <p class="title">META</p>
-          <div class="hint">
-            “72 Name” and “Pattern” are set automatically when you press <b>Use</b> in Library, or when you pick a suggestion.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MORNING -->
-    <section class="panel" data-pane="morning">
-      <div class="grid">
-        <div class="card span12">
-          <p class="title">ALIGN</p>
-          <div class="grid">
-            <div class="field" style="grid-column:span 4">
-              <label for="mCertainty">Certainty (0–10)</label>
-              <input id="mCertainty" type="number" min="0" max="10" step="1" />
-            </div>
-            <div class="field" style="grid-column:span 4">
-              <label for="mEnergy">Energy (0–10)</label>
-              <input id="mEnergy" type="number" min="0" max="10" step="1" />
-            </div>
-            <div class="field" style="grid-column:span 4">
-              <label for="mPattern">Pattern (auto or manual)</label>
-              <input id="mPattern" placeholder="Fear → Faith / Urgency → Certainty / etc." />
-            </div>
-            <div class="field" style="grid-column:span 12">
-              <label for="mIntention">Intention</label>
-              <textarea id="mIntention" placeholder="Write your kavanah for the day..."></textarea>
-            </div>
-          </div>
-
-          <div class="bar">
-            <button class="btn primary" id="saveMorningBtn" type="button">Save morning</button>
-            <button class="btn" id="copyMorningBtn" type="button">Copy morning</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- RESTRICTION -->
-    <section class="panel" data-pane="restriction">
-      <div class="grid">
-        <div class="card span12">
-          <p class="title">RESTRICT</p>
-          <div class="grid">
-            <div class="field" style="grid-column:span 6">
-              <label for="rMove">Move (the restriction action)</label>
-              <input id="rMove" placeholder="Pause. Breathe. Delay reaction. Choose Light." />
-            </div>
-            <div class="field" style="grid-column:span 6">
-              <label for="rTrigger">Trigger</label>
-              <input id="rTrigger" placeholder="What was the spark?" />
-            </div>
-            <div class="field" style="grid-column:span 12">
-              <label for="rNote">Witness (what you observed)</label>
-              <textarea id="rNote" placeholder="Describe the moment. What did you feel? Where did Din show up?"></textarea>
-            </div>
-            <div class="field" style="grid-column:span 6">
-              <label for="rCompleted">Completed?</label>
-              <select id="rCompleted">
-                <option value="no">No</option>
-                <option value="yes">Yes</option>
-              </select>
-            </div>
-          </div>
-          <div class="bar">
-            <button class="btn primary" id="saveRestrictionBtn" type="button">Save restriction</button>
-            <button class="btn" id="copyRestrictionBtn" type="button">Copy restriction</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- EVENING -->
-    <section class="panel" data-pane="evening">
-      <div class="grid">
-        <div class="card span12">
-          <p class="title">WITNESS</p>
-          <div class="grid">
-            <div class="field" style="grid-column:span 12">
-              <label for="eWin">Win</label>
-              <textarea id="eWin" placeholder="Where did you win today?"></textarea>
-            </div>
-            <div class="field" style="grid-column:span 12">
-              <label for="eLesson">Lesson</label>
-              <textarea id="eLesson" placeholder="What did Light teach you?"></textarea>
-            </div>
-            <div class="field" style="grid-column:span 12">
-              <label for="eSeal">Seal (final sentence)</label>
-              <input id="eSeal" placeholder="I choose Light. I choose unity. I choose Atika." />
-            </div>
-          </div>
-
-          <div class="bar">
-            <button class="btn primary" id="saveEveningBtn" type="button">Save evening</button>
-            <button class="btn" id="copyEveningBtn" type="button">Copy evening</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SHARE -->
-    <section class="panel" data-pane="share">
-      <div class="grid">
-        <div class="card span12">
-          <p class="title">SHARE CARD</p>
-          <div class="bar">
-            <button class="btn primary" id="buildCardBtn" type="button">Build Card</button>
-            <button class="btn" id="copyCardBtn" type="button">Copy Card</button>
-            <button class="btn" id="saveCardBtn" type="button">Save Card</button>
-          </div>
-          <div class="field" style="margin-top:12px">
-            <label for="cardOut">Share text</label>
-            <textarea id="cardOut" placeholder="Build card to generate text..."></textarea>
-          </div>
-          <div class="hint" style="margin-top:10px">
-            This is the “send to Eitan” artifact. Build → Copy → paste into text/email.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- LIBRARY -->
-    <section class="panel" data-pane="library">
-      <div class="grid">
-        <div class="card span12">
-          <p class="title">LIBRARY (THEMES, PATTERNS, 72 NAMES, ZOHAR-INSPIRED)</p>
-
-          <div class="grid">
-            <div class="field" style="grid-column:span 8">
-              <label for="libSearch">Search (theme, tag, letters)</label>
-              <input id="libSearch" placeholder="Try: Atika, certainty, protection, healing, אהבה..." />
-            </div>
-            <div class="field" style="grid-column:span 4">
-              <label for="libPattern">Filter by pattern</label>
-              <select id="libPattern">
-                <option value="">All patterns</option>
-                <option>Urgency → Certainty</option>
-                <option>Reactivity → Restriction</option>
-                <option>Judgment → Compassion</option>
-                <option>Overthinking → Action</option>
-                <option>Fear → Faith</option>
-                <option>Control → Trust</option>
-                <option>Isolation → Connection</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="bar">
-            <button class="btn primary" id="libPick" type="button">Pick for me</button>
-            <button class="btn" id="libClear" type="button">Clear</button>
-            <button class="btn" id="libCopySuggested" type="button">Copy suggestion</button>
-          </div>
-
-          <div class="field" style="margin-top:12px">
-            <label for="libSuggested">Suggested practice</label>
-            <textarea id="libSuggested" readonly placeholder="Tap 'Pick for me'..."></textarea>
-          </div>
-
-          <div class="hint" style="margin-top:8px">
-            Notes: Zohar entries here are brief paraphrase/snippets, intended as prompts. Confirm “which Name” choices with a teacher.
-          </div>
-
-          <div class="libList" id="libResults"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TOOLS -->
-    <section class="panel" data-pane="tools">
-      <div class="grid">
-        <div class="card span12">
-          <p class="title">GEMATRIA INSIGHT ENGINE</p>
-
-          <div class="grid">
-            <div class="field" style="grid-column:span 8">
-              <label for="gText">Text (Hebrew or English)</label>
-              <input id="gText" placeholder="Atika Kadisha / אחדות / אהבה / אמונה / וול ..." />
-            </div>
-            <div class="field" style="grid-column:span 4">
-              <label for="gMode">Mode</label>
-              <select id="gMode">
-                <option value="hebrew">Hebrew (letters only)</option>
-                <option value="english">English A1Z26</option>
-              </select>
-            </div>
-            <div class="field" style="grid-column:span 12">
-              <label for="gOut">Result + Insight</label>
-              <textarea id="gOut" readonly placeholder="Type above..."></textarea>
-            </div>
-          </div>
-
-          <div class="bar">
-            <button class="btn" id="copyInsightBtn" type="button">Copy insight</button>
-            <button class="btn" id="useNameBtn" type="button">Use as 72 Name (sets chip)</button>
-          </div>
-
-          <div class="hint" style="margin-top:10px">
-            This is intentionally “practice-forward”: it gives a number + a short, actionable spiritual prompt.
-          </div>
-        </div>
-
-        <div class="card span12">
-          <p class="title">EXPORT / IMPORT</p>
-          <div class="bar">
-            <button class="btn" id="exportBtn" type="button">Download JSON</button>
-            <button class="btn" id="copyExportBtn" type="button">Copy JSON</button>
-            <button class="btn" id="resetTodayBtn" type="button">Reset today (blank)</button>
-          </div>
-          <div class="field" style="margin-top:12px">
-            <label for="exportBox">Export box</label>
-            <textarea id="exportBox" readonly placeholder="Export will appear here..."></textarea>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- HISTORY -->
-    <section class="panel" data-pane="history">
-      <div class="grid">
-        <div class="card span12">
-          <p class="title">HISTORY</p>
-          <div class="hint">
-            Tap a date to load it as the active day. If history is empty, nothing has been saved under those day keys yet.
-          </div>
-          <div class="bar">
-            <button class="btn" id="refreshHistoryBtn" type="button">Refresh history</button>
-          </div>
-          <div class="libList" id="historyList"></div>
-        </div>
-      </div>
-    </section>
   </div>
 
-  <div class="toast" id="toast">Toast</div>
+  <div class="toast" id="toast"></div>
 
   <script>
-    // ---------- Tiny helpers ----------
-    const $ = (id) => document.getElementById(id);
-    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    // =========================
+    // KAI 2.0 - Zero-dependency
+    // =========================
 
+    const APP_VERSION = "kai_day_v2";
+    const LIB_KEY = "kai_library_v1";
+
+    // ---------- Crash visibility ----------
+    window.addEventListener("error", (e)=>{
+      try { toast("JS error: " + (e?.message || "unknown")); } catch {}
+    });
+    window.addEventListener("unhandledrejection", (e)=>{
+      try { toast("Promise error: " + (e?.reason?.message || e?.reason || "unknown")); } catch {}
+    });
+
+    // ---------- Helpers ----------
+    const $ = (id)=> document.getElementById(id);
+    const todayISO = ()=> {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const da = String(d.getDate()).padStart(2,"0");
+      return `${y}-${m}-${da}`;
+    };
+    const dayKey = (iso)=> `${APP_VERSION}_${iso}`;
+
+    function safeJSONParse(s, fallback){
+      try { return JSON.parse(s); } catch { return fallback; }
+    }
     function toast(msg){
       const t = $("toast");
       if(!t) return;
-      t.textContent = String(msg ?? "");
+      t.textContent = String(msg);
       t.style.display = "block";
-      clearTimeout(window.__tmo);
-      window.__tmo = setTimeout(()=> t.style.display="none", 2400);
+      clearTimeout(toast._tm);
+      toast._tm = setTimeout(()=>{ t.style.display="none"; }, 2800);
     }
 
-    // Crash visibility: makes "static photo" speak
-    window.addEventListener("error", (e)=>{
-      try { toast("JS error: " + (e?.message || "unknown")); }
-      catch { /* ignore */ }
-    });
-    window.addEventListener("unhandledrejection", (e)=>{
-      const msg = (e?.reason?.message || e?.reason || "unknown");
-      try { toast("Promise error: " + msg); }
-      catch { /* ignore */ }
-    });
+    // ---------- Elements ----------
+    const fields = [
+      "state","kavanah","zoharHeb","zoharEng","leadershipFrame","nervousFrame",
+      "reactive","restriction","physical","emotional","story","truth","tiferet",
+      "next4","notes","name72","breath"
+    ];
 
-    function safeJSONParse(s, fallback){
-      try {
-        const v = JSON.parse(s);
-        return (v && typeof v === "object") ? v : fallback;
-      } catch(e){
-        return fallback;
+    function snapshot(){
+      const obj = {};
+      for(const f of fields){
+        const el = $(f);
+        obj[f] = el ? el.value : "";
       }
+      obj._iso = todayISO();
+      obj._savedAt = new Date().toISOString();
+      return obj;
     }
 
-    function todayISO(){
-      const d = new Date();
-      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-      return d.toISOString().slice(0,10);
+    function applySnapshot(obj){
+      if(!obj) return;
+      for(const f of fields){
+        if($(f)) $(f).value = obj[f] ?? "";
+      }
+      refreshStatus(true);
     }
 
-    // ---------- Storage keys ----------
-    const keyProfile = "kai_profile_v3";
-    const keyMeta    = "kai_meta_v3";
-    const keyActiveDate = "kai_active_date_v1";
-    const keyDay = (iso) => `kai_day_${iso}_v3`;
-
-    // ---------- Defaults (NEVER return null) ----------
-    function defaultProfile(){
-      return { first:"", last:"", focus:"" };
-    }
-    function defaultMeta(){
-      return { selectedPattern:"", selectedName:"", selectedTheme:"" };
-    }
-    function defaultDay(iso){
-      return {
-        date: iso,
-        morning: { certainty:"", energy:"", intention:"", pattern:"" },
-        restriction: { move:"", trigger:"", note:"", completed:false },
-        evening: { win:"", lesson:"", seal:"" },
-        shareCard: ""
-      };
-    }
-
-    function getProfile(){
-      return safeJSONParse(localStorage.getItem(keyProfile), defaultProfile());
-    }
-    function setProfile(p){
-      const safe = (p && typeof p === "object") ? p : {};
-      localStorage.setItem(keyProfile, JSON.stringify({ ...defaultProfile(), ...safe }));
-    }
-
-    function getMeta(){
-      return safeJSONParse(localStorage.getItem(keyMeta), defaultMeta());
-    }
-    function setMeta(m){
-      const safe = (m && typeof m === "object") ? m : {};
-      localStorage.setItem(keyMeta, JSON.stringify({ ...defaultMeta(), ...safe }));
-    }
-
-    function getActiveDate(){
-      return localStorage.getItem(keyActiveDate) || todayISO();
-    }
-    function setActiveDate(iso){
-      const v = iso || todayISO();
-      localStorage.setItem(keyActiveDate, v);
-    }
-
-    function getDay(iso = getActiveDate()){
-      return safeJSONParse(localStorage.getItem(keyDay(iso)), defaultDay(iso));
-    }
-    function setDay(d){
-      if(!d || !d.date) return;
-      localStorage.setItem(keyDay(d.date), JSON.stringify(d));
-    }
-
-    function listSavedDays(){
-      const days = [];
-      for(let i=0;i<localStorage.length;i++){
-        const k = localStorage.key(i);
-        if(k && k.startsWith("kai_day_") && k.endsWith("_v3")){
-          const iso = k.replace("kai_day_","").replace("_v3","");
-          days.push(iso);
+    function clearFields(){
+      for(const f of fields){
+        if($(f)){
+          if($(f).tagName === "SELECT") $(f).value = $(f).querySelector("option")?.value ?? "";
+          else $(f).value = "";
         }
       }
-      days.sort().reverse();
-      return days;
+      refreshStatus(false);
+      toast("Cleared.");
     }
 
-    // ---------- UI hydration ----------
-    function hydrateChips(){
-      const p = getProfile();
-      const m = getMeta();
-      const d = getDay();
-
-      $("chipDate").textContent = d.date || "—";
-      const full = `${p.first||""} ${p.last||""}`.trim();
-      $("chipProfile").textContent = full || "—";
-      $("chipName").textContent = m.selectedName || "—";
-
-      // streak: consecutive saved days ending today
-      const saved = new Set(listSavedDays());
-      let streak = 0;
-      let cur = todayISO();
-      while(saved.has(cur)){
-        streak++;
-        const dt = new Date(cur+"T00:00:00");
-        dt.setDate(dt.getDate()-1);
-        cur = dt.toISOString().slice(0,10);
+    // ---------- Storage ----------
+    function saveToday(){
+      const iso = todayISO();
+      const key = dayKey(iso);
+      const data = snapshot();
+      try{
+        localStorage.setItem(key, JSON.stringify(data));
+        localStorage.setItem(`${APP_VERSION}_last`, key);
+        toast("Saved.");
+        refreshStatus(true);
+        refreshHistory();
+      }catch(err){
+        toast("Save failed (storage full?)");
+        console.error(err);
       }
-      $("chipStreak").textContent = String(streak || 0);
-
-      // daily restrict: on if any restriction content exists
-      const on = (d.restriction?.move || d.restriction?.note || d.restriction?.trigger) ? "On" : "—";
-      $("chipDailyRestrict").textContent = on;
     }
 
-    function hydrateStart(){
-      const p = getProfile();
-      const iso = getActiveDate();
-      const dateInput = $("activeDate");
-      if(dateInput) dateInput.value = iso;
-
-      $("pFirst").value = p.first || "";
-      $("pLast").value  = p.last || "";
-      $("pFocus").value = p.focus || "";
+    function loadToday(){
+      const iso = todayISO();
+      const key = dayKey(iso);
+      const raw = localStorage.getItem(key);
+      if(!raw){
+        toast("No saved entry for today.");
+        refreshStatus(false);
+        return;
+      }
+      const data = safeJSONParse(raw, null);
+      if(!data){ toast("Corrupt save."); return; }
+      applySnapshot(data);
+      toast("Loaded.");
     }
 
-    function hydrateMorning(){
-      const d = getDay();
-      $("mCertainty").value = d.morning?.certainty ?? "";
-      $("mEnergy").value    = d.morning?.energy ?? "";
-      $("mIntention").value = d.morning?.intention ?? "";
-      $("mPattern").value   = d.morning?.pattern ?? "";
-    }
-
-    function hydrateRestriction(){
-      const d = getDay();
-      $("rMove").value = d.restriction?.move ?? "";
-      $("rTrigger").value = d.restriction?.trigger ?? "";
-      $("rNote").value = d.restriction?.note ?? "";
-      $("rCompleted").value = d.restriction?.completed ? "yes" : "no";
-    }
-
-    function hydrateEvening(){
-      const d = getDay();
-      $("eWin").value = d.evening?.win ?? "";
-      $("eLesson").value = d.evening?.lesson ?? "";
-      $("eSeal").value = d.evening?.seal ?? "";
-    }
-
-    function hydrateShare(){
-      const d = getDay();
-      $("cardOut").value = d.shareCard || "";
-    }
-
-    function hydrateAll(){
-      hydrateChips();
-      hydrateStart();
-      hydrateMorning();
-      hydrateRestriction();
-      hydrateEvening();
-      hydrateShare();
-      hydrateLibrary();
-      hydrateHistory();
+    function refreshHistory(){
+      const out = [];
+      for(let i=0;i<localStorage.length;i++){
+        const k = localStorage.key(i);
+        if(k && k.startsWith(APP_VERSION + "_20")){ // crude: only date keys
+          const obj = safeJSONParse(localStorage.getItem(k), null);
+          const iso = (obj && obj._iso) ? obj._iso : k.slice(APP_VERSION.length+1);
+          const kav = (obj && obj.kavanah) ? obj.kavanah : "";
+          out.push({iso, k, kav});
+        }
+      }
+      out.sort((a,b)=> (a.iso < b.iso ? 1 : -1));
+      if(out.length === 0){
+        $("historyList").textContent = "No history yet.";
+        return;
+      }
+      const lines = out.map(x=> `• ${x.iso}  |  ${x.kav ? x.kav : "(no kavanah)"}\n   key: ${x.k}`);
+      $("historyList").textContent = lines.join("\n\n");
     }
 
     // ---------- Tabs ----------
-    function setActiveTab(tab){
-      $$(".tab").forEach(x=>x.classList.toggle("active", x.dataset.tab===tab));
-      $$("section.panel").forEach(p=>p.classList.toggle("active", p.dataset.pane===tab));
-    }
-    function wireTabs(){
-      $$(".tab").forEach(btn=>{
-        btn.addEventListener("click",(e)=>{
-          e.preventDefault(); e.stopPropagation();
-          setActiveTab(btn.dataset.tab);
-        }, {passive:false});
-      });
-    }
-
-    // ---------- Collectors ----------
-    function collectProfileFromUI(){
-      return {
-        first: $("pFirst").value.trim(),
-        last:  $("pLast").value.trim(),
-        focus: $("pFocus").value.trim()
+    function setTab(name){
+      const tabs = document.querySelectorAll(".tab");
+      tabs.forEach(t=> t.classList.toggle("active", t.dataset.tab === name));
+      const secMap = {
+        ritual: "sec-ritual",
+        share: "sec-share",
+        library: "sec-library",
+        history: "sec-history",
       };
-    }
-
-    function collectMorningFromUI(){
-      return {
-        certainty: ($("mCertainty").value ?? "").toString(),
-        energy: ($("mEnergy").value ?? "").toString(),
-        intention: $("mIntention").value.trim(),
-        pattern: $("mPattern").value.trim()
-      };
-    }
-
-    function collectRestrictionFromUI(){
-      return {
-        move: $("rMove").value.trim(),
-        trigger: $("rTrigger").value.trim(),
-        note: $("rNote").value.trim(),
-        completed: $("rCompleted").value === "yes"
-      };
-    }
-
-    function collectEveningFromUI(){
-      return {
-        win: $("eWin").value.trim(),
-        lesson: $("eLesson").value.trim(),
-        seal: $("eSeal").value.trim()
-      };
-    }
-
-    // ---------- Clipboard / download ----------
-    function copyText(txt){
-      const t = String(txt ?? "");
-      (navigator.clipboard?.writeText(t) || Promise.resolve())
-        .then(()=>toast("Copied ✅"))
-        .catch(()=>toast("Copy blocked ⚠️"));
-    }
-    function downloadJSON(filename, obj){
-      const blob = new Blob([JSON.stringify(obj, null, 2)], {type:"application/json"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
-    }
-
-    // ---------- SHARE CARD ----------
-    function buildCardText(){
-      const p = getProfile();
-      const m = getMeta();
-      const d = getDay();
-
-      const fullName = `${p.first||""} ${p.last||""}`.trim() || "—";
-
-      return (
-`KAI • ${d.date}
-Name: ${fullName}
-Focus: ${p.focus || "—"}
-Pattern: ${d.morning?.pattern || m.selectedPattern || "—"}
-72 Name: ${m.selectedName || "—"}
-
-ALIGN (Morning)
-• Certainty: ${d.morning?.certainty || "—"}  Energy: ${d.morning?.energy || "—"}
-• Intention: ${d.morning?.intention || "—"}
-
-RESTRICT (Day)
-• Move: ${d.restriction?.move || "—"}
-• Witness: ${d.restriction?.note || "—"}
-• Completed: ${d.restriction?.completed ? "Yes" : "No"}
-
-WITNESS (Evening)
-• Win: ${d.evening?.win || "—"}
-• Lesson: ${d.evening?.lesson || "—"}
-
-SEAL
-• ${d.evening?.seal || "—"}`
-      );
-    }
-
-    function wireShareCard(){
-      const buildBtn = $("buildCardBtn");
-      const copyBtn  = $("copyCardBtn");
-      const saveBtn  = $("saveCardBtn");
-      const outBox   = $("cardOut");
-
-      if(buildBtn && outBox){
-        buildBtn.addEventListener("click",(e)=>{
-          e.preventDefault(); e.stopPropagation();
-          outBox.value = buildCardText();
-          toast("Card built ✅");
-        }, {passive:false});
+      for(const k in secMap){
+        $(secMap[k]).classList.toggle("active", k === name);
       }
-      if(copyBtn && outBox){
-        copyBtn.addEventListener("click",(e)=>{
-          e.preventDefault(); e.stopPropagation();
-          copyText(outBox.value || "");
-        }, {passive:false});
+      if(name === "history") refreshHistory();
+      if(name === "library") renderLibrary();
+    }
+
+    // ---------- Status panel ----------
+    function refreshStatus(saved){
+      $("kState").textContent = $("state").value || "…";
+      $("kSaved").textContent = saved ? "Yes" : "No";
+      $("kKavanah").textContent = $("kavanah").value || "…";
+      $("kNext4").textContent = $("next4").value || "…";
+      const seal = [ $("name72").value, $("breath").value ].filter(Boolean).join(" | ");
+      $("kSeal").textContent = seal || "…";
+    }
+
+    function checkSavedToday(){
+      const key = dayKey(todayISO());
+      return !!localStorage.getItem(key);
+    }
+
+    // ---------- Share Card (Canvas) ----------
+    function drawShareCard(){
+      const c = $("cardCanvas");
+      const ctx = c.getContext("2d");
+      const W = c.width, H = c.height;
+
+      // background
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0,0,W,H);
+
+      // subtle gold aura
+      const g = ctx.createRadialGradient(W*0.5, H*0.15, 10, W*0.5, H*0.15, W*0.6);
+      g.addColorStop(0, "rgba(214,178,94,0.28)");
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+
+      // frame
+      ctx.strokeStyle = "rgba(214,178,94,0.55)";
+      ctx.lineWidth = 4;
+      roundRect(ctx, 48, 48, W-96, H-96, 34);
+      ctx.stroke();
+
+      // header
+      ctx.fillStyle = "#d6b25e";
+      ctx.font = "800 56px -apple-system, BlinkMacSystemFont, Arial";
+      ctx.letterSpacing = "2px";
+      ctx.fillText("KAI", 92, 140);
+
+      ctx.fillStyle = "rgba(244,241,230,0.78)";
+      ctx.font = "500 24px -apple-system, BlinkMacSystemFont, Arial";
+      ctx.fillText("Kabbalah Always Illuminates", 92, 180);
+
+      ctx.fillStyle = "rgba(184,178,163,0.9)";
+      ctx.font = "600 22px ui-monospace, Menlo, monospace";
+      ctx.fillText(todayISO() + "  |  state: " + ($("state").value || "—"), 92, 220);
+
+      // sections
+      const blocks = [
+        ["KAVANAH", $("kavanah").value],
+        ["RESTRICTION", $("restriction").value],
+        ["TRUTH", $("truth").value],
+        ["NEXT 4 HOURS", $("next4").value],
+        ["SEAL", [ $("name72").value, $("breath").value ].filter(Boolean).join(" | ")]
+      ];
+
+      let y = 280;
+      for(const [label, text] of blocks){
+        y = drawBlock(ctx, 92, y, W-184, label, text);
+        y += 18;
       }
-      if(saveBtn && outBox){
-        saveBtn.addEventListener("click",(e)=>{
-          e.preventDefault(); e.stopPropagation();
-          const d = getDay();
-          d.shareCard = outBox.value || "";
-          setDay(d);
-          hydrateChips();
-          hydrateHistory();
-          toast("Card saved ✅");
-        }, {passive:false});
+
+      // footer
+      ctx.fillStyle = "rgba(184,178,163,0.75)";
+      ctx.font = "500 18px -apple-system, BlinkMacSystemFont, Arial";
+      ctx.fillText("Align • Restrict • Witness • Illuminate • Seal", 92, H-92);
+    }
+
+    function roundRect(ctx, x, y, w, h, r){
+      const rr = Math.min(r, w/2, h/2);
+      ctx.beginPath();
+      ctx.moveTo(x+rr, y);
+      ctx.arcTo(x+w, y, x+w, y+h, rr);
+      ctx.arcTo(x+w, y+h, x, y+h, rr);
+      ctx.arcTo(x, y+h, x, y, rr);
+      ctx.arcTo(x, y, x+w, y, rr);
+      ctx.closePath();
+    }
+
+    function drawBlock(ctx, x, y, w, label, text){
+      // label
+      ctx.fillStyle = "rgba(214,178,94,0.95)";
+      ctx.font = "800 22px -apple-system, BlinkMacSystemFont, Arial";
+      ctx.fillText(label, x, y);
+
+      // text box
+      y += 18;
+      const boxY = y + 18;
+
+      ctx.strokeStyle = "rgba(214,178,94,0.22)";
+      ctx.lineWidth = 2;
+      roundRect(ctx, x, boxY, w, 170, 22);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(244,241,230,0.92)";
+      ctx.font = "500 26px -apple-system, BlinkMacSystemFont, Arial";
+
+      const content = (text || "—").trim();
+      const lines = wrapText(ctx, content, w-40);
+      let ty = boxY + 46;
+      const maxLines = 4;
+      for(let i=0;i<Math.min(lines.length, maxLines);i++){
+        ctx.fillText(lines[i], x+20, ty);
+        ty += 34;
+      }
+      if(lines.length > maxLines){
+        ctx.fillStyle = "rgba(184,178,163,0.85)";
+        ctx.font = "500 22px -apple-system, BlinkMacSystemFont, Arial";
+        ctx.fillText("…", x+20, ty);
+      }
+      return boxY + 200;
+    }
+
+    function wrapText(ctx, text, maxWidth){
+      const words = text.split(/\s+/);
+      const lines = [];
+      let line = "";
+      for(const w of words){
+        const test = line ? (line + " " + w) : w;
+        if(ctx.measureText(test).width <= maxWidth){
+          line = test;
+        }else{
+          if(line) lines.push(line);
+          line = w;
+        }
+      }
+      if(line) lines.push(line);
+      return lines;
+    }
+
+    function downloadCanvas(){
+      const c = $("cardCanvas");
+      try{
+        const url = c.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `KAI_${todayISO()}.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        toast("Saved image (or opened share).");
+      }catch(err){
+        toast("Could not save image.");
+        console.error(err);
       }
     }
 
-    // ---------- LIBRARY DATA ----------
-    const LIB = [
-      // Themes / patterns
-      { type:"theme", name:"Atika Kadisha", pattern:"Urgency → Certainty", tags:["atika","certainty","crown","keter"], desc:"Practice: slow the nervous system, choose certainty, anchor above circumstances." },
-      { type:"theme", name:"Restriction", pattern:"Reactivity → Restriction", tags:["restriction","pause"], desc:"Practice: delay the impulse. One breath. One choice. One step toward Light." },
-      { type:"theme", name:"Trust", pattern:"Control → Trust", tags:["trust","release"], desc:"Practice: loosen the grip. Ask: what would trust do with this exact moment?" },
-      { type:"theme", name:"Compassion", pattern:"Judgment → Compassion", tags:["chesed","compassion"], desc:"Practice: soften Din into balance. Look for the hidden good." },
-      { type:"theme", name:"Connection", pattern:"Isolation → Connection", tags:["unity","achdut"], desc:"Practice: bridge the gap. Reach out. Return to love as the operating system." },
-
-      // 72 Names (light scaffolding, not authoritative)
-      { type:"72", name:"#1 ווה (Vav-Heh-Vav)", pattern:"Fear → Faith", tags:["protection","clearing"], desc:"Protective clearing. Stabilize the body. Return to steadiness." },
-      { type:"72", name:"#7 אלד (Alef-Lamed-Dalet)", pattern:"Overthinking → Action", tags:["clarity","decisive"], desc:"Cut fog. Choose one clean next step. Do it now, gently." },
-      { type:"72", name:"#14 מהש (Mem-Heh-Shin)", pattern:"Urgency → Certainty", tags:["healing","repair"], desc:"Repair and restore. Treat the moment like a wound that deserves care." },
-      { type:"72", name:"#20 פאח (Peh-Alef-Chet)", pattern:"Control → Trust", tags:["release","flow"], desc:"Let go without collapse. Flow with purpose." },
-      { type:"72", name:"#45 סאל (Samekh-Alef-Lamed)", pattern:"Isolation → Connection", tags:["union","bond"], desc:"Reconnect. Speak truth. Choose love as the bridge." },
-
-      // Zohar-inspired prompts (short paraphrase/snippet style)
-      { type:"zohar", name:"Zohar Prompt: Atika Kadisha", pattern:"Urgency → Certainty", tags:["zohar","atika","keter"], desc:"Prompt: Act as if you’re already held by the highest mercy. What changes in your tone, pace, and choice?" },
-      { type:"zohar", name:"Zohar Prompt: Unity", pattern:"Isolation → Connection", tags:["zohar","achdut","love"], desc:"Prompt: Seek the point of connection beneath the argument. Make one move that increases unity." },
-      { type:"zohar", name:"Zohar Prompt: Restriction as Power", pattern:"Reactivity → Restriction", tags:["zohar","restriction"], desc:"Prompt: The strongest moment is the pause. In the pause, choose Light over impulse." },
-      { type:"zohar", name:"Zohar Prompt: Sweeten Din", pattern:"Judgment → Compassion", tags:["zohar","din","sweeten"], desc:"Prompt: Name the judgment without feeding it. Then choose the merciful interpretation." },
-
-      // Micro-practices aligned to your flow
-      { type:"practice", name:"Atika Breath (60 seconds)", pattern:"Urgency → Certainty", tags:["breath","atika"], desc:"Inhale 4, hold 2, exhale 6. On exhale: ‘I choose certainty.’ Repeat 6 cycles." },
-      { type:"practice", name:"Restriction Loop Breaker", pattern:"Reactivity → Restriction", tags:["pause","witness"], desc:"Ask: ‘What am I trying to control?’ Then: ‘What is the Light asking?’ Choose 1 small action." },
-    ];
-
-    function libMatch(item, q, pat){
-      const qq = (q || "").trim().toLowerCase();
-      const pp = (pat || "").trim().toLowerCase();
-
-      const hay = [
-        item.type, item.name, item.pattern,
-        ...(item.tags||[]),
-        item.desc
-      ].join(" ").toLowerCase();
-
-      const okQ = !qq || hay.includes(qq);
-      const okP = !pp || (item.pattern||"").toLowerCase() === pp;
-      return okQ && okP;
+    // ---------- Library ----------
+    function getLibrary(){
+      return safeJSONParse(localStorage.getItem(LIB_KEY), []);
+    }
+    function setLibrary(items){
+      localStorage.setItem(LIB_KEY, JSON.stringify(items));
     }
 
-    function libRenderResults(items){
-      const box = $("libResults");
-      if(!box) return;
-      box.innerHTML = "";
+    function seedLibrary(){
+      const starter = [
+        {
+          title: "Atika Kadisha (Holy Ancient One)",
+          tags: ["Atika", "Keter", "concealment", "mercy"],
+          body: "Atika is the concealed root of mercy behind judgment. When Din tightens, remember: the root is deeper than the reaction. Practice: pause, soften jaw, exhale long, choose the central column."
+        },
+        {
+          title: "Din → Rachamim (Judgment into Mercy)",
+          tags: ["Din", "Rachamim", "Gevurah", "Tiferet"],
+          body: "Judgment is a tool, not a throne. The work is not to erase Gevurah but to harmonize it. Practice: name the boundary, then ask what love requires."
+        },
+        {
+          title: "The Central Column (Tiferet as decision)",
+          tags: ["Tiferet", "balance", "alignment"],
+          body: "Tiferet is not compromise. It is alignment: truth plus love, structure plus breath, momentum without force. Practice: one clean move in the next 4 hours."
+        },
+        {
+          title: "Restriction (Tzimtzum as power)",
+          tags: ["restriction", "tzimtzum", "discipline"],
+          body: "Restriction is how Light becomes usable. Practice: identify the reactive impulse, then choose dignified restraint that protects the mission."
+        }
+      ];
+      setLibrary(starter);
+      toast("Starter library loaded.");
+      renderLibrary();
+    }
 
-      if(!items.length){
-        const empty = document.createElement("div");
-        empty.className = "hint";
-        empty.textContent = "No matches. Try a shorter keyword.";
-        box.appendChild(empty);
+    function renderLibrary(){
+      const q = ($("libQuery").value || "").trim().toLowerCase();
+      const items = getLibrary();
+      if(items.length === 0){
+        $("libList").textContent = "Library is empty. Tap “Load Starter Library”.";
         return;
       }
-
-      items.slice(0, 60).forEach(it=>{
-        const row = document.createElement("div");
-        row.className = "libItem";
-
-        const left = document.createElement("div");
-        left.className = "libLeft";
-
-        const nm = document.createElement("div");
-        nm.className = "libName";
-        nm.textContent = it.name;
-
-        const meta = document.createElement("div");
-        meta.className = "libMeta";
-        meta.textContent = `${it.type.toUpperCase()}  •  ${it.pattern || "—"}  •  ${(it.tags||[]).slice(0,4).join(", ")}`;
-
-        const desc = document.createElement("div");
-        desc.className = "libDesc";
-        desc.textContent = it.desc;
-
-        left.appendChild(nm);
-        left.appendChild(meta);
-        left.appendChild(desc);
-
-        const btns = document.createElement("div");
-        btns.className = "libBtns";
-
-        const use = document.createElement("button");
-        use.className = "btn";
-        use.type = "button";
-        use.textContent = "Use";
-
-        const copy = document.createElement("button");
-        copy.className = "btn";
-        copy.type = "button";
-        copy.textContent = "Copy";
-
-        use.addEventListener("click",(e)=>{
-          e.preventDefault(); e.stopPropagation();
-
-          // update meta safely
-          const m = getMeta();
-          m.selectedPattern = it.pattern || m.selectedPattern || "";
-          if(it.type === "72") m.selectedName = it.name;
-          if(it.type === "theme") m.selectedTheme = it.name;
-
-          setMeta(m);
-
-          // also drop pattern into morning field (gentle convenience)
-          const d = getDay();
-          d.morning = d.morning || {};
-          if(it.pattern && !d.morning.pattern) d.morning.pattern = it.pattern;
-          setDay(d);
-
-          hydrateAll();
-          toast("Applied ✅");
-        }, {passive:false});
-
-        copy.addEventListener("click",(e)=>{
-          e.preventDefault(); e.stopPropagation();
-          copyText(`${it.name}\n${it.pattern ? ("Pattern: "+it.pattern+"\n"):""}${it.desc}`);
-        }, {passive:false});
-
-        btns.appendChild(use);
-        btns.appendChild(copy);
-
-        row.appendChild(left);
-        row.appendChild(btns);
-        box.appendChild(row);
+      const filtered = items.filter(it=>{
+        const blob = (it.title + " " + it.body + " " + (it.tags||[]).join(" ")).toLowerCase();
+        return q ? blob.includes(q) : true;
       });
-    }
-
-    function libFilterItems(q, pat){
-      return LIB.filter(it => libMatch(it, q, pat));
-    }
-
-    function libPickForMe(pat){
-      const items = libFilterItems("", pat);
-      const pick = items[Math.floor(Math.random()*Math.max(1, items.length))];
-      if(!pick) return "No matches.";
-      return `${pick.name}\n${pick.pattern ? ("Pattern: "+pick.pattern+"\n"):""}\n${pick.desc}`;
-    }
-
-    function hydrateLibrary(){
-      const search = $("libSearch");
-      const pat = $("libPattern");
-      if(!search || !pat) return;
-      const items = libFilterItems(search.value, pat.value);
-      libRenderResults(items);
-    }
-
-    function wireLibrary(){
-      const search = $("libSearch");
-      const pat = $("libPattern");
-      const pick = $("libPick");
-      const clr  = $("libClear");
-      const sug  = $("libSuggested");
-      const copySug = $("libCopySuggested");
-
-      if(!search || !pat || !pick || !clr || !sug) return;
-
-      const refresh = ()=>{
-        hydrateLibrary();
-      };
-
-      search.addEventListener("input", refresh);
-      pat.addEventListener("change", refresh);
-
-      pick.addEventListener("click", ()=>{
-        const txt = libPickForMe(pat.value);
-        sug.value = txt;
-        // if suggestion is a 72-name entry, try to set meta name by parsing prefix "#"
-        toast("Suggested ✅");
-      });
-
-      clr.addEventListener("click", ()=>{
-        search.value = "";
-        pat.value = "";
-        sug.value = "";
-        refresh();
-        toast("Cleared ✅");
-      });
-
-      if(copySug){
-        copySug.addEventListener("click", ()=>{
-          copyText(sug.value || "");
-        });
-      }
-
-      // initial
-      refresh();
-    }
-
-    // ---------- HISTORY ----------
-    function hydrateHistory(){
-      const box = $("historyList");
-      if(!box) return;
-      box.innerHTML = "";
-
-      const days = listSavedDays();
-      if(!days.length){
-        const empty = document.createElement("div");
-        empty.className = "hint";
-        empty.textContent = "No saved days yet. Save Morning/Restriction/Evening to create history.";
-        box.appendChild(empty);
+      if(filtered.length === 0){
+        $("libList").textContent = "No matches.";
         return;
       }
-
-      days.slice(0, 120).forEach(iso=>{
-        const row = document.createElement("div");
-        row.className = "libItem";
-
-        const left = document.createElement("div");
-        left.className = "libLeft";
-        const nm = document.createElement("div");
-        nm.className = "libName";
-        nm.textContent = iso;
-
-        const d = getDay(iso);
-        const meta = document.createElement("div");
-        meta.className = "libMeta";
-        meta.textContent = [
-          d.morning?.pattern ? ("Pattern: "+d.morning.pattern) : "",
-          d.evening?.seal ? ("Seal: "+d.evening.seal) : ""
-        ].filter(Boolean).join("  •  ") || "Saved day";
-
-        left.appendChild(nm);
-        left.appendChild(meta);
-
-        const btns = document.createElement("div");
-        btns.className = "libBtns";
-
-        const load = document.createElement("button");
-        load.className = "btn primary";
-        load.type = "button";
-        load.textContent = "Load";
-
-        const copy = document.createElement("button");
-        copy.className = "btn";
-        copy.type = "button";
-        copy.textContent = "Copy card";
-
-        load.addEventListener("click",(e)=>{
-          e.preventDefault(); e.stopPropagation();
-          setActiveDate(iso);
-          hydrateAll();
-          toast("Loaded ✅");
-        }, {passive:false});
-
-        copy.addEventListener("click",(e)=>{
-          e.preventDefault(); e.stopPropagation();
-          const prev = getActiveDate();
-          const dd = getDay(iso);
-          const txt = dd.shareCard || "(No saved share card for this day yet.)";
-          copyText(txt);
-          // keep active date unchanged
-          setActiveDate(prev);
-        }, {passive:false});
-
-        btns.appendChild(load);
-        btns.appendChild(copy);
-
-        row.appendChild(left);
-        row.appendChild(btns);
-        box.appendChild(row);
+      const lines = filtered.map(it=>{
+        return `• ${it.title}\n  tags: ${(it.tags||[]).join(", ")}\n  ${it.body}`;
       });
+      $("libList").textContent = lines.join("\n\n");
     }
 
-    // ---------- GEMATRIA INSIGHT ENGINE ----------
-    const HEB = {
-      "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
-      "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,
-      "ע":70,"פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,"ש":300,"ת":400
-    };
+    // ---------- Wire up ----------
+    function init(){
+      $("todayLabel").textContent = todayISO();
 
-    function gematriaHebrew(s){
-      let sum = 0;
-      for(const ch of (s||"")){
-        if(HEB[ch]) sum += HEB[ch];
-      }
-      return sum;
-    }
-    function gematriaEnglish(s){
-      let sum = 0;
-      for(const ch of (s||"").toUpperCase()){
-        if(ch>="A" && ch<="Z") sum += (ch.charCodeAt(0)-64);
-      }
-      return sum;
-    }
+      // tab clicks
+      document.querySelectorAll(".tab").forEach(btn=>{
+        btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+      });
 
-    function insightFor(n, txt){
-      // A light-touch “engine”: consistent, actionable prompts.
-      // We’ll map ranges + notable values and tie to Atika/Unity.
-      const t = (txt||"").trim();
-      const sparks = [];
-      if(t.includes("Atika") || t.includes("עתיק") || t.includes("עתיקה") || t.includes("קדיש")) sparks.push("Atika: choose certainty above circumstance.");
-      if(t.includes("אחד") || t.includes("אחדות") || /unity/i.test(t)) sparks.push("Unity: bridge separation with one concrete act.");
-      if(t.includes("אהבה") || /love/i.test(t)) sparks.push("Love: soften judgment, increase connection.");
+      // save/load
+      $("btnSave").addEventListener("click", saveToday);
+      $("btnLoad").addEventListener("click", loadToday);
 
-      let core = "";
-      if(n === 26) core = "26: Y-H-V-H resonance. Practice: align speech with purpose.";
-      else if(n === 72) core = "72: Names resonance. Practice: pick ONE Name and work it with restriction.";
-      else if(n === 18) core = "18: Chai. Practice: choose the life-giving interpretation.";
-      else if(n % 10 === 0) core = `${n}: Round number. Practice: simplify. One intention. One action.`;
-      else if(n < 50) core = `${n}: Small number. Practice: precision. Tiny restriction, huge result.`;
-      else if(n < 200) core = `${n}: Medium number. Practice: structure. Build a container for Light.`;
-      else core = `${n}: Large number. Practice: humility. Reduce ego-noise, increase listening.`;
+      // clear
+      $("btnClear").addEventListener("click", ()=>{
+        if(confirm("Clear all fields?")) clearFields();
+      });
 
-      const atika = "Atika Kadisha prompt: ‘What would certainty do right now?’";
-      const extra = sparks.length ? ("Signals: " + sparks.join(" ")) : "";
+      // live status updates
+      fields.forEach(f=>{
+        const el = $(f);
+        if(el) el.addEventListener("input", ()=> refreshStatus(checkSavedToday()));
+      });
 
-      return [core, extra, atika].filter(Boolean).join("\n");
-    }
+      // share
+      $("btnShare").addEventListener("click", ()=>{
+        drawShareCard();
+        setTab("share");
+      });
+      $("btnBackToRitual").addEventListener("click", ()=> setTab("ritual"));
+      $("btnDownload").addEventListener("click", downloadCanvas);
 
-    function renderGematriaInsights(){
-      const inp = $("gText");
-      const mode = $("gMode");
-      const out = $("gOut");
-      if(!inp || !mode || !out) return;
+      // history
+      $("btnRefreshHistory").addEventListener("click", refreshHistory);
 
-      const txt = inp.value || "";
-      const n = (mode.value === "english") ? gematriaEnglish(txt) : gematriaHebrew(txt);
-      out.value = `Value: ${n}\n\n${insightFor(n, txt)}`;
-    }
+      // library
+      $("btnLibSeed").addEventListener("click", seedLibrary);
+      $("libQuery").addEventListener("input", renderLibrary);
 
-    function wireGematria(){
-      const inp = $("gText");
-      const mode = $("gMode");
-      const out = $("gOut");
-      const copyBtn = $("copyInsightBtn");
-      const useNameBtn = $("useNameBtn");
+      // demo quick fill
+      $("btnQuickFill").addEventListener("click", ()=>{
+        $("state").value = "clear";
+        $("kavanah").value = "I choose momentum through alignment, not force.";
+        $("restriction").value = "No reactive control. One clean boundary, then proceed with steadiness.";
+        $("truth").value = "I can move slowly and still be unstoppable.";
+        $("next4").value = "Send one decisive note, then 20 minutes of quiet execution.";
+        $("name72").value = "וול";
+        $("breath").value = "Inhale 4 • Hold 2 • Exhale 6 (hum on exhale)";
+        refreshStatus(checkSavedToday());
+        toast("Demo filled.");
+      });
 
-      if(inp) inp.addEventListener("input", renderGematriaInsights, {passive:true});
-      if(mode) mode.addEventListener("change", renderGematriaInsights, {passive:true});
-      if(copyBtn && out){
-        copyBtn.addEventListener("click", ()=>copyText(out.value || ""), {passive:true});
-      }
-      if(useNameBtn && inp){
-        useNameBtn.addEventListener("click", ()=>{
-          const m = getMeta();
-          m.selectedName = inp.value.trim() || m.selectedName || "";
-          setMeta(m);
-          hydrateChips();
-          toast("Set as 72 Name ✅");
-        }, {passive:true});
+      // initial status
+      refreshStatus(checkSavedToday());
+      refreshHistory();
+
+      // try auto-load last
+      const lastKey = localStorage.getItem(`${APP_VERSION}_last`);
+      if(lastKey){
+        const raw = localStorage.getItem(lastKey);
+        const obj = safeJSONParse(raw, null);
+        if(obj && obj._iso === todayISO()){
+          applySnapshot(obj);
+        }
       }
 
-      renderGematriaInsights();
-    }
-
-    // ---------- Buttons / Saves ----------
-    function wireButtons(){
-      const saveProfileBtn = $("saveProfileBtn");
-      const copyProfileBtn = $("copyProfileBtn");
-
-      if(saveProfileBtn){
-        saveProfileBtn.addEventListener("click", ()=>{
-          setProfile(collectProfileFromUI());
-          hydrateChips();
-          toast("Profile saved ✅");
-        });
-      }
-      if(copyProfileBtn){
-        copyProfileBtn.addEventListener("click", ()=>{
-          const p = getProfile();
-          const txt = `Profile\nName: ${(p.first||"")} ${(p.last||"")}\nFocus: ${p.focus || "—"}`.trim();
-          copyText(txt);
-        });
-      }
-
-      const activeDate = $("activeDate");
-      if(activeDate){
-        activeDate.addEventListener("change", ()=>{
-          setActiveDate(activeDate.value);
-          hydrateAll();
-          toast("Date set ✅");
-        });
-      }
-
-      const setTodayBtn = $("setTodayBtn");
-      if(setTodayBtn){
-        setTodayBtn.addEventListener("click", ()=>{
-          setActiveDate(todayISO());
-          hydrateAll();
-          toast("Today ✅");
-        });
-      }
-
-      const newDayBtn = $("newDayBtn");
-      if(newDayBtn){
-        newDayBtn.addEventListener("click", ()=>{
-          const iso = getActiveDate();
-          setDay(defaultDay(iso));
-          hydrateAll();
-          toast("Blank day ✅");
-        });
-      }
-
-      const saveMorningBtn = $("saveMorningBtn");
-      const copyMorningBtn = $("copyMorningBtn");
-      if(saveMorningBtn){
-        saveMorningBtn.addEventListener("click", ()=>{
-          const d = getDay();
-          d.morning = collectMorningFromUI();
-          setDay(d);
-          hydrateAll();
-          toast("Morning saved ✅");
-        });
-      }
-      if(copyMorningBtn){
-        copyMorningBtn.addEventListener("click", ()=>{
-          const d = getDay();
-          const txt =
-`Morning • ${d.date}
-Certainty: ${d.morning?.certainty || "—"}
-Energy: ${d.morning?.energy || "—"}
-Pattern: ${d.morning?.pattern || "—"}
-Intention: ${d.morning?.intention || "—"}`;
-          copyText(txt);
-        });
-      }
-
-      const saveRestrictionBtn = $("saveRestrictionBtn");
-      const copyRestrictionBtn = $("copyRestrictionBtn");
-      if(saveRestrictionBtn){
-        saveRestrictionBtn.addEventListener("click", ()=>{
-          const d = getDay();
-          d.restriction = collectRestrictionFromUI();
-          setDay(d);
-          hydrateAll();
-          toast("Restriction saved ✅");
-        });
-      }
-      if(copyRestrictionBtn){
-        copyRestrictionBtn.addEventListener("click", ()=>{
-          const d = getDay();
-          const txt =
-`Restriction • ${d.date}
-Move: ${d.restriction?.move || "—"}
-Trigger: ${d.restriction?.trigger || "—"}
-Witness: ${d.restriction?.note || "—"}
-Completed: ${d.restriction?.completed ? "Yes" : "No"}`;
-          copyText(txt);
-        });
-      }
-
-      const saveEveningBtn = $("saveEveningBtn");
-      const copyEveningBtn = $("copyEveningBtn");
-      if(saveEveningBtn){
-        saveEveningBtn.addEventListener("click", ()=>{
-          const d = getDay();
-          d.evening = collectEveningFromUI();
-          setDay(d);
-          hydrateAll();
-          toast("Evening saved ✅");
-        });
-      }
-      if(copyEveningBtn){
-        copyEveningBtn.addEventListener("click", ()=>{
-          const d = getDay();
-          const txt =
-`Evening • ${d.date}
-Win: ${d.evening?.win || "—"}
-Lesson: ${d.evening?.lesson || "—"}
-Seal: ${d.evening?.seal || "—"}`;
-          copyText(txt);
-        });
-      }
-
-      // Tools export/import
-      const exportBtn = $("exportBtn");
-      const copyExportBtn = $("copyExportBtn");
-      const exportBox = $("exportBox");
-      const resetTodayBtn = $("resetTodayBtn");
-
-      function buildExport(){
-        const obj = {
-          profile: getProfile(),
-          meta: getMeta(),
-          activeDate: getActiveDate(),
-          days: listSavedDays().reduce((acc, iso)=>{
-            acc[iso] = getDay(iso);
-            return acc;
-          }, {})
-        };
-        return obj;
-      }
-
-      if(exportBtn && exportBox){
-        exportBtn.addEventListener("click", ()=>{
-          const obj = buildExport();
-          exportBox.value = JSON.stringify(obj, null, 2);
-          downloadJSON(`kai-export-${todayISO()}.json`, obj);
-          toast("Downloaded ✅");
-        });
-      }
-
-      if(copyExportBtn && exportBox){
-        copyExportBtn.addEventListener("click", ()=>{
-          const obj = buildExport();
-          exportBox.value = JSON.stringify(obj, null, 2);
-          copyText(exportBox.value);
-        });
-      }
-
-      if(resetTodayBtn){
-        resetTodayBtn.addEventListener("click", ()=>{
-          const iso = todayISO();
-          setActiveDate(iso);
-          setDay(defaultDay(iso));
-          hydrateAll();
-          toast("Today reset ✅");
-        });
-      }
-
-      const refreshHistoryBtn = $("refreshHistoryBtn");
-      if(refreshHistoryBtn){
-        refreshHistoryBtn.addEventListener("click", ()=>{
-          hydrateHistory();
-          toast("History refreshed ✅");
-        });
+      // service worker (optional)
+      if("serviceWorker" in navigator){
+        navigator.serviceWorker.register("./sw.js").catch(()=>{});
       }
     }
 
-    // ---------- Boot ----------
-    function boot(){
-      // ensure meta/profile exist (kills null-crashes forever)
-      setProfile(getProfile());
-      setMeta(getMeta());
-      setActiveDate(getActiveDate());
-
-      wireTabs();
-      wireButtons();
-      wireShareCard();
-      wireLibrary();
-      wireGematria();
-
-      hydrateAll();
-      toast("KAI online ✅");
-    }
-
-    document.addEventListener("DOMContentLoaded", boot);
+    init();
   </script>
 </body>
 </html>
