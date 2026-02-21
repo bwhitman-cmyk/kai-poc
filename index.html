@@ -3,53 +3,74 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KAI – Prototype v2</title>
+<title>KAI – Prototype v3</title>
+
 <style>
   :root{
-    --bg:#0e0e0e; --panel:#151515; --btn:#1c1c1c; --muted:#b9b9b9; --gold:#ffd54a;
-    --line:#252525; --danger:#ff5b5b;
+    --bg:#0e0e0e; --panel:#141414; --btn:#1c1c1c; --muted:#b9b9b9; --gold:#ffd54a;
+    --line:#262626; --danger:#ff5b5b; --ok:#5bffb1;
   }
-  body{font-family:-apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#fff;margin:0;padding:16px;}
-  h1{font-size:30px;margin:8px 0 6px;text-align:center;}
-  .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0 14px;}
+  body{font-family:-apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#fff;margin:0;padding:14px;}
+  .wrap{max-width:920px;margin:0 auto;}
+  h1{font-size:30px;margin:6px 0 10px;text-align:center;letter-spacing:0.5px;}
+
+  /* top chips */
+  .topbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0 14px;}
+  .chip{
+    background:#1a1a1a;border:1px solid var(--line);border-radius:999px;padding:8px 10px;
+    font-size:13px;color:#fff;display:flex;gap:8px;align-items:center;
+  }
+  .chip b{color:var(--gold);font-weight:700;}
+  .chip small{color:var(--muted);font-size:12px;}
+
+  /* tabs */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0 12px;}
   .tab{background:#202020;color:#fff;border:none;border-radius:12px;padding:10px 12px;font-size:14px;}
   .tab.active{background:var(--gold);color:#000;}
-  .wrap{max-width:860px;margin:0 auto;}
-  .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:10px 0 14px;}
-  .card{background:var(--panel);border-radius:14px;padding:14px;width:min(410px,94vw);text-align:left;border:1px solid var(--line);}
+
+  /* cards */
+  .grid{display:grid;grid-template-columns:1fr;gap:12px;}
+  @media (min-width:900px){ .grid{grid-template-columns:1fr 1fr;} }
+  .card{background:var(--panel);border-radius:14px;padding:14px;border:1px solid var(--line);}
   .label{font-size:13px;color:var(--muted);margin-bottom:6px;}
-  .big{font-size:42px;color:var(--gold);line-height:1.0;}
+  .big{font-size:34px;color:var(--gold);line-height:1.0;}
   .sub{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.35;}
+
+  /* buttons + inputs */
   .btn{width:100%;padding:18px;margin:8px 0;font-size:20px;border-radius:14px;border:none;background:var(--btn);color:#fff;}
   .btn:active{background:var(--gold);color:#000;}
   .btn:disabled{background:#2a2a2a;color:#666;}
   .btn.active{background:var(--gold);color:#000;}
-  .overlay{position:fixed;top:36%;left:50%;transform:translate(-50%,-50%);font-size:22px;background:rgba(0,0,0,0.92);
-    padding:16px 18px;border-radius:14px;color:var(--gold);display:none;max-width:88vw;text-align:center;border:1px solid #333;}
-  .sinai{margin:10px 0 0;font-size:18px;color:var(--gold);text-align:center;}
-  .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0;}
+
+  .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:10px 0 0;}
   .smallbtn{padding:11px 12px;font-size:14px;border-radius:12px;border:none;background:#232323;color:#fff;}
   .smallbtn:active{background:#333;}
-  .danger{background:#2b1717;color:#fff;border:1px solid #4b1e1e;}
-  .grid{display:grid;grid-template-columns:1fr;gap:10px;}
-  @media (min-width:860px){ .grid{grid-template-columns:1fr 1fr;} }
+  .danger{background:#2b1717;border:1px solid #4b1e1e;}
+  .ok{background:#103020;border:1px solid #1a5a3f;}
+
   input, textarea, select{
     width:100%; padding:12px; border-radius:12px; border:1px solid #2f2f2f; background:#101010; color:#fff; font-size:16px;
     box-sizing:border-box;
   }
-  textarea{min-height:110px; resize:vertical;}
-  .mini{font-size:12px;color:var(--muted);}
-  .list{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;}
+  textarea{min-height:120px;resize:vertical;}
+
+  .two{display:grid;grid-template-columns:1fr;gap:10px;}
+  @media (min-width:740px){ .two{grid-template-columns:1fr 1fr;} }
+
+  .hr{height:1px;background:var(--line);margin:12px 0;}
+  .list{margin-top:10px;}
   .item{padding:10px;border:1px solid var(--line);border-radius:12px;margin:8px 0;background:#101010;}
   .item .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
   .pill{font-size:12px;color:#000;background:var(--gold);padding:4px 8px;border-radius:999px;white-space:nowrap;}
-  .hr{height:1px;background:var(--line);margin:12px 0;}
-  .right{float:right;}
   .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;}
-  .muted{color:var(--muted);}
-  .two{display:grid;grid-template-columns:1fr;gap:10px;}
-  @media (min-width:740px){ .two{grid-template-columns:1fr 1fr;} }
-  .nowrap{white-space:nowrap;}
+
+  .overlay{position:fixed;top:34%;left:50%;transform:translate(-50%,-50%);font-size:22px;background:rgba(0,0,0,0.92);
+    padding:16px 18px;border-radius:14px;color:var(--gold);display:none;max-width:88vw;text-align:center;border:1px solid #333;}
+  .sinai{margin:8px 0 0;font-size:16px;color:var(--gold);text-align:center;}
+
+  /* share card preview */
+  .preview{width:100%;border-radius:14px;border:1px solid var(--line);background:#0b0b0b;display:none;}
+  .mini{font-size:12px;color:var(--muted);}
 </style>
 </head>
 
@@ -57,69 +78,132 @@
 <div class="wrap">
   <h1>KAI</h1>
 
+  <div class="topbar">
+    <div class="chip"><small>Pillars</small> <b id="pillarsChip">0</b><small id="pillarsGoalChip">/100</small></div>
+    <div class="chip"><small>Cycles</small> <b id="cyclesChip">0</b><small id="cyclesGoalChip">/10</small></div>
+    <div class="chip"><small>Certainty</small> <b id="certaintyChip">5</b><small>/10</small></div>
+    <div class="chip"><small>Energy</small> <b id="energyChip">5</b><small>/10</small></div>
+  </div>
+
   <div class="tabs">
-    <button class="tab active" data-view="practice" onclick="setView('practice')">Practice</button>
+    <button class="tab active" data-view="home" onclick="setView('home')">Home</button>
+    <button class="tab" data-view="practice" onclick="setView('practice')">Practice</button>
     <button class="tab" data-view="names" onclick="setView('names')">72 Names</button>
     <button class="tab" data-view="gematria" onclick="setView('gematria')">Gematria</button>
-    <button class="tab" data-view="zohar" onclick="setView('zohar')">Zohar Library</button>
+    <button class="tab" data-view="zohar" onclick="setView('zohar')">Zohar</button>
+    <button class="tab" data-view="share" onclick="setView('share')">Share Card</button>
     <button class="tab" data-view="history" onclick="setView('history')">History</button>
     <button class="tab" data-view="settings" onclick="setView('settings')">Settings</button>
   </div>
 
-  <div id="view_practice">
-    <div class="row">
+  <!-- HOME -->
+  <div id="view_home">
+    <div class="grid">
       <div class="card">
-        <div class="label">Pillars (CONNECT taps)</div>
-        <div class="big" id="pillarsStat">0 / 100</div>
-        <div class="sub">Counts every CONNECT. Frequency builds the vessel.</div>
+        <div class="label">Daily Metrics</div>
+        <div class="two">
+          <div>
+            <div class="label">Certainty</div>
+            <input id="certainty" type="range" min="0" max="10" value="5" oninput="setMetric('certainty', this.value)" />
+            <div class="mini">Set quickly. This is your Sinai clarity gauge.</div>
+          </div>
+          <div>
+            <div class="label">Energy</div>
+            <input id="energy" type="range" min="0" max="10" value="5" oninput="setMetric('energy', this.value)" />
+            <div class="mini">Simple and honest. No story, just data.</div>
+          </div>
+        </div>
+        <div class="hr"></div>
+        <div class="label">Quick Actions</div>
+        <div class="two">
+          <button class="smallbtn ok" onclick="pressConnect()">CONNECT (+pillar)</button>
+          <button class="smallbtn" onclick="setView('practice')">Run Full Cycle</button>
+        </div>
+        <div id="sinaiMessage"></div>
+        <div class="mini" id="meta"></div>
       </div>
+
       <div class="card">
-        <div class="label">Cycles (full sequence completions)</div>
-        <div class="big" id="cyclesStat">0 / 10</div>
-        <div class="sub">Counts when you finish SEAL after the sequence.</div>
+        <div class="label">Profile</div>
+        <div class="two">
+          <div>
+            <label class="mini">Birthday</label>
+            <input id="birthday" type="date" onchange="saveProfile()" />
+          </div>
+          <div>
+            <label class="mini">Astrological Sign</label>
+            <input id="zodiac" disabled />
+          </div>
+        </div>
+        <div class="two" style="margin-top:10px;">
+          <div>
+            <label class="mini">Tikkun (enter for now)</label>
+            <input id="tikkun" placeholder="e.g., (enter Centre method result)" onchange="saveProfile()" />
+          </div>
+          <div>
+            <label class="mini">Notes</label>
+            <input id="profileNote" placeholder="Optional…" onchange="saveProfile()" />
+          </div>
+        </div>
+        <div class="mini muted" style="margin-top:10px;">
+          We’ll automate tikkun once you tell me the exact Centre method you want to use.
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="card" style="width:min(860px,94vw);margin:0 auto;">
-      <div class="label">Sequence</div>
-      <button class="btn" id="connect" onclick="pressConnect()">CONNECT</button>
-      <button class="btn" id="align" onclick="pressStep(2)" disabled>ALIGN</button>
-      <button class="btn" id="restrict" onclick="pressStep(3)" disabled>RESTRICT</button>
-      <button class="btn" id="elevate" onclick="pressStep(4)" disabled>ELEVATE</button>
-      <button class="btn" id="seal" onclick="pressStep(5)" disabled>SEAL</button>
-
-      <div id="sinaiMessage"></div>
+  <!-- PRACTICE -->
+  <div id="view_practice" style="display:none;">
+    <div class="card">
+      <div class="label">Sequence: CONNECT → ALIGN → RESTRICT → ELEVATE → SEAL</div>
+      <button class="btn" id="connectBtn" onclick="pressConnect()">CONNECT</button>
+      <button class="btn" id="alignBtn" onclick="pressStep(2)" disabled>ALIGN</button>
+      <button class="btn" id="restrictBtn" onclick="pressStep(3)" disabled>RESTRICT</button>
+      <button class="btn" id="elevateBtn" onclick="pressStep(4)" disabled>ELEVATE</button>
+      <button class="btn" id="sealBtn" onclick="pressStep(5)" disabled>SEAL</button>
 
       <div class="controls">
         <button class="smallbtn" onclick="undoConnect()">Undo CONNECT</button>
         <button class="smallbtn" onclick="resetSequence()">Reset Sequence</button>
       </div>
-
-      <div class="mini" id="meta"></div>
+      <div class="mini muted" style="margin-top:8px;">
+        Pillar counts on CONNECT. Cycle counts when you complete SEAL.
+      </div>
     </div>
-
-    <div class="overlay" id="overlay"></div>
   </div>
 
+  <!-- 72 NAMES -->
   <div id="view_names" style="display:none;">
     <div class="grid">
       <div class="card">
-        <div class="label">Today’s 72 Name</div>
+        <div class="label">Today’s Name</div>
         <div class="big mono" id="todayName">---</div>
-        <div class="sub" id="todayNameMeta"></div>
+        <div class="sub" id="todayNameMeaning"></div>
+        <div class="hr"></div>
+
+        <div class="label">Edit meaning & practice</div>
+        <input id="nameTitle" placeholder="English encapsulation (e.g., Defying Gravity)" />
+        <textarea id="nameMeaning" placeholder="Meaning behind the Name (Centre language)."></textarea>
+        <textarea id="namePractice" placeholder="Practice: what should I DO today?"></textarea>
+
         <div class="controls">
           <button class="smallbtn" onclick="prevName()">Prev</button>
           <button class="smallbtn" onclick="nextName()">Next</button>
-          <button class="smallbtn" onclick="addNameToHistory()">Log Today’s Name</button>
+          <button class="smallbtn ok" onclick="saveNameMeaning()">Save</button>
         </div>
+        <div class="controls">
+          <button class="smallbtn" onclick="logTodayName()">Log</button>
+          <button class="smallbtn" onclick="setView('share')">Make Share Card</button>
+        </div>
+        <div class="mini muted">This is where you paste the “meaning behind the name.” Once you seed the dictionary, KAI stops sounding empty.</div>
       </div>
 
       <div class="card">
-        <div class="label">Find a Name</div>
+        <div class="label">Browse / Jump</div>
         <div class="two">
           <div>
-            <label class="mini">By number (1–72)</label>
-            <input id="nameNumber" inputmode="numeric" placeholder="e.g., 12" />
+            <label class="mini">Jump to #</label>
+            <input id="nameNumber" inputmode="numeric" placeholder="1–72" />
           </div>
           <div>
             <label class="mini">Search letters</label>
@@ -132,47 +216,38 @@
           <button class="smallbtn" onclick="randomName()">Random</button>
         </div>
         <div class="list" id="nameResults"></div>
+        <div class="hr"></div>
+        <div class="label">All 72</div>
+        <div class="list" id="allNames"></div>
       </div>
-    </div>
-
-    <div class="card" style="width:min(860px,94vw);margin:12px auto 0;">
-      <div class="label">Browse All 72</div>
-      <div class="two">
-        <div>
-          <label class="mini">Jump to</label>
-          <select id="nameJump" onchange="jumpName()"></select>
-        </div>
-        <div>
-          <label class="mini">Display format</label>
-          <select id="nameFormat" onchange="renderTodayName()">
-            <option value="triplet">Triplet only</option>
-            <option value="numbered">Number + triplet</option>
-          </select>
-        </div>
-      </div>
-      <div class="list" id="allNames"></div>
     </div>
   </div>
 
+  <!-- GEMATRIA -->
   <div id="view_gematria" style="display:none;">
     <div class="grid">
       <div class="card">
-        <div class="label">Gematria Calculator</div>
-        <input id="gemInput" placeholder="Enter Hebrew word or phrase (e.g., שלום)" />
+        <div class="label">Gematria</div>
+        <input id="gemInput" placeholder="Enter Hebrew word/phrase (e.g., שלום)" />
         <div class="controls">
           <button class="smallbtn" onclick="calcGematria()">Calculate</button>
-          <button class="smallbtn" onclick="saveGematria()">Save</button>
+          <button class="smallbtn ok" onclick="saveGematria()">Save</button>
           <button class="smallbtn" onclick="clearGematria()">Clear</button>
         </div>
         <div class="hr"></div>
+
         <div class="label">Result</div>
         <div class="big" id="gemValue">—</div>
-        <div class="sub" id="gemBreakdown"></div>
+        <div class="sub mono" id="gemBreakdown"></div>
+
         <div class="hr"></div>
-        <div class="label">Practice Prompt (Centre-aligned)</div>
-        <div class="sub" id="gemPrompt">
-          Use this number as a trigger for consciousness: Connect, restrict reactivity, and reveal Light through a concrete act of sharing.
+        <div class="label">Insight (editable)</div>
+        <textarea id="gemInsight" placeholder="KAI Insight Engine output… (you can edit)"></textarea>
+        <div class="controls">
+          <button class="smallbtn" onclick="autofillInsight()">Auto Insight</button>
+          <button class="smallbtn ok" onclick="saveGemInsight()">Save Insight</button>
         </div>
+        <div class="mini muted">Auto Insight is a starter. The real magic is your voice + Centre language.</div>
       </div>
 
       <div class="card">
@@ -183,166 +258,217 @@
     </div>
   </div>
 
+  <!-- ZOHAR -->
   <div id="view_zohar" style="display:none;">
     <div class="grid">
       <div class="card">
-        <div class="label">Add Zohar Passage (Your curated library)</div>
-        <input id="zTitle" placeholder="Title (e.g., Terumah, Section 39)" />
+        <div class="label">Add Passage (your notes / short excerpt)</div>
+        <input id="zTitle" placeholder="Title (e.g., Terumah: 100 Pillars)" />
         <div class="two">
-          <div>
-            <label class="mini">Parsha / Source</label>
-            <input id="zSource" placeholder="e.g., Zohar Terumah" />
-          </div>
-          <div>
-            <label class="mini">Tags (comma-separated)</label>
-            <input id="zTags" placeholder="e.g., restriction, certainty, mishkan" />
-          </div>
+          <div><input id="zSource" placeholder="Source (e.g., Zohar Terumah / Eitan notes)" /></div>
+          <div><input id="zTags" placeholder="Tags (comma) e.g., mishkan, restriction, certainty" /></div>
         </div>
-        <textarea id="zText" placeholder="Paste a short excerpt or your own paraphrase/notes here."></textarea>
+        <textarea id="zText" placeholder="Paste your paraphrase/notes (recommended) or a short excerpt."></textarea>
         <div class="controls">
-          <button class="smallbtn" onclick="saveZohar()">Save</button>
+          <button class="smallbtn ok" onclick="saveZohar()">Save</button>
           <button class="smallbtn" onclick="clearZoharForm()">Clear</button>
         </div>
-        <div class="mini muted">
-          Note: This library is designed for your curated passages and notes. Avoid pasting large copyrighted text.
-        </div>
+        <div class="mini muted">You can build a real library fast by pasting class notes + your own summaries.</div>
       </div>
 
       <div class="card">
-        <div class="label">Zohar Library</div>
-        <input id="zSearch" placeholder="Search by title, source, tags, text…" oninput="renderZohar()" />
+        <div class="label">Library</div>
+        <input id="zSearch" placeholder="Search…" oninput="renderZohar()" />
         <div class="controls">
-          <button class="smallbtn" onclick="seedZoharTemplates()">Add Templates</button>
+          <button class="smallbtn" onclick="seedZoharStarter()">Starter Pack</button>
           <button class="smallbtn" onclick="exportZohar()">Export JSON</button>
-          <button class="smallbtn danger" onclick="clearZoharAll()">Clear Library</button>
+          <label class="smallbtn" style="cursor:pointer;">
+            Import JSON <input id="zImport" type="file" accept="application/json" style="display:none" onchange="importZohar(event)" />
+          </label>
+          <button class="smallbtn danger" onclick="clearZoharAll()">Clear</button>
         </div>
         <div class="list" id="zList"></div>
       </div>
     </div>
   </div>
 
+  <!-- SHARE CARD -->
+  <div id="view_share" style="display:none;">
+    <div class="grid">
+      <div class="card">
+        <div class="label">Build a Share Card</div>
+        <select id="cardType" onchange="renderCardDefaults()">
+          <option value="name">72 Name</option>
+          <option value="zohar">Zohar Note</option>
+          <option value="gem">Gematria</option>
+          <option value="practice">Practice Moment</option>
+        </select>
+        <div class="hr"></div>
+        <input id="cardTitle" placeholder="Title" />
+        <textarea id="cardBody" placeholder="Body"></textarea>
+        <div class="controls">
+          <button class="smallbtn ok" onclick="generateCard()">Generate</button>
+          <button class="smallbtn" onclick="clearCard()">Clear</button>
+        </div>
+        <div class="mini muted">On iOS, after generation: long-press image to Save or Share.</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Preview</div>
+        <canvas id="cardCanvas" class="preview"></canvas>
+        <div class="controls">
+          <button class="smallbtn" onclick="downloadCard()">Download PNG</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
   <div id="view_history" style="display:none;">
-    <div class="card" style="width:min(860px,94vw);margin:0 auto;">
+    <div class="card">
       <div class="label">Today’s History</div>
       <div class="controls">
-        <button class="smallbtn" onclick="exportHistory()">Export JSON</button>
+        <button class="smallbtn" onclick="exportAll()">Export All JSON</button>
         <button class="smallbtn danger" onclick="clearHistory()">Clear History</button>
       </div>
       <div class="list" id="historyList"></div>
     </div>
   </div>
 
+  <!-- SETTINGS -->
   <div id="view_settings" style="display:none;">
-    <div class="card" style="width:min(860px,94vw);margin:0 auto;">
-      <div class="label">Daily Goals</div>
+    <div class="card">
+      <div class="label">Goals</div>
       <div class="two">
-        <div>
-          <label class="mini">Pillars goal (default 100)</label>
-          <input id="goalPillars" inputmode="numeric" />
-        </div>
-        <div>
-          <label class="mini">Cycles goal</label>
-          <input id="goalCycles" inputmode="numeric" />
-        </div>
+        <div><label class="mini">Pillars</label><input id="goalPillars" inputmode="numeric" /></div>
+        <div><label class="mini">Cycles</label><input id="goalCycles" inputmode="numeric" /></div>
       </div>
       <div class="controls">
-        <button class="smallbtn" onclick="saveGoals()">Save Goals</button>
-        <button class="smallbtn" onclick="resetToday()">Reset Today (counts)</button>
+        <button class="smallbtn ok" onclick="saveGoals()">Save</button>
+        <button class="smallbtn danger" onclick="resetTodayAll()">Reset Today</button>
       </div>
 
       <div class="hr"></div>
-
       <div class="label">Data</div>
       <div class="controls">
-        <button class="smallbtn" onclick="exportAll()">Export All (JSON)</button>
+        <button class="smallbtn" onclick="exportAll()">Export All JSON</button>
         <button class="smallbtn danger" onclick="clearAllData()">Clear ALL Data</button>
       </div>
-
       <div class="mini muted" id="storageNote"></div>
     </div>
   </div>
 
+  <div class="overlay" id="overlay"></div>
 </div>
 
 <script>
-/* -------------------- Date + storage keys -------------------- */
+/* -------------------- storage -------------------- */
 const today = new Date().toISOString().split("T")[0];
 const baseKey = "kai_" + today;
 
 const KEY = {
+  goals: "kai_goals_v3",
+  metrics: baseKey + "_metrics",
   pillars: baseKey + "_pillars",
-  cycles:  baseKey + "_cycles",
+  cycles: baseKey + "_cycles",
   history: baseKey + "_history",
-  goals:   "kai_goals_v1",
-  zohar:   "kai_zohar_v1",
-  gem:     "kai_gem_v1",
-  namesLog: baseKey + "_nameslog"
+  profile: "kai_profile_v3",
+  zohar: "kai_zohar_v3",
+  gem: "kai_gem_v3",
+  names: "kai_72_meanings_v3"
 };
 
 const DEFAULT_GOALS = { pillars: 100, cycles: 10 };
 
-let goals = safeParse(localStorage.getItem(KEY.goals), DEFAULT_GOALS);
-if (!goals || typeof goals !== "object") goals = DEFAULT_GOALS;
+let goals = safeParse(localStorage.getItem(KEY.goals), DEFAULT_GOALS) || DEFAULT_GOALS;
+let metrics = safeParse(localStorage.getItem(KEY.metrics), { certainty: 5, energy: 5 }) || { certainty: 5, energy: 5 };
 
 let pillars = parseInt(localStorage.getItem(KEY.pillars) || "0", 10);
 let cycles  = parseInt(localStorage.getItem(KEY.cycles)  || "0", 10);
 
-let history = safeParse(localStorage.getItem(KEY.history), []);
-let zoharLib = safeParse(localStorage.getItem(KEY.zohar), []);
-let gemSaved = safeParse(localStorage.getItem(KEY.gem), []);
-let namesLog = safeParse(localStorage.getItem(KEY.namesLog), []);
+let history = safeParse(localStorage.getItem(KEY.history), []) || [];
+let zoharLib = safeParse(localStorage.getItem(KEY.zohar), []) || [];
+let gemSaved = safeParse(localStorage.getItem(KEY.gem), []) || [];
+let profile = safeParse(localStorage.getItem(KEY.profile), { birthday:"", tikkun:"", note:"" }) || { birthday:"", tikkun:"", note:"" };
 
-function safeParse(str, fallback){
-  try { return str ? JSON.parse(str) : fallback; }
-  catch(e){ return fallback; }
-}
+let namesMeaning = safeParse(localStorage.getItem(KEY.names), {}) || {}; // { "1": {title, meaning, practice}, ... }
 
+/* -------------------- utils -------------------- */
+function safeParse(str, fallback){ try { return str ? JSON.parse(str) : fallback; } catch(e){ return fallback; } }
 function saveAll(){
   localStorage.setItem(KEY.goals, JSON.stringify(goals));
+  localStorage.setItem(KEY.metrics, JSON.stringify(metrics));
   localStorage.setItem(KEY.pillars, String(pillars));
   localStorage.setItem(KEY.cycles, String(cycles));
   localStorage.setItem(KEY.history, JSON.stringify(history));
   localStorage.setItem(KEY.zohar, JSON.stringify(zoharLib));
   localStorage.setItem(KEY.gem, JSON.stringify(gemSaved));
-  localStorage.setItem(KEY.namesLog, JSON.stringify(namesLog));
+  localStorage.setItem(KEY.profile, JSON.stringify(profile));
+  localStorage.setItem(KEY.names, JSON.stringify(namesMeaning));
 }
-
 function nowTime(){
   const d = new Date();
   return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 }
-
-function logEvent(type, detail){
-  history.unshift({ t: nowTime(), type, detail });
-  if (history.length > 400) history.pop();
-  saveAll();
+function escapeHtml(s){
+  return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
-
-/* -------------------- Tabs -------------------- */
-function setView(name){
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  document.querySelector(`.tab[data-view="${name}"]`).classList.add("active");
-
-  ["practice","names","gematria","zohar","history","settings"].forEach(v=>{
-    document.getElementById("view_"+v).style.display = (v===name) ? "" : "none";
-  });
-
-  if (name === "history") renderHistory();
-  if (name === "names") { renderTodayName(); renderAllNames(); }
-  if (name === "gematria") renderSavedGematria();
-  if (name === "zohar") renderZohar();
-  if (name === "settings") loadSettingsForm();
-}
-
-/* -------------------- Overlay -------------------- */
 function showOverlay(text){
   const overlay = document.getElementById("overlay");
   overlay.innerText = text;
   overlay.style.display = "block";
-  setTimeout(()=> overlay.style.display="none", 1200);
+  setTimeout(()=> overlay.style.display="none", 1100);
+}
+function logEvent(type, detail){
+  history.unshift({ t: nowTime(), type, detail });
+  if (history.length > 500) history.pop();
+  saveAll();
 }
 
-/* -------------------- Practice engine -------------------- */
+/* -------------------- tabs -------------------- */
+function setView(name){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelector(`.tab[data-view="${name}"]`).classList.add("active");
+
+  ["home","practice","names","gematria","zohar","share","history","settings"].forEach(v=>{
+    document.getElementById("view_"+v).style.display = (v===name) ? "" : "none";
+  });
+
+  if (name==="names"){ renderTodayName(); renderAllNames(); }
+  if (name==="gematria"){ renderSavedGematria(); }
+  if (name==="zohar"){ renderZohar(); }
+  if (name==="history"){ renderHistory(); }
+  if (name==="settings"){ loadSettings(); }
+  if (name==="share"){ renderCardDefaults(); }
+}
+
+/* -------------------- top chips + metrics -------------------- */
+function updateChips(){
+  document.getElementById("pillarsChip").innerText = pillars;
+  document.getElementById("pillarsGoalChip").innerText = "/" + goals.pillars;
+  document.getElementById("cyclesChip").innerText = cycles;
+  document.getElementById("cyclesGoalChip").innerText = "/" + goals.cycles;
+  document.getElementById("certaintyChip").innerText = metrics.certainty;
+  document.getElementById("energyChip").innerText = metrics.energy;
+
+  const sinai = (pillars >= goals.pillars);
+  document.getElementById("sinaiMessage").innerHTML = sinai ? `<div class="sinai">Sinai Mode Activated. Clarity Stabilizing.</div>` : "";
+  document.getElementById("meta").innerText = `Today: ${today} | Stored locally on this device`;
+  document.getElementById("storageNote").innerText = `Saved locally (localStorage). Export JSON if you want portability.`;
+}
+
+function setMetric(k, v){
+  metrics[k] = parseInt(v,10);
+  saveAll();
+  updateChips();
+}
+function loadMetrics(){
+  document.getElementById("certainty").value = metrics.certainty ?? 5;
+  document.getElementById("energy").value = metrics.energy ?? 5;
+  updateChips();
+}
+
+/* -------------------- practice engine -------------------- */
 let currentStep = 0; // 0 none, 1 connect, 2 align, 3 restrict, 4 elevate, 5 seal
 const LINES = {
   1: "The Light of the Creator is here.",
@@ -352,138 +478,96 @@ const LINES = {
   5: "Thank you for this Light."
 };
 
-function updateStats(){
-  document.getElementById("pillarsStat").innerText = `${pillars} / ${goals.pillars}`;
-  document.getElementById("cyclesStat").innerText  = `${cycles} / ${goals.cycles}`;
-  document.getElementById("meta").innerText = `Today: ${today} | Stored locally (this device)`;
-  document.getElementById("storageNote").innerText =
-    "Everything is saved on this device via localStorage. Export JSON if you want portability.";
-
-  const sinai = (pillars >= goals.pillars);
-  document.getElementById("sinaiMessage").innerHTML = sinai
-    ? `<div class="sinai">Sinai Mode Activated. Clarity Stabilizing.</div>`
-    : "";
-}
-
-function setButtonStates(){
-  const ids = ["connect","align","restrict","elevate","seal"];
-  ids.forEach(id=>{
+function setButtons(){
+  const map = [
+    ["connectBtn",1],["alignBtn",2],["restrictBtn",3],["elevateBtn",4],["sealBtn",5]
+  ];
+  map.forEach(([id,step])=>{
     const b = document.getElementById(id);
     b.disabled = true;
     b.classList.remove("active");
+    if (currentStep >= step) b.classList.add("active");
   });
-
-  // CONNECT always enabled
-  document.getElementById("connect").disabled = false;
-
-  // enable next step if in sequence
-  if (currentStep >= 1 && currentStep < 5){
-    const nextId = ids[currentStep]; // step 1 -> align, step 2 -> restrict, etc
+  document.getElementById("connectBtn").disabled = false;
+  if (currentStep>=1 && currentStep<5){
+    const nextId = map[currentStep][0]; // step 1 enables alignBtn, etc
     document.getElementById(nextId).disabled = false;
   }
-
-  // highlight progressed steps
-  if (currentStep >= 1) document.getElementById("connect").classList.add("active");
-  if (currentStep >= 2) document.getElementById("align").classList.add("active");
-  if (currentStep >= 3) document.getElementById("restrict").classList.add("active");
-  if (currentStep >= 4) document.getElementById("elevate").classList.add("active");
-  if (currentStep >= 5) document.getElementById("seal").classList.add("active");
 }
 
 function pressConnect(){
-  // B: each CONNECT counts as a pillar
+  // Pillar counts on CONNECT
   if (pillars < goals.pillars) pillars++;
-  showOverlay(LINES[1]);
   currentStep = 1;
-
+  showOverlay(LINES[1]);
   logEvent("CONNECT", "pillar +1");
   saveAll();
-  updateStats();
-  setButtonStates();
+  updateChips();
+  setButtons();
 }
 
 function pressStep(stepNum){
   if (stepNum !== currentStep + 1) return;
-
   currentStep = stepNum;
   showOverlay(LINES[stepNum]);
-
-  const label = ["","CONNECT","ALIGN","RESTRICT","ELEVATE","SEAL"][stepNum];
-  logEvent(label, "step");
-
+  logEvent(["","CONNECT","ALIGN","RESTRICT","ELEVATE","SEAL"][stepNum], "step");
   if (stepNum === 5){
-    // A: full cycle counts when SEAL completed
     cycles++;
     logEvent("CYCLE", "completed +1");
     saveAll();
-    updateStats();
-    setTimeout(()=>{ currentStep = 0; setButtonStates(); }, 500);
+    updateChips();
+    setTimeout(()=>{ currentStep=0; setButtons(); }, 450);
     return;
   }
-
-  saveAll();
-  updateStats();
-  setButtonStates();
+  saveAll(); updateChips(); setButtons();
 }
 
 function undoConnect(){
-  if (pillars > 0) pillars--;
-  logEvent("UNDO", "pillar -1");
-  saveAll();
-  updateStats();
+  if (pillars>0) pillars--;
+  logEvent("UNDO","pillar -1");
+  saveAll(); updateChips();
 }
 
 function resetSequence(){
-  currentStep = 0;
-  logEvent("RESET", "sequence reset");
-  saveAll();
-  setButtonStates();
+  currentStep=0;
+  logEvent("RESET","sequence reset");
+  saveAll(); setButtons();
 }
 
-function resetToday(){
-  pillars = 0; cycles = 0; currentStep = 0;
-  history = [];
-  namesLog = [];
-  localStorage.removeItem(KEY.pillars);
-  localStorage.removeItem(KEY.cycles);
-  localStorage.removeItem(KEY.history);
-  localStorage.removeItem(KEY.namesLog);
-  saveAll();
-  updateStats();
-  setButtonStates();
-  renderHistory();
-}
-
-function exportHistory(){
-  const payload = { date: today, goals, pillars, cycles, history };
-  downloadJSON(payload, `kai_history_${today}.json`);
-}
-
-function clearHistory(){
-  history = [];
-  logEvent("CLEAR", "history cleared");
-  saveAll();
-  renderHistory();
-}
-
-function renderHistory(){
-  const el = document.getElementById("historyList");
-  if (!history.length){
-    el.innerHTML = `<div class="mini muted">No events yet today.</div>`;
-    return;
+/* -------------------- profile (birthday/zodiac/tikkun) -------------------- */
+function zodiacSignFromDate(iso){
+  if (!iso) return "";
+  const d = new Date(iso+"T00:00:00");
+  const m = d.getMonth()+1, day = d.getDate();
+  const z = [
+    ["Capricorn", 1, 19], ["Aquarius", 2, 18], ["Pisces", 3, 20], ["Aries", 4, 19],
+    ["Taurus", 5, 20], ["Gemini", 6, 20], ["Cancer", 7, 22], ["Leo", 8, 22],
+    ["Virgo", 9, 22], ["Libra", 10, 22], ["Scorpio", 11, 21], ["Sagittarius", 12, 21],
+    ["Capricorn", 12, 31]
+  ];
+  for (const [name, mm, dd] of z){
+    if (m < mm || (m === mm && day <= dd)) return name;
   }
-  el.innerHTML = history.map(h => `
-    <div class="item">
-      <div class="top">
-        <div><span class="mono">${h.t}</span> <span class="muted">•</span> <strong>${escapeHtml(h.type)}</strong></div>
-        <span class="pill">${escapeHtml(h.detail || "")}</span>
-      </div>
-    </div>
-  `).join("");
+  return "Capricorn";
+}
+
+function saveProfile(){
+  profile.birthday = document.getElementById("birthday").value || "";
+  profile.tikkun = document.getElementById("tikkun").value || "";
+  profile.note = document.getElementById("profileNote").value || "";
+  saveAll();
+  document.getElementById("zodiac").value = zodiacSignFromDate(profile.birthday);
+  showOverlay("Saved");
+}
+
+function loadProfile(){
+  document.getElementById("birthday").value = profile.birthday || "";
+  document.getElementById("tikkun").value = profile.tikkun || "";
+  document.getElementById("profileNote").value = profile.note || "";
+  document.getElementById("zodiac").value = zodiacSignFromDate(profile.birthday);
 }
 
 /* -------------------- 72 Names -------------------- */
-/* Full 72 triplets (standard list). */
 const NAMES72 = [
   "והו","ילי","סיט","עלם","מהש","ללה","אכא","כהת","הזי","אלד","לאו","ההה",
   "יזל","מבה","הרי","הקם","לאו","כלי","לוו","פהל","נלכ","ייי","מלה","חהו",
@@ -493,52 +577,56 @@ const NAMES72 = [
   "ומב","יהה","ענו","מחי","דמב","מנק","איע","חבו","ראה","יבמ","היי","מום"
 ];
 
-let currentNameIndex = dailyNameIndex();
-
+let nameIndex = dailyNameIndex();
 function dailyNameIndex(){
-  // deterministic "daily" pick: date number mod 72
   const d = new Date();
-  const y = d.getFullYear(), m = d.getMonth()+1, day = d.getDate();
-  const n = (y*10000 + m*100 + day) % 72;
-  return n; // 0..71
+  const y=d.getFullYear(), m=d.getMonth()+1, day=d.getDate();
+  return (y*10000 + m*100 + day) % 72;
 }
 
 function renderTodayName(){
-  const triplet = NAMES72[currentNameIndex];
-  const fmt = document.getElementById("nameFormat")?.value || "triplet";
-  const display = (fmt === "numbered") ? `${currentNameIndex+1}. ${triplet}` : triplet;
+  const triplet = NAMES72[nameIndex];
+  document.getElementById("todayName").innerText = `${nameIndex+1}. ${triplet}`;
 
-  document.getElementById("todayName").innerText = display;
-  document.getElementById("todayNameMeta").innerHTML =
-    `Name <span class="mono">${currentNameIndex+1}</span> of 72. Use it as a consciousness cue: connect, restrict reactivity, reveal Light through sharing.`;
+  const entry = namesMeaning[String(nameIndex+1)] || {};
+  const title = entry.title ? `<span class="pill">${escapeHtml(entry.title)}</span>` : `<span class="pill">Needs meaning</span>`;
+  document.getElementById("todayNameMeaning").innerHTML =
+    `${title}<br><span class="muted">${escapeHtml(entry.meaning || "Add meaning + practice so this stops sounding generic.")}</span>`;
+
+  document.getElementById("nameTitle").value = entry.title || "";
+  document.getElementById("nameMeaning").value = entry.meaning || "";
+  document.getElementById("namePractice").value = entry.practice || "";
 }
 
-function prevName(){ currentNameIndex = (currentNameIndex+71)%72; renderTodayName(); }
-function nextName(){ currentNameIndex = (currentNameIndex+1)%72; renderTodayName(); }
-
-function randomName(){
-  currentNameIndex = Math.floor(Math.random()*72);
+function saveNameMeaning(){
+  const k = String(nameIndex+1);
+  namesMeaning[k] = {
+    title: document.getElementById("nameTitle").value || "",
+    meaning: document.getElementById("nameMeaning").value || "",
+    practice: document.getElementById("namePractice").value || ""
+  };
+  saveAll();
+  logEvent("72NAME_MEANING", `#${k} saved`);
   renderTodayName();
-  document.getElementById("nameResults").innerHTML = `<div class="mini muted">Randomly selected.</div>`;
+  showOverlay("Saved");
 }
+
+function prevName(){ nameIndex=(nameIndex+71)%72; renderTodayName(); }
+function nextName(){ nameIndex=(nameIndex+1)%72; renderTodayName(); }
 
 function goToNameNumber(){
-  const n = parseInt((document.getElementById("nameNumber").value || "").trim(), 10);
-  if (!Number.isFinite(n) || n < 1 || n > 72) return;
-  currentNameIndex = n-1;
-  renderTodayName();
-  document.getElementById("nameResults").innerHTML = `<div class="mini muted">Jumped to #${n}.</div>`;
+  const n = parseInt((document.getElementById("nameNumber").value||"").trim(),10);
+  if (!Number.isFinite(n) || n<1 || n>72) return;
+  nameIndex=n-1; renderTodayName(); showOverlay("Jumped");
 }
 
 function searchName(){
-  const q = (document.getElementById("nameSearch").value || "").trim();
+  const q = (document.getElementById("nameSearch").value||"").trim();
   const el = document.getElementById("nameResults");
   if (!q){ el.innerHTML = `<div class="mini muted">Enter letters to search.</div>`; return; }
-  const hits = [];
-  for (let i=0;i<72;i++){
-    if (NAMES72[i].includes(q)) hits.push(i);
-  }
-  if (!hits.length){ el.innerHTML = `<div class="mini muted">No matches.</div>`; return; }
+  const hits=[];
+  for (let i=0;i<72;i++) if (NAMES72[i].includes(q)) hits.push(i);
+  if (!hits.length){ el.innerHTML=`<div class="mini muted">No matches.</div>`; return; }
   el.innerHTML = hits.map(i=>`
     <div class="item">
       <div class="top">
@@ -549,32 +637,11 @@ function searchName(){
   `).join("");
 }
 
-function selectName(i){
-  currentNameIndex = i;
-  renderTodayName();
-  document.getElementById("nameResults").innerHTML = `<div class="mini muted">Selected #${i+1}.</div>`;
-}
-
-function addNameToHistory(){
-  const triplet = NAMES72[currentNameIndex];
-  namesLog.unshift({ t: nowTime(), idx: currentNameIndex+1, triplet });
-  if (namesLog.length > 120) namesLog.pop();
-  logEvent("72NAME", `#${currentNameIndex+1} ${triplet}`);
-  saveAll();
-  showOverlay(`Logged: ${currentNameIndex+1}. ${triplet}`);
-}
+function randomName(){ nameIndex=Math.floor(Math.random()*72); renderTodayName(); showOverlay("Random"); }
+function selectName(i){ nameIndex=i; renderTodayName(); showOverlay("Selected"); }
 
 function renderAllNames(){
-  const jump = document.getElementById("nameJump");
-  if (jump && !jump.options.length){
-    for (let i=0;i<72;i++){
-      const opt = document.createElement("option");
-      opt.value = String(i);
-      opt.textContent = `${i+1}. ${NAMES72[i]}`;
-      jump.appendChild(opt);
-    }
-  }
-  const el = document.getElementById("allNames");
+  const el=document.getElementById("allNames");
   el.innerHTML = NAMES72.map((t,i)=>`
     <div class="item">
       <div class="top">
@@ -585,280 +652,398 @@ function renderAllNames(){
   `).join("");
 }
 
-function jumpName(){
-  const i = parseInt(document.getElementById("nameJump").value,10);
-  if (!Number.isFinite(i)) return;
-  currentNameIndex = i;
-  renderTodayName();
+function logTodayName(){
+  const k = String(nameIndex+1);
+  const triplet = NAMES72[nameIndex];
+  const entry = namesMeaning[k] || {};
+  logEvent("72NAME", `#${k} ${triplet} ${entry.title ? "— "+entry.title : ""}`);
+  showOverlay("Logged");
 }
 
 /* -------------------- Gematria -------------------- */
-// Standard (mispar hechrechi) values. Final letters map to same values.
-const GEM = {
-  "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
-  "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,"ע":70,
-  "פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,"ש":300,"ת":400
-};
-
-function calcGematria(){
-  const s = (document.getElementById("gemInput").value || "").trim();
-  const { total, breakdown } = gematriaOf(s);
-  document.getElementById("gemValue").innerText = (s ? String(total) : "—");
-  document.getElementById("gemBreakdown").innerHTML = s
-    ? `<span class="mono">${escapeHtml(breakdown)}</span>`
-    : `<span class="muted">Enter Hebrew to calculate.</span>`;
-}
+const GEM = {"א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,"י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,"ע":70,"פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,"ש":300,"ת":400};
 
 function gematriaOf(s){
-  let total = 0;
-  const parts = [];
-  for (const ch of s){
-    if (GEM[ch]){
-      total += GEM[ch];
-      parts.push(`${ch}(${GEM[ch]})`);
-    }
+  let total=0; const parts=[];
+  for (const ch of (s||"")){
+    if (GEM[ch]){ total+=GEM[ch]; parts.push(`${ch}(${GEM[ch]})`); }
   }
-  return { total, breakdown: parts.join(" + ") + (parts.length ? ` = ${total}` : "") };
+  return {total, breakdown: parts.join(" + ") + (parts.length ? ` = ${total}` : "")};
+}
+
+function calcGematria(){
+  const s=(document.getElementById("gemInput").value||"").trim();
+  const {total, breakdown} = gematriaOf(s);
+  document.getElementById("gemValue").innerText = s ? String(total) : "—";
+  document.getElementById("gemBreakdown").innerText = breakdown || "";
+  if (s) autofillInsight();
+}
+
+function autofillInsight(){
+  const s=(document.getElementById("gemInput").value||"").trim();
+  if (!s) return;
+  const {total} = gematriaOf(s);
+
+  // simple, Centre-aligned starter insight (editable):
+  // ties number -> frequency -> restriction -> action
+  const n = total;
+  const cue = (n % 5) + 1;
+  const stepCue = {1:"CONNECT",2:"ALIGN",3:"RESTRICT",4:"ELEVATE",5:"SEAL"}[cue];
+
+  const text =
+`Value: ${n}.
+Cue: ${stepCue}.
+
+Insight starter:
+Use this number as a consciousness trigger today. Each time you see or think of “${s}”, pause and CONNECT (“The Light is here”), then RESTRICT reactivity, then do one concrete act of sharing that reveals Light.`;
+
+  document.getElementById("gemInsight").value = text;
 }
 
 function saveGematria(){
-  const s = (document.getElementById("gemInput").value || "").trim();
+  const s=(document.getElementById("gemInput").value||"").trim();
   if (!s) return;
-  const { total } = gematriaOf(s);
-  gemSaved.unshift({ t: nowTime(), text: s, value: total });
-  if (gemSaved.length > 200) gemSaved.pop();
-  logEvent("GEMATRIA", `${s} = ${total}`);
+  const {total, breakdown} = gematriaOf(s);
+  const insight = document.getElementById("gemInsight").value || "";
+  gemSaved.unshift({ id:String(Date.now()), t: nowTime(), text:s, value:total, breakdown, insight });
+  if (gemSaved.length>250) gemSaved.pop();
+  logEvent("GEMATRIA", `${s}=${total}`);
   saveAll();
   renderSavedGematria();
-  showOverlay(`Saved: ${total}`);
+  showOverlay("Saved");
+}
+
+function saveGemInsight(){
+  // saves insight into the most recent matching saved entry, or creates one
+  const s=(document.getElementById("gemInput").value||"").trim();
+  if (!s) return;
+  const {total, breakdown} = gematriaOf(s);
+  const insight = document.getElementById("gemInsight").value || "";
+  const idx = gemSaved.findIndex(x=>x.text===s && x.value===total);
+  if (idx>=0) gemSaved[idx].insight = insight;
+  else gemSaved.unshift({ id:String(Date.now()), t: nowTime(), text:s, value:total, breakdown, insight });
+  saveAll();
+  renderSavedGematria();
+  showOverlay("Insight saved");
 }
 
 function clearGematria(){
-  document.getElementById("gemInput").value = "";
-  document.getElementById("gemValue").innerText = "—";
-  document.getElementById("gemBreakdown").innerText = "";
+  document.getElementById("gemInput").value="";
+  document.getElementById("gemValue").innerText="—";
+  document.getElementById("gemBreakdown").innerText="";
+  document.getElementById("gemInsight").value="";
 }
 
 function renderSavedGematria(){
-  const q = (document.getElementById("gemSavedSearch")?.value || "").trim();
-  const el = document.getElementById("gemSavedList");
-  const rows = gemSaved.filter(r=>{
-    if (!q) return true;
-    return (r.text || "").includes(q) || String(r.value).includes(q);
+  const q=(document.getElementById("gemSavedSearch")?.value||"").trim();
+  const el=document.getElementById("gemSavedList");
+  const rows=gemSaved.filter(r=>{
+    if(!q) return true;
+    return (r.text||"").includes(q) || String(r.value).includes(q);
   });
-  if (!rows.length){
-    el.innerHTML = `<div class="mini muted">No saved items.</div>`;
-    return;
-  }
+  if(!rows.length){ el.innerHTML=`<div class="mini muted">No saved gematria yet.</div>`; return; }
   el.innerHTML = rows.map((r,idx)=>`
     <div class="item">
       <div class="top">
         <div>
-          <div><strong class="mono">${escapeHtml(r.text)}</strong></div>
-          <div class="mini muted">${escapeHtml(r.t)} • value ${r.value}</div>
+          <div><strong class="mono">${escapeHtml(r.text)}</strong> <span class="pill">${r.value}</span></div>
+          <div class="mini muted">${escapeHtml(r.t)} • ${escapeHtml(r.breakdown||"")}</div>
         </div>
         <div>
           <button class="smallbtn" onclick="loadGem(${idx})">Load</button>
           <button class="smallbtn danger" onclick="delGem(${idx})">Del</button>
         </div>
       </div>
+      ${r.insight ? `<div class="hr"></div><div class="mini">${escapeHtml(r.insight).replace(/\n/g,"<br>")}</div>` : ""}
     </div>
   `).join("");
 }
 
 function loadGem(idx){
-  const item = gemSaved[idx];
-  if (!item) return;
-  document.getElementById("gemInput").value = item.text;
-  calcGematria();
+  const r=gemSaved[idx]; if(!r) return;
+  document.getElementById("gemInput").value=r.text;
+  document.getElementById("gemValue").innerText=String(r.value);
+  document.getElementById("gemBreakdown").innerText=r.breakdown||"";
+  document.getElementById("gemInsight").value=r.insight||"";
   showOverlay("Loaded");
 }
+function delGem(idx){ gemSaved.splice(idx,1); saveAll(); renderSavedGematria(); }
 
-function delGem(idx){
-  gemSaved.splice(idx,1);
-  saveAll();
-  renderSavedGematria();
-}
-
-/* -------------------- Zohar Library -------------------- */
+/* -------------------- Zohar library -------------------- */
 function saveZohar(){
-  const title = (document.getElementById("zTitle").value || "").trim();
-  const source = (document.getElementById("zSource").value || "").trim();
-  const tags = (document.getElementById("zTags").value || "").trim();
-  const text = (document.getElementById("zText").value || "").trim();
-  if (!title && !text) return;
+  const title=(document.getElementById("zTitle").value||"").trim();
+  const source=(document.getElementById("zSource").value||"").trim();
+  const tags=(document.getElementById("zTags").value||"").trim();
+  const text=(document.getElementById("zText").value||"").trim();
+  if(!title && !text) return;
 
   zoharLib.unshift({
-    id: String(Date.now()),
-    t: nowTime(),
+    id:String(Date.now()), t: nowTime(),
     title, source,
     tags: tags.split(",").map(x=>x.trim()).filter(Boolean),
     text
   });
-  if (zoharLib.length > 300) zoharLib.pop();
-
+  if(zoharLib.length>400) zoharLib.pop();
   logEvent("ZOHAR", title || "(untitled)");
   saveAll();
   clearZoharForm();
   renderZohar();
   showOverlay("Saved");
 }
-
 function clearZoharForm(){
-  document.getElementById("zTitle").value = "";
-  document.getElementById("zSource").value = "";
-  document.getElementById("zTags").value = "";
-  document.getElementById("zText").value = "";
+  document.getElementById("zTitle").value="";
+  document.getElementById("zSource").value="";
+  document.getElementById("zTags").value="";
+  document.getElementById("zText").value="";
 }
-
 function renderZohar(){
-  const q = (document.getElementById("zSearch")?.value || "").trim().toLowerCase();
-  const el = document.getElementById("zList");
-  const rows = zoharLib.filter(r=>{
-    if (!q) return true;
-    const blob = [
-      r.title || "", r.source || "", (r.tags||[]).join(","), r.text || ""
-    ].join(" ").toLowerCase();
+  const q=(document.getElementById("zSearch")?.value||"").trim().toLowerCase();
+  const el=document.getElementById("zList");
+  const rows=zoharLib.filter(r=>{
+    if(!q) return true;
+    const blob=[r.title||"",r.source||"", (r.tags||[]).join(","), r.text||""].join(" ").toLowerCase();
     return blob.includes(q);
   });
-  if (!rows.length){
-    el.innerHTML = `<div class="mini muted">No passages yet. Add one, or tap “Add Templates”.</div>`;
-    return;
-  }
+  if(!rows.length){ el.innerHTML=`<div class="mini muted">No notes yet. Tap Starter Pack, then add your own.</div>`; return; }
   el.innerHTML = rows.map(r=>`
     <div class="item">
       <div class="top">
         <div>
-          <div><strong>${escapeHtml(r.title || "Untitled")}</strong></div>
-          <div class="mini muted">${escapeHtml(r.source || "")} ${r.source ? "•" : ""} ${escapeHtml(r.t || "")}</div>
+          <div><strong>${escapeHtml(r.title||"Untitled")}</strong></div>
+          <div class="mini muted">${escapeHtml(r.source||"")} ${r.source?"•":""} ${escapeHtml(r.t||"")}</div>
         </div>
         <div>
-          <button class="smallbtn" onclick="copyZohar('${r.id}')">Copy</button>
-          <button class="smallbtn danger" onclick="delZohar('${r.id}')">Del</button>
+          <button class="smallbtn" onclick="copyZ('${r.id}')">Copy</button>
+          <button class="smallbtn danger" onclick="delZ('${r.id}')">Del</button>
         </div>
       </div>
       <div class="mini" style="margin-top:8px;">
         ${(r.tags||[]).map(t=>`<span class="pill" style="margin-right:6px;">${escapeHtml(t)}</span>`).join("")}
       </div>
       <div class="hr"></div>
-      <div class="sub">${escapeHtml(r.text || "").replace(/\n/g,"<br>")}</div>
+      <div class="mini">${escapeHtml(r.text||"").replace(/\n/g,"<br>")}</div>
     </div>
   `).join("");
 }
-
-function delZohar(id){
-  zoharLib = zoharLib.filter(x=>x.id !== id);
-  saveAll();
-  renderZohar();
-}
-
-function copyZohar(id){
-  const r = zoharLib.find(x=>x.id===id);
-  if (!r) return;
-  const txt = `${r.title || ""}\n${r.source || ""}\n\n${r.text || ""}`.trim();
+function delZ(id){ zoharLib=zoharLib.filter(x=>x.id!==id); saveAll(); renderZohar(); }
+function copyZ(id){
+  const r=zoharLib.find(x=>x.id===id); if(!r) return;
+  const txt=`${r.title||""}\n${r.source||""}\n\n${r.text||""}`.trim();
   navigator.clipboard?.writeText(txt);
   showOverlay("Copied");
 }
-
-function clearZoharAll(){
-  if (!confirm("Clear entire Zohar Library?")) return;
-  zoharLib = [];
-  saveAll();
-  renderZohar();
+function clearZoharAll(){ if(!confirm("Clear entire Zohar library?")) return; zoharLib=[]; saveAll(); renderZohar(); }
+function exportZohar(){ downloadJSON({zoharLib}, `kai_zohar_${today}.json`); }
+function importZohar(ev){
+  const file = ev.target.files?.[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const obj = JSON.parse(reader.result);
+      const arr = obj.zoharLib || obj;
+      if(Array.isArray(arr)){
+        // merge at top
+        zoharLib = [...arr, ...zoharLib].slice(0, 600);
+        saveAll(); renderZohar(); showOverlay("Imported");
+      }
+    }catch(e){ alert("Could not import JSON."); }
+  };
+  reader.readAsText(file);
 }
 
-function exportZohar(){
-  downloadJSON({ zoharLib }, `kai_zohar_library.json`);
-}
-
-function seedZoharTemplates(){
-  // Templates that are Centre-aligned prompts, not copyrighted text
-  const templates = [
+function seedZoharStarter(){
+  const starter = [
     {
-      title:"Template: Restriction in a Trigger Moment",
-      source:"Zohar (your notes)",
+      title:"Mishkan: 100 Pillars (practice notes)",
+      source:"Parsha Terumah (your notes)",
+      tags:["mishkan","100","certainty","connect"],
+      text:"A complete day is built on 100 moments of consciousness. Every ~10 minutes: pause, acknowledge the Light is here, and return. Frequency builds intimacy and vessel."
+    },
+    {
+      title:"Restriction (Tzimtzum) in a trigger moment",
+      source:"Centre language (practice card)",
       tags:["restriction","reactivity","vessel"],
-      text:"Where did I feel reactive desire today? What is one concrete restriction I can do right now to create a vessel for the Light?"
+      text:"When reactive desire flares: pause. Restrict the impulse. Ask: what action reveals Light here? Choose sharing over ego."
     },
     {
-      title:"Template: Mishkan Training (100 pillars)",
-      source:"Parsha Terumah / your teaching notes",
-      tags:["mishkan","100","certainty"],
-      text:"A day is built on 100 moments of consciousness. I pause, acknowledge the Light, and return. Frequency over intensity."
-    },
-    {
-      title:"Template: Desire to Run",
-      source:"Zohar (your notes)",
+      title:"Desire to Run (indicator of Light resting)",
+      source:"Zohar concept (your notes)",
       tags:["desire","run","awakening"],
-      text:"Where did I feel desire to run toward spiritual work today? Where was I indifferent? Ask for renewed desire to pursue connection."
+      text:"A sign of spiritual progress: renewed desire to run toward connection and work. Ask for desire. Track it. Strengthen it."
     }
   ];
-  templates.forEach(t=>{
-    zoharLib.unshift({ id:String(Date.now()+Math.random()), t: nowTime(), ...t });
-  });
-  saveAll();
-  renderZohar();
-  showOverlay("Templates added");
+  starter.forEach(s=>zoharLib.unshift({id:String(Date.now()+Math.random()), t: nowTime(), ...s}));
+  saveAll(); renderZohar(); showOverlay("Starter added");
 }
 
-/* -------------------- Settings + export -------------------- */
-function loadSettingsForm(){
-  document.getElementById("goalPillars").value = String(goals.pillars ?? 100);
-  document.getElementById("goalCycles").value = String(goals.cycles ?? 10);
+/* -------------------- share card (canvas) -------------------- */
+function renderCardDefaults(){
+  const type = document.getElementById("cardType").value;
+  if (type === "name"){
+    const k = String(nameIndex+1);
+    const triplet = NAMES72[nameIndex];
+    const entry = namesMeaning[k] || {};
+    document.getElementById("cardTitle").value = `72 Name #${k} — ${entry.title || triplet}`;
+    document.getElementById("cardBody").value =
+`${triplet}
+${entry.meaning || ""}
+
+Practice:
+${entry.practice || ""}`.trim();
+  } else if (type === "gem"){
+    const s = (document.getElementById("gemInput").value||"").trim();
+    const val = document.getElementById("gemValue").innerText;
+    const insight = document.getElementById("gemInsight").value || "";
+    document.getElementById("cardTitle").value = s ? `Gematria — ${s} = ${val}` : `Gematria`;
+    document.getElementById("cardBody").value = insight || "Connect. Restrict reactivity. Reveal Light through a concrete act of sharing.";
+  } else if (type === "zohar"){
+    const first = zoharLib[0];
+    document.getElementById("cardTitle").value = first ? (first.title || "Zohar Note") : "Zohar Note";
+    document.getElementById("cardBody").value = first ? (first.text || "") : "Add a Zohar note in the library, then generate a card.";
+  } else {
+    document.getElementById("cardTitle").value = `KAI Practice`;
+    document.getElementById("cardBody").value = `CONNECT: The Light is here.\nRESTRICT: pause reactive desire.\nELEVATE: choose the higher move.\nSEAL: gratitude stabilizes.`;
+  }
 }
 
-function saveGoals(){
-  const gp = parseInt(document.getElementById("goalPillars").value,10);
-  const gc = parseInt(document.getElementById("goalCycles").value,10);
-  if (Number.isFinite(gp) && gp > 0) goals.pillars = gp;
-  if (Number.isFinite(gc) && gc > 0) goals.cycles = gc;
-  saveAll();
-  updateStats();
-  showOverlay("Saved");
+function clearCard(){
+  document.getElementById("cardTitle").value = "";
+  document.getElementById("cardBody").value = "";
 }
 
-function exportAll(){
-  downloadJSON({
-    date: today, goals, pillars, cycles,
-    history, namesLog,
-    gemSaved, zoharLib
-  }, `kai_export_${today}.json`);
+function generateCard(){
+  const title = (document.getElementById("cardTitle").value||"").trim();
+  const body = (document.getElementById("cardBody").value||"").trim();
+  const canvas = document.getElementById("cardCanvas");
+  const ctx = canvas.getContext("2d");
+
+  // set size (shareable portrait)
+  canvas.width = 1080;
+  canvas.height = 1350;
+
+  // background
+  ctx.fillStyle = "#0b0b0b";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // gold header line
+  ctx.fillStyle = "#ffd54a";
+  ctx.fillRect(0,0,canvas.width,14);
+
+  // title
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 54px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+  wrapText(ctx, title || "KAI", 60, 120, 960, 64);
+
+  // body
+  ctx.fillStyle = "#d9d9d9";
+  ctx.font = "36px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+  wrapText(ctx, body || "", 60, 260, 960, 48);
+
+  // footer
+  ctx.fillStyle = "#888";
+  ctx.font = "28px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+  ctx.fillText(`KAI • ${today}`, 60, canvas.height - 70);
+
+  canvas.style.display = "block";
+  showOverlay("Generated");
 }
 
-function clearAllData(){
-  if (!confirm("Clear ALL KAI data on this device?")) return;
-  Object.values(KEY).forEach(k=>localStorage.removeItem(k));
-  localStorage.removeItem("kai_goals_v1");
-  location.reload();
+function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+  const words = (text||"").split(/\s+/);
+  let line = "";
+  for (let n=0;n<words.length;n++){
+    const testLine = line + words[n] + " ";
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && n > 0){
+      ctx.fillText(line, x, y);
+      line = words[n] + " ";
+      y += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, y);
 }
 
-/* -------------------- Utilities -------------------- */
+function downloadCard(){
+  const canvas = document.getElementById("cardCanvas");
+  if (canvas.style.display === "none") return;
+  const url = canvas.toDataURL("image/png");
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `kai_card_${today}.png`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+/* -------------------- history render + exports -------------------- */
+function renderHistory(){
+  const el=document.getElementById("historyList");
+  if(!history.length){ el.innerHTML=`<div class="mini muted">No events yet today.</div>`; return; }
+  el.innerHTML = history.map(h=>`
+    <div class="item">
+      <div class="top">
+        <div><span class="mono">${escapeHtml(h.t)}</span> <span class="muted">•</span> <strong>${escapeHtml(h.type)}</strong></div>
+        <span class="pill">${escapeHtml(h.detail||"")}</span>
+      </div>
+    </div>
+  `).join("");
+}
+function clearHistory(){ history=[]; saveAll(); renderHistory(); showOverlay("Cleared"); }
+
 function downloadJSON(obj, filename){
   const blob = new Blob([JSON.stringify(obj,null,2)], {type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url; a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
   URL.revokeObjectURL(url);
 }
-
-function escapeHtml(s){
-  return String(s)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+function exportAll(){
+  downloadJSON({
+    date: today,
+    goals, metrics, profile,
+    pillars, cycles,
+    history,
+    zoharLib,
+    gemSaved,
+    namesMeaning
+  }, `kai_export_${today}.json`);
 }
 
-/* -------------------- Init -------------------- */
+/* -------------------- settings -------------------- */
+function loadSettings(){
+  document.getElementById("goalPillars").value = String(goals.pillars ?? 100);
+  document.getElementById("goalCycles").value = String(goals.cycles ?? 10);
+}
+function saveGoals(){
+  const gp = parseInt(document.getElementById("goalPillars").value,10);
+  const gc = parseInt(document.getElementById("goalCycles").value,10);
+  if (Number.isFinite(gp) && gp>0) goals.pillars = gp;
+  if (Number.isFinite(gc) && gc>0) goals.cycles = gc;
+  saveAll(); updateChips(); showOverlay("Saved");
+}
+function resetTodayAll(){
+  pillars=0; cycles=0; history=[]; currentStep=0;
+  localStorage.removeItem(KEY.pillars);
+  localStorage.removeItem(KEY.cycles);
+  localStorage.removeItem(KEY.history);
+  saveAll(); updateChips(); setButtons(); renderHistory();
+  showOverlay("Reset");
+}
+function clearAllData(){
+  if(!confirm("Clear ALL KAI data on this device?")) return;
+  Object.values(KEY).forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+/* -------------------- init -------------------- */
 saveAll();
-updateStats();
-setButtonStates();
-renderTodayName();
-renderAllNames();
+loadMetrics();
+loadProfile();
+setButtons();
+updateChips();
 renderHistory();
 </script>
 </body>
