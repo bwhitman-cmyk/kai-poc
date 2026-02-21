@@ -1,12 +1,12 @@
-const CACHE = "kai-cache-v2";
+const CACHE = "kai-cache-v3";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./sw.js",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./apple-touch-icon.png"
+  "./icon-192-v2.png",
+  "./icon-512-v2.png",
+  "./apple-touch-icon-v2.png"
 ];
 
 self.addEventListener("install", (e)=>{
