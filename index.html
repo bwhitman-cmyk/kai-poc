@@ -628,32 +628,36 @@
     }
 
     // ---------- Storage keys ----------
-    const keyProfile = "kai_profile_v3";
-    const keyMeta    = "kai_meta_v3";
-    const keyDay     = (iso) => `kai_day_${iso}_v3`;
-    const keyActiveDate = "kai_active_date_v1";
-    const keyLastTab = "kai_last_tab_v1";
-    const keyDailyRestrict = "kai_daily_restrict_v1";
+const keyProfile = "kai_profile_v3";
+const keyMeta    = "kai_meta_v3";
+const keyDay     = (iso) => `kai_day_${iso}_v3`;
 
-    // ---------- Defaults ----------
-    function defaultProfile(){
-      return {
-        first: "",
-        last: "",
-        birth: "",
-        focus: ""
-      };
-    }
+function safeJSONParse(s, fallback){
+  try {
+    const v = JSON.parse(s);
+    return (v && typeof v === "object") ? v : fallback;
+  } catch(e){
+    return fallback;
+  }
+}
 
-    function defaultMeta(){
-      return {
-        selectedPattern: "",
-        selectedName: "",
-        lastGematria: "",
-        lastGematriaInsight: ""
-      };
-    }
+function defaultMeta(){
+  return {
+    selectedPattern: "",
+    selectedName: "",
+    selectedTheme: "",
+    // add more meta fields here later, but NEVER remove these defaults
+  };
+}
 
+function getMeta(){
+  return safeJSONParse(localStorage.getItem(keyMeta), defaultMeta());
+}
+
+function setMeta(m){
+  const safe = (m && typeof m === "object") ? m : defaultMeta();
+  localStorage.setItem(keyMeta, JSON.stringify({ ...defaultMeta(), ...safe }));
+}
     function defaultDay(iso){
       return {
         date: iso,
@@ -1167,7 +1171,7 @@ Seal: ${d.evening?.seal || "—"}`;
     // ---------- Share Card ----------
     function buildShareCardText(){
       const p = getProfile();
-      const m = getMeta();
+      const m = getMeta() || defaultMeta();
       const d = getDay();
 
       const fullName = `${p.first||""} ${p.last||""}`.trim() || "—";
@@ -1175,8 +1179,8 @@ Seal: ${d.evening?.seal || "—"}`;
       return `KAI • ${d.date}
 Name: ${fullName}
 Focus: ${p.focus || "—"}
-Pattern: ${d.morning?.pattern || m.selectedPattern || "—"}
 72 Name: ${m.selectedName || "—"}
+Pattern: ${d.morning?.pattern || m.selectedPattern || "—"}
 
 ALIGN (Morning)
 • Certainty: ${d.morning?.certainty || "—"}  Energy: ${d.morning?.energy || "—"}
