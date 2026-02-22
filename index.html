@@ -731,8 +731,7 @@
   let gemInsights = safeParse(localStorage.getItem(KEY.gemInsights), []);
 
   // Today 72 selection
-  let today72 = safeParse(localStorage.getItem(KEY.today72), { date:"", id: null });
-
+let today72 = safeParse(localStorage.getItem(KEY.today72), { date:"", id: null }) || { date:"", id: null };
   // -------------------------
   // Rendering helpers
   // -------------------------
@@ -762,13 +761,20 @@
   }
 
   function ensureToday72(){
-    const t = todayKey();
-    if(today72.date !== t || !today72.id){
-      const idx = (new Date().getFullYear()*10000 + (new Date().getMonth()+1)*100 + new Date().getDate()) % 72;
-      today72 = { date: t, id: idx+1 };
-      localStorage.setItem(KEY.today72, JSON.stringify(today72));
-    }
+  const t = todayKey();
+
+  // HARD GUARD: if localStorage ever gave us null/garbage, recover gracefully
+  if(!today72 || typeof today72 !== "object"){
+    today72 = { date:"", id:null };
   }
+
+  if(today72.date !== t || !today72.id){
+    const d = new Date();
+    const idx = (d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate()) % 72;
+    today72 = { date: t, id: idx+1 };
+    localStorage.setItem(KEY.today72, JSON.stringify(today72));
+  }
+}
 
   function renderPracticeToday(){
     ensureToday72();
