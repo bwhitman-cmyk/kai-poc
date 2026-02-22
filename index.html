@@ -675,6 +675,24 @@
 
 (function(){
   "use strict";
+  // ===== On-screen error console (always present) =====
+function showErr(msg){
+  try{
+    const box = document.getElementById("kai_errbox");
+    if (!box) return;
+    box.style.display = "block";
+    box.textContent = String(msg || "Unknown error");
+  } catch {}
+}
+
+window.addEventListener("error", (e)=>{
+  showErr("window.error: " + (e?.message || "unknown") + "\n" + (e?.error?.stack || ""));
+});
+
+window.addEventListener("unhandledrejection", (e)=>{
+  const r = e?.reason;
+  showErr("unhandledrejection: " + (r?.message || String(r)) + "\n" + (r?.stack || ""));
+});
   // ===== On-screen error console (iPad-friendly) =====
   const __err = [];
   function showErr(msg){
