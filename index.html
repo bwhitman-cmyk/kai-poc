@@ -724,7 +724,7 @@
   function saveZohar(){ localStorage.setItem(KEY.zohar, JSON.stringify(zohar)); }
 
   // Assessment answers
-  let assessAnswers = safeParse(localStorage.getItem(KEY.assessAnswers), {});
+  let assessAnswers = safeParse(localStorage.getItem(KEY.assess), {}) || {};
   let assessSnaps = safeParse(localStorage.getItem(KEY.assessSnapshots), []);
 
   // Gem insights
@@ -854,11 +854,12 @@ let today72 = safeParse(localStorage.getItem(KEY.today72), { date:"", id: null }
     return N72_MIN.filter(x =>
       (x.title||"").toLowerCase().includes(q) ||
       (x.subtitle||"").toLowerCase().includes(q)
-    );
+    );"kai_72_assess_v1": null
   }
 
   // Assessment UI
   function renderAssessUI(){
+      if(!assessAnswers || typeof assessAnswers !== "object") assessAnswers = {};
     const box = $("#assess_ui");
     box.innerHTML = "";
     ASSESS.forEach(s=>{
