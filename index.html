@@ -93,11 +93,12 @@
     <button class="tab" data-view="practice" onclick="setView('practice')">Practice</button>
     <button class="tab" data-view="names" onclick="setView('names')">72 Names</button>
     <button class="tab" data-view="gematria" onclick="setView('gematria')">Gematria</button>
+    <button class="tab" data-view="settings" onclick="setView('names72')">Settings</button>
     <button class="tab" data-view="zohar" onclick="setView('zohar')">Zohar</button>
     <button class="tab" data-view="share" onclick="setView('share')">Share Card</button>
     <button class="tab" data-view="history" onclick="setView('history')">History</button>
     <button class="tab" data-view="settings" onclick="setView('settings')">Settings</button>
-  </div>
+      </div>
 
   <!-- HOME -->
   <div id="view_home">
@@ -703,6 +704,83 @@ Use this number as a consciousness trigger today. Each time you see or think of 
   document.getElementById("gemInsight").value = text;
 }
 
+<div id="view_names72" style="display:none;">
+  <div class="grid">
+    <div class="card">
+      <div class="label">Today’s Name</div>
+      <div class="big mono" id="n72_todayTriad">---</div>
+      <div class="sub" id="n72_todayTitle"></div>
+      <div class="sub" id="n72_todaySubtitle"></div>
+
+      <div class="hr"></div>
+
+      <div class="label">Meaning (editable)</div>
+      <input id="n72_meaningTitle" placeholder="Short encapsulation (optional)" />
+      <textarea id="n72_meaningCore" placeholder="Centre-aligned meaning (short, practical)."></textarea>
+      <textarea id="n72_meaningPractice" placeholder="Practice: 1–3 concrete actions."></textarea>
+
+      <div class="controls">
+        <button class="smallbtn" onclick="n72_prev()">Prev</button>
+        <button class="smallbtn" onclick="n72_next()">Next</button>
+        <button class="smallbtn ok" onclick="n72_saveMeaning()">Save</button>
+      </div>
+
+      <div class="controls">
+        <button class="smallbtn ok" onclick="n72_useNow()">Use This Name (+1 connection)</button>
+        <button class="smallbtn" onclick="n72_makeShareText()">Load into Share Card</button>
+      </div>
+
+      <div class="mini muted" style="margin-top:8px;">
+        “Use This Name” increments your daily connection counter (it calls CONNECT if available).
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">Assessment (72 statements)</div>
+
+      <div id="n72_assessIntro">
+        <div class="mini muted">Agree / Neutral / Disagree. Results recommend your top Names right now.</div>
+        <div class="controls" style="margin-top:10px;">
+          <button class="smallbtn ok" onclick="n72_startAssessment()">Start</button>
+          <button class="smallbtn" onclick="n72_resumeAssessment()">Resume</button>
+          <button class="smallbtn danger" onclick="n72_resetAssessment()">Reset</button>
+        </div>
+      </div>
+
+      <div id="n72_assessRun" style="display:none;">
+        <div class="mini muted" id="n72_assessProgress">1 / 72</div>
+        <div class="hr"></div>
+        <div id="n72_assessText" style="font-size:18px;line-height:1.35;"></div>
+
+        <div class="controls" style="margin-top:12px;">
+          <button class="smallbtn" onclick="n72_answer('agree')">Agree</button>
+          <button class="smallbtn" onclick="n72_answer('neutral')">Neutral</button>
+          <button class="smallbtn" onclick="n72_answer('disagree')">Disagree</button>
+        </div>
+
+        <div class="controls">
+          <button class="smallbtn" onclick="n72_back()">Back</button>
+          <button class="smallbtn" onclick="n72_skip()">Skip</button>
+        </div>
+      </div>
+
+      <div id="n72_assessResults" style="display:none;">
+        <div class="label">Your Top Names Now</div>
+        <div class="list" id="n72_resultsList"></div>
+        <div class="controls">
+          <button class="smallbtn ok" onclick="n72_applyTop()">Set #1 as Today’s Name</button>
+          <button class="smallbtn" onclick="n72_exportAssessment()">Export JSON</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="label">Browse all 72</div>
+      <input id="n72_search" placeholder="Search titles…" oninput="n72_renderBrowse()" />
+      <div class="list" id="n72_browse"></div>
+    </div>
+  </div>
+</div>
+  
 function saveGematria(){
   const s=(document.getElementById("gemInput").value||"").trim();
   if (!s) return;
@@ -1048,6 +1126,455 @@ loadProfile();
 setButtons();
 updateChips();
 renderHistory();
+/* =========================================================
+   KAI 72 NAMES MODULE (titles/subtitles + assessment + wiring)
+   Paste ABOVE </script> (you said line 1050 is </script>)
+========================================================= */
+
+// --- storage keys (versioned) ---
+const N72_KEYS = {
+  meaning: "kai_72_meanings_v1",          // { "48": {title, core, practice}, ... }
+  assess: "kai_72_assess_v1",             // { idx, answers: { "1":"agree"... }, startedAt, finishedAt }
+  assessHistory: "kai_72_assess_history_v1" // array of past assessment results
+};
+
+function n72_safeParse(s, fb){ try{ return s ? JSON.parse(s) : fb; } catch(e){ return fb; } }
+
+// --- TITLES/SUBTITLES (from your screenshots) ---
+const N72_TITLES = [
+  {id:1, title:"Time Travel", subtitle:"How to fix the past"},
+  {id:2, title:"Recapturing the Sparks", subtitle:"Recharging when you are depleted"},
+  {id:3, title:"Miracle Making", subtitle:"A recipe"},
+  {id:4, title:"Eliminating Negative Thoughts", subtitle:"When and how"},
+  {id:5, title:"Healing", subtitle:"Meditation for yourself and others"},
+  {id:6, title:"Dream State", subtitle:"Activating messages from the subconscious"},
+  {id:7, title:"DNA of Soul", subtitle:"Restoring to their perfect state"},
+  {id:8, title:"Defusing Negative Energy and Stress", subtitle:"Releasing the pressure"},
+  {id:9, title:"Angelic Influences", subtitle:"Harnessing help from above"},
+  {id:10, title:"Looks Can Kill", subtitle:"Protecting yourself from the evil-eye"},
+  {id:11, title:"Banishing the Remnants of Evil", subtitle:"Purifying places and spaces"},
+  {id:12, title:"Unconditional Love", subtitle:"How to awaken love, especially when you don’t want to"},
+  {id:13, title:"Heaven on Earth", subtitle:"Creating harmony within and without"},
+  {id:14, title:"Farewell to Arms", subtitle:"Diffusing conflict"},
+  {id:15, title:"Long-Range Vision", subtitle:"Seeing the effect of decisions before you make them"},
+  {id:16, title:"Dumping Depression", subtitle:"How to pick yourself up when you fall"},
+  {id:17, title:"Great Escape", subtitle:"Breaking the limits of ego"},
+  {id:18, title:"Fertility", subtitle:"When conception is difficult"},
+  {id:19, title:"Dialing God", subtitle:"Receiving answers to your prayers"},
+  {id:20, title:"Victory Over Addictions", subtitle:"Overcoming your negative self"},
+  {id:21, title:"Eradicate Plague", subtitle:"Effecting change in the physical world"},
+  {id:22, title:"Stop Fatal Attraction", subtitle:"How to stop drawing the wrong people into your life"},
+  {id:23, title:"Sharing the Flame", subtitle:"Passing the wisdom along"},
+  {id:24, title:"Jealousy", subtitle:"Undoing chaos resulting from our jealousy before it is manifested"},
+  {id:25, title:"Speak Your Mind", subtitle:"For those times when you need help expressing the truth"},
+  {id:26, title:"Order from Chaos", subtitle:"Reversing Murphy’s Law"},
+  {id:27, title:"Silent Partner", subtitle:"Choosing positivity as your partner"},
+  {id:28, title:"Soul Mate", subtitle:"Attracting “The One”"},
+  {id:29, title:"Removing Hatred", subtitle:"Drawing out the poison"},
+  {id:30, title:"Building Bridges", subtitle:"Mending Broken Relationships"},
+  {id:31, title:"Finish What You Start", subtitle:"Finding the power to finish what you start"},
+  {id:32, title:"Memories", subtitle:"Breaking the cycle"},
+  {id:33, title:"Revealing the Dark Side", subtitle:"Removing the obstacles you create"},
+  {id:34, title:"Forget Thyself", subtitle:"Opening up to another view"},
+  {id:35, title:"Sexual Energy", subtitle:"How to get more from your sexual experience"},
+  {id:36, title:"Fear(less)", subtitle:"Overcoming the ties that bind"},
+  {id:37, title:"The Big Picture", subtitle:"Seeing the opportunity for good hidden in every challenge"},
+  {id:38, title:"Circuitry", subtitle:"Sharing so you can truly receive"},
+  {id:39, title:"Diamond in the Rough", subtitle:"Turning the coal in your life into diamonds"},
+  {id:40, title:"Speaking the Right Words", subtitle:"Using language to make good things happen"},
+  {id:41, title:"Self-Esteem", subtitle:"Finding the power to lift yourself up"},
+  {id:42, title:"Revealing the Concealed", subtitle:"Seeing the truth and handling it"},
+  {id:43, title:"Defying Gravity", subtitle:"Achieving mind over matter"},
+  {id:44, title:"Sweetening Judgment", subtitle:"Ducking the boomerang you send out there; stop the judgment happening against you"},
+  {id:45, title:"The Power of Prosperity", subtitle:"What to do when you need money"},
+  {id:46, title:"Absolute Certainty", subtitle:"What to do when doubts creep in"},
+  {id:47, title:"Global Transformation", subtitle:"Helping to bring about world peace"},
+  {id:48, title:"Unity", subtitle:"When there is conflict and only togetherness will do"},
+  {id:49, title:"Happiness", subtitle:"When you need the power to choose happiness"},
+  {id:50, title:"Enough Is Never Enough", subtitle:"When you need the passion to keep from settling for less"},
+  {id:51, title:"No Guilt", subtitle:"Removing negativity aspects of your nature while you repair the damage they cause"},
+  {id:52, title:"Passion", subtitle:"Awaken the earning in your heart"},
+  {id:53, title:"No Agenda", subtitle:"Giving with no strings attached"},
+  {id:54, title:"The Death of Death", subtitle:"When things are good and you want them to stay that way"},
+  {id:55, title:"Thought into Action", subtitle:"The power to make it happen"},
+  {id:56, title:"Dispelling Anger", subtitle:"Overcoming it before it overcomes you"},
+  {id:57, title:"Listen to Your Soul", subtitle:"Increasing the volume of the soft voice within"},
+  {id:58, title:"Letting Go", subtitle:"When you need the power to walk away"},
+  {id:59, title:"Umbilical Cord", subtitle:"Connecting to the Light Force"},
+  {id:60, title:"Freedom", subtitle:"Passing the test and going to the next level"},
+  {id:61, title:"Water", subtitle:"Removing negativity from the source of life"},
+  {id:62, title:"Parent–Teacher, Not Preacher", subtitle:"When you need to teach your children"},
+  {id:63, title:"Appreciation", subtitle:"How to keep what you have and get more"},
+  {id:64, title:"Casting Yourself in a Favorable Light", subtitle:"Revealing the best you"},
+  {id:65, title:"Fear of God", subtitle:"When you need to remember that there is a system, and how to work it"},
+  {id:66, title:"Accountability", subtitle:"The power to take accountability for your happiness and life"},
+  {id:67, title:"Great Expectations", subtitle:"How to stop getting disappointed"},
+  {id:68, title:"Contacting Departed Souls", subtitle:"Making positive connections with people that have passed on"},
+  {id:69, title:"Lost and Found", subtitle:"What to do when you are lost and confused"},
+  {id:70, title:"Recognizing Design Beneath Disorder", subtitle:"Finding the solution within the problem"},
+  {id:71, title:"Prophecy and Parallel Universes", subtitle:"Switching your universe for a better one"},
+  {id:72, title:"Spiritual Cleansing", subtitle:"Purging yourself of negativity"}
+];
+
+// --- Triads source of truth:
+// If your app already has a 72 triads array (like NAMES72), we use it.
+// Otherwise, we fall back to a minimal stub so the module runs.
+// IMPORTANT: keep your existing triads if you have them.
+const N72_TRIADS = (typeof NAMES72 !== "undefined" && Array.isArray(NAMES72) && NAMES72.length === 72)
+  ? NAMES72.map(x => (typeof x === "string" ? x : (x.hebrew || x.triad || x.letters || "")))
+  : new Array(72).fill("---");
+
+// --- Assessment statements
+// You likely have the full Centre list already in your old app.
+// This runs with placeholders until you paste the full list.
+// You can paste the real statements later without changing any logic.
+const N72_STATEMENTS = (() => {
+  const arr = [];
+  for (let i=1; i<=72; i++){
+    arr.push({ id:i, text:`Statement for Name #${i} (paste Centre statement here)` });
+  }
+  // Seed one real example you mentioned:
+  arr[47] = { id:48, text:"I tend to feel very distant from people who don’t agree with me." };
+  return arr;
+})();
+
+// --- runtime state ---
+let n72_index = ((new Date().getFullYear()*10000 + (new Date().getMonth()+1)*100 + new Date().getDate()) % 72); // 0-71
+let n72_meaning = n72_safeParse(localStorage.getItem(N72_KEYS.meaning), {}) || {};
+let n72_assess = n72_safeParse(localStorage.getItem(N72_KEYS.assess), null);
+
+// --- wiring: increment daily connection counter (calls CONNECT if available)
+function n72_addConnection(){
+  // Try calling your existing CONNECT action if it exists
+  if (typeof pressConnect === "function"){
+    pressConnect();
+    return;
+  }
+
+  // If you have pillars variables + updateChips() (from earlier builds)
+  if (typeof pillars !== "undefined"){
+    try{
+      pillars = Math.max(0, (parseInt(pillars,10)||0) + 1);
+      if (typeof saveAll === "function") saveAll();
+      if (typeof updateChips === "function") updateChips();
+      if (typeof logEvent === "function") logEvent("CONNECT","(via 72 Names)");
+      return;
+    } catch(e){}
+  }
+
+  // Worst-case fallback: just toast
+  if (typeof showOverlay === "function") showOverlay("Connection +1");
+}
+
+function n72_init(){
+  n72_renderToday();
+  n72_renderBrowse();
+  n72_renderAssessmentUI();
+}
+
+function n72_titleById(id){
+  return N72_TITLES.find(x=>x.id===id) || {id, title:`Name #${id}`, subtitle:""};
+}
+function n72_triadById(id){
+  return N72_TRIADS[id-1] || "---";
+}
+
+// --- Today rendering
+function n72_renderToday(){
+  const id = n72_index + 1;
+  const triad = n72_triadById(id);
+  const t = n72_titleById(id);
+  const m = n72_meaning[String(id)] || {};
+
+  const triEl = document.getElementById("n72_todayTriad");
+  const titleEl = document.getElementById("n72_todayTitle");
+  const subEl = document.getElementById("n72_todaySubtitle");
+
+  if (triEl) triEl.innerText = `${id}. ${triad}`;
+  if (titleEl) titleEl.innerHTML = `<span class="pill">${escapeHtml(t.title)}</span>`;
+  if (subEl) subEl.innerText = t.subtitle || "";
+
+  const mt = document.getElementById("n72_meaningTitle");
+  const mc = document.getElementById("n72_meaningCore");
+  const mp = document.getElementById("n72_meaningPractice");
+  if (mt) mt.value = m.title || "";
+  if (mc) mc.value = m.core || "";
+  if (mp) mp.value = m.practice || "";
+}
+
+function n72_prev(){ n72_index = (n72_index + 71) % 72; n72_renderToday(); }
+function n72_next(){ n72_index = (n72_index + 1) % 72; n72_renderToday(); }
+
+function n72_saveMeaning(){
+  const id = n72_index + 1;
+  n72_meaning[String(id)] = {
+    title: (document.getElementById("n72_meaningTitle")?.value || "").trim(),
+    core: (document.getElementById("n72_meaningCore")?.value || "").trim(),
+    practice: (document.getElementById("n72_meaningPractice")?.value || "").trim()
+  };
+  localStorage.setItem(N72_KEYS.meaning, JSON.stringify(n72_meaning));
+  if (typeof showOverlay === "function") showOverlay("Saved");
+}
+
+function n72_useNow(){
+  n72_addConnection();
+  if (typeof showOverlay === "function") showOverlay("Used Name (+1)");
+}
+
+function n72_makeShareText(){
+  // If your share card screen has these IDs (from earlier builds): cardTitle/cardBody, we fill them.
+  const id = n72_index + 1;
+  const triad = n72_triadById(id);
+  const t = n72_titleById(id);
+  const m = n72_meaning[String(id)] || {};
+
+  const title = `72 Name #${id} — ${t.title}`;
+  const body =
+`${triad}
+${t.subtitle}
+
+${m.core ? "Meaning:\n" + m.core + "\n\n" : ""}${m.practice ? "Practice:\n" + m.practice : ""}`.trim();
+
+  const ct = document.getElementById("cardTitle");
+  const cb = document.getElementById("cardBody");
+  if (ct) ct.value = title;
+  if (cb) cb.value = body;
+
+  if (typeof setView === "function") setView("share");
+  if (typeof showOverlay === "function") showOverlay("Loaded to Share Card");
+}
+
+// --- Browse list
+function n72_renderBrowse(){
+  const q = (document.getElementById("n72_search")?.value || "").trim().toLowerCase();
+  const el = document.getElementById("n72_browse");
+  if (!el) return;
+
+  const rows = N72_TITLES.filter(r=>{
+    if (!q) return true;
+    return (r.title||"").toLowerCase().includes(q) || (r.subtitle||"").toLowerCase().includes(q) || String(r.id).includes(q);
+  });
+
+  el.innerHTML = rows.map(r=>{
+    const triad = n72_triadById(r.id);
+    return `
+      <div class="item">
+        <div class="top">
+          <div>
+            <div><strong>#${r.id}</strong> <span class="mono">${escapeHtml(triad)}</span> <span class="muted">•</span> ${escapeHtml(r.title)}</div>
+            <div class="mini muted">${escapeHtml(r.subtitle||"")}</div>
+          </div>
+          <button class="smallbtn" onclick="n72_select(${r.id})">Open</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function n72_select(id){
+  n72_index = (id - 1 + 72) % 72;
+  n72_renderToday();
+  if (typeof showOverlay === "function") showOverlay("Opened");
+}
+
+// --- Assessment UI control
+function n72_renderAssessmentUI(){
+  const intro = document.getElementById("n72_assessIntro");
+  const run = document.getElementById("n72_assessRun");
+  const res = document.getElementById("n72_assessResults");
+
+  if (!intro || !run || !res) return;
+
+  if (!n72_assess){
+    intro.style.display = "";
+    run.style.display = "none";
+    res.style.display = "none";
+    return;
+  }
+
+  if (n72_assess.finishedAt){
+    intro.style.display = "none";
+    run.style.display = "none";
+    res.style.display = "";
+    n72_renderResults();
+    return;
+  }
+
+  intro.style.display = "none";
+  run.style.display = "";
+  res.style.display = "none";
+  n72_renderQuestion();
+}
+
+function n72_startAssessment(){
+  n72_assess = {
+    idx: 0,
+    answers: {}, // { "1":"agree" | "neutral" | "disagree" }
+    startedAt: new Date().toISOString(),
+    finishedAt: null
+  };
+  localStorage.setItem(N72_KEYS.assess, JSON.stringify(n72_assess));
+  n72_renderAssessmentUI();
+}
+
+function n72_resumeAssessment(){
+  n72_assess = n72_safeParse(localStorage.getItem(N72_KEYS.assess), null);
+  if (!n72_assess) return n72_startAssessment();
+  n72_renderAssessmentUI();
+}
+
+function n72_resetAssessment(){
+  localStorage.removeItem(N72_KEYS.assess);
+  n72_assess = null;
+  n72_renderAssessmentUI();
+  if (typeof showOverlay === "function") showOverlay("Reset");
+}
+
+function n72_renderQuestion(){
+  const p = document.getElementById("n72_assessProgress");
+  const t = document.getElementById("n72_assessText");
+  if (!p || !t || !n72_assess) return;
+
+  const idx = Math.max(0, Math.min(71, n72_assess.idx || 0));
+  const item = N72_STATEMENTS[idx];
+
+  p.innerText = `${idx+1} / 72`;
+  t.innerText = item?.text || `Statement ${idx+1}`;
+}
+
+function n72_answer(choice){
+  if (!n72_assess) return;
+  const idx = Math.max(0, Math.min(71, n72_assess.idx || 0));
+  const item = N72_STATEMENTS[idx];
+  if (item) n72_assess.answers[String(item.id)] = choice;
+
+  if (idx >= 71){
+    n72_finishAssessment();
+    return;
+  }
+  n72_assess.idx = idx + 1;
+  localStorage.setItem(N72_KEYS.assess, JSON.stringify(n72_assess));
+  n72_renderQuestion();
+}
+
+function n72_back(){
+  if (!n72_assess) return;
+  n72_assess.idx = Math.max(0, (n72_assess.idx||0) - 1);
+  localStorage.setItem(N72_KEYS.assess, JSON.stringify(n72_assess));
+  n72_renderQuestion();
+}
+
+function n72_skip(){
+  if (!n72_assess) return;
+  n72_assess.idx = Math.min(71, (n72_assess.idx||0) + 1);
+  localStorage.setItem(N72_KEYS.assess, JSON.stringify(n72_assess));
+  n72_renderQuestion();
+}
+
+function n72_scoreAnswers(answers){
+  const score = {};
+  for (let i=1;i<=72;i++) score[String(i)] = 0;
+
+  // Agree=2, Neutral=1, Disagree=0
+  for (const [id, val] of Object.entries(answers || {})){
+    score[id] = (val==="agree") ? 2 : (val==="neutral" ? 1 : 0);
+  }
+  return score;
+}
+
+function n72_finishAssessment(){
+  n72_assess.finishedAt = new Date().toISOString();
+  localStorage.setItem(N72_KEYS.assess, JSON.stringify(n72_assess));
+
+  // append to history
+  const hist = n72_safeParse(localStorage.getItem(N72_KEYS.assessHistory), []) || [];
+  const scored = n72_scoreAnswers(n72_assess.answers);
+  hist.unshift({ date: new Date().toISOString(), answers: n72_assess.answers, score: scored });
+  localStorage.setItem(N72_KEYS.assessHistory, JSON.stringify(hist.slice(0, 50)));
+
+  n72_renderAssessmentUI();
+  if (typeof showOverlay === "function") showOverlay("Assessment complete");
+}
+
+function n72_topN(scoreObj, n){
+  const rows = [];
+  for (let i=1;i<=72;i++){
+    const id = String(i);
+    rows.push({ id:i, score: (scoreObj?.[id] ?? 0) });
+  }
+  rows.sort((a,b)=> b.score - a.score || a.id - b.id);
+  return rows.slice(0, n);
+}
+
+function n72_renderResults(){
+  const el = document.getElementById("n72_resultsList");
+  if (!el || !n72_assess) return;
+
+  const score = n72_scoreAnswers(n72_assess.answers);
+  const top = n72_topN(score, 6);
+
+  el.innerHTML = top.map(r=>{
+    const t = n72_titleById(r.id);
+    const tri = n72_triadById(r.id);
+    return `
+      <div class="item">
+        <div class="top">
+          <div>
+            <div><strong>#${r.id}</strong> <span class="mono">${escapeHtml(tri)}</span> <span class="muted">•</span> ${escapeHtml(t.title)}</div>
+            <div class="mini muted">${escapeHtml(t.subtitle||"")}</div>
+          </div>
+          <span class="pill">${r.score}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  // stash top #1 for apply
+  window.__n72_top1 = top[0]?.id || 1;
+}
+
+function n72_applyTop(){
+  const id = window.__n72_top1 || 1;
+  n72_select(id);
+  if (typeof showOverlay === "function") showOverlay("Set to top recommendation");
+}
+
+function n72_exportAssessment(){
+  const hist = n72_safeParse(localStorage.getItem(N72_KEYS.assessHistory), []) || [];
+  const payload = { exportedAt: new Date().toISOString(), current: n72_assess, history: hist };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `kai_72_assessment_export.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// expose init in case your setView calls it
+window.n72_init = n72_init;
+<script>
+
+// existing functions here...
+
+// ============================
+// 72 NAMES DATA STARTS HERE
+// ============================
+
+const NAMES72 = [
+  {
+    id: 48,
+    title: "Unity",
+    subtitle: "When there is conflict and only togetherness will do",
+    hebrew: "מיה"
+  }
+];
+
+// ============================
+// END 72 NAMES DATA
+// ============================
+
+</script>  
 </script>
 </body>
 </html>
