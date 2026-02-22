@@ -1,1698 +1,1629 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KAI – Prototype v3</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>KAI — Prototype</title>
 
-<link rel="manifest" href="/manifest.json?v=20260221-1">
-<link rel="apple-touch-icon" href="/apple-touch-icon-v3.png?v=20260221-1">
-<link rel="icon" href="/apple-touch-icon-v3.png?v=20260221-1">
-<style>
-  :root{
-    --bg:#0e0e0e; --panel:#141414; --btn:#1c1c1c; --muted:#b9b9b9; --gold:#ffd54a;
-    --line:#262626; --danger:#ff5b5b; --ok:#5bffb1;
-  }
-  body{font-family:-apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#fff;margin:0;padding:14px;}
-  .wrap{max-width:920px;margin:0 auto;}
-  h1{font-size:30px;margin:6px 0 10px;text-align:center;letter-spacing:0.5px;}
+  <!-- PWA (optional, safe even if you don’t use SW yet) -->
+  <link rel="manifest" href="./manifest.json?v=1">
+  <meta name="theme-color" content="#0b0b0c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon-v3.png?v=1" />
+  <link rel="icon" href="./icon-192-v3.png?v=1" />
 
-  /* top chips */
-  .topbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0 14px;}
-  .chip{
-    background:#1a1a1a;border:1px solid var(--line);border-radius:999px;padding:8px 10px;
-    font-size:13px;color:#fff;display:flex;gap:8px;align-items:center;
-  }
-  .chip b{color:var(--gold);font-weight:700;}
-  .chip small{color:var(--muted);font-size:12px;}
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --panel:#141414;
+      --panel2:#111112;
+      --line:#262626;
+      --text:#f2f2f2;
+      --muted:#a7a7a7;
+      --gold:#ffd54a;
+      --good:#5bffb1;
+      --danger:#ff5b6b;
+      --chip:#1a1a1a;
+      --shadow: 0 18px 45px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 12px;
+      --font: -apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+    }
 
-  /* tabs */
-  .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0 12px;}
-  .tab{background:#202020;color:#fff;border:none;border-radius:12px;padding:10px 12px;font-size:14px;}
-  .tab.active{background:var(--gold);color:#000;}
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 50% 0%, rgba(255,213,74,.06), transparent 60%),
+                  radial-gradient(800px 500px at 15% 20%, rgba(91,255,177,.05), transparent 60%),
+                  radial-gradient(900px 600px at 85% 30%, rgba(255,91,107,.05), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      font-family:var(--font);
+      padding: 18px 14px 40px;
+    }
 
-  /* cards */
-  .grid{display:grid;grid-template-columns:1fr;gap:12px;}
-  @media (min-width:900px){ .grid{grid-template-columns:1fr 1fr;} }
-  .card{background:var(--panel);border-radius:14px;padding:14px;border:1px solid var(--line);}
-  .label{font-size:13px;color:var(--muted);margin-bottom:6px;}
-  .big{font-size:34px;color:var(--gold);line-height:1.0;}
-  .sub{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.35;}
+    .wrap{ max-width: 1100px; margin: 0 auto; }
+    .top{
+      display:flex; align-items:center; justify-content:center;
+      margin: 10px 0 14px;
+      letter-spacing: .8px;
+      font-weight: 800;
+      font-size: 30px;
+      text-transform: uppercase;
+    }
 
-  /* buttons + inputs */
-  .btn{width:100%;padding:18px;margin:8px 0;font-size:20px;border-radius:14px;border:none;background:var(--btn);color:#fff;}
-  .btn:active{background:var(--gold);color:#000;}
-  .btn:disabled{background:#2a2a2a;color:#666;}
-  .btn.active{background:var(--gold);color:#000;}
+    .chips{
+      display:flex; flex-wrap:wrap; gap:10px;
+      justify-content:center;
+      margin: 8px 0 14px;
+    }
+    .chip{
+      display:flex; gap:8px; align-items:center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: 13px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.25);
+    }
+    .chip b{ color: var(--gold); font-weight:800; }
 
-  .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:10px 0 0;}
-  .smallbtn{padding:11px 12px;font-size:14px;border-radius:12px;border:none;background:#232323;color:#fff;}
-  .smallbtn:active{background:#333;}
-  .danger{background:#2b1717;border:1px solid #4b1e1e;}
-  .ok{background:#103020;border:1px solid #1a5a3f;}
+    .tabs{
+      display:flex; flex-wrap:wrap; gap:10px;
+      justify-content:center;
+      margin: 10px 0 18px;
+    }
+    .tabbtn{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      cursor:pointer;
+      transition: transform .06s ease, background .2s ease, border .2s ease;
+      user-select:none;
+    }
+    .tabbtn:active{ transform: scale(.98); }
+    .tabbtn.active{
+      background: rgba(255,213,74,.18);
+      border-color: rgba(255,213,74,.40);
+      color: #fff;
+    }
 
-  input, textarea, select{
-    width:100%; padding:12px; border-radius:12px; border:1px solid #2f2f2f; background:#101010; color:#fff; font-size:16px;
-    box-sizing:border-box;
-  }
-  textarea{min-height:120px;resize:vertical;}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media(min-width: 980px){
+      .grid.two{ grid-template-columns: 1fr 1fr; }
+      .grid.three{ grid-template-columns: 1fr 1fr 1fr; }
+    }
 
-  .two{display:grid;grid-template-columns:1fr;gap:10px;}
-  @media (min-width:740px){ .two{grid-template-columns:1fr 1fr;} }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .card h3{
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
 
-  .hr{height:1px;background:var(--line);margin:12px 0;}
-  .list{margin-top:10px;}
-  .item{padding:10px;border:1px solid var(--line);border-radius:12px;margin:8px 0;background:#101010;}
-  .item .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
-  .pill{font-size:12px;color:#000;background:var(--gold);padding:4px 8px;border-radius:999px;white-space:nowrap;}
-  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;}
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .row.tight{ gap:8px; }
+    .spacer{ flex:1; }
 
-  .overlay{position:fixed;top:34%;left:50%;transform:translate(-50%,-50%);font-size:22px;background:rgba(0,0,0,0.92);
-    padding:16px 18px;border-radius:14px;color:var(--gold);display:none;max-width:88vw;text-align:center;border:1px solid #333;}
-  .sinai{margin:8px 0 0;font-size:16px;color:var(--gold);text-align:center;}
+    .btn{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn.primary{
+      border-color: rgba(255,213,74,.35);
+      background: rgba(255,213,74,.14);
+    }
+    .btn.good{
+      border-color: rgba(91,255,177,.30);
+      background: rgba(91,255,177,.12);
+    }
+    .btn.danger{
+      border-color: rgba(255,91,107,.30);
+      background: rgba(255,91,107,.10);
+    }
+    .btn:active{ transform: scale(.99); }
 
-  /* share card preview */
-  .preview{width:100%;border-radius:14px;border:1px solid var(--line);background:#0b0b0b;display:none;}
-  .mini{font-size:12px;color:var(--muted);}
+    .hint{ color: var(--muted); font-size: 13px; line-height: 1.35; }
 
-/* emergency: prevent overlays from blocking taps */
-pre, code, .debug, .dump, .overlay {
-  pointer-events: none !important;
-}
+    .field{
+      display:flex; flex-direction:column; gap:6px;
+      min-width: 220px;
+      flex:1;
+    }
+    label{ color: var(--muted); font-size: 12px; }
+    input, textarea, select{
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline:none;
+    }
+    textarea{ min-height: 92px; resize: vertical; }
 
-/* ensure buttons stay tappable */
-button, .btn, a {
-  pointer-events: auto !important;
-  position: relative;
-  z-index: 5;
-}
-</style>
+    .sliderRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .sliderBox{
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.18);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .sliderTop{
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom: 8px;
+    }
+    .sliderTop b{ color: var(--text); }
+    .sliderTop span{ color: var(--muted); font-size: 12px; }
+    input[type="range"]{ width:100%; }
+
+    .panel{
+      display:none;
+      animation: fade .12s ease;
+    }
+    .panel.active{ display:block; }
+    @keyframes fade{ from{opacity:.7; transform: translateY(3px);} to{opacity:1; transform: translateY(0);} }
+
+    /* 72 names UI */
+    .n72-list{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    @media(min-width: 980px){
+      .n72-list{ grid-template-columns: 1fr 1fr; }
+    }
+    .n72-item{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      border-radius: 14px;
+      padding: 12px;
+      cursor:pointer;
+      transition: transform .06s ease;
+    }
+    .n72-item:active{ transform: scale(.99); }
+    .n72-head{
+      display:flex; gap:10px; align-items:baseline;
+      margin-bottom: 6px;
+    }
+    .n72-num{
+      color: var(--gold);
+      font-weight: 900;
+      min-width: 54px;
+    }
+    .n72-title{
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+    .n72-sub{ color: var(--muted); font-size: 13px; line-height:1.35; }
+
+    .bigName{
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      margin: 0 0 6px;
+    }
+    .triad{
+      font-size: 22px;
+      letter-spacing: 1px;
+      color: var(--gold);
+      font-weight: 900;
+      margin: 8px 0 10px;
+    }
+    .pill{
+      display:inline-flex;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-right: 8px;
+    }
+
+    /* Share card */
+    .shareCanvasWrap{
+      display:flex; justify-content:center;
+      margin-top: 14px;
+    }
+    canvas{
+      max-width:100%;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background:#000;
+      box-shadow: var(--shadow);
+    }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(20,20,20,.92);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      box-shadow: var(--shadow);
+      display:none;
+      z-index:9999;
+      max-width: 92vw;
+      text-align:center;
+    }
+
+    .mono{ font-family: ui-monospace, Menlo, Monaco, Consolas, monospace; font-size: 12px; color: var(--muted); }
+  </style>
 </head>
 
 <body>
-<div class="wrap">
-  <h1>KAI</h1>
+  <div class="wrap">
+    <div class="top">KAI</div>
 
-  <div class="topbar">
-    <div class="chip"><small>Pillars</small> <b id="pillarsChip">0</b><small id="pillarsGoalChip">/100</small></div>
-    <div class="chip"><small>Cycles</small> <b id="cyclesChip">0</b><small id="cyclesGoalChip">/10</small></div>
-    <div class="chip"><small>Certainty</small> <b id="certaintyChip">5</b><small>/10</small></div>
-    <div class="chip"><small>Energy</small> <b id="energyChip">5</b><small>/10</small></div>
-  </div>
+    <div class="chips" id="chips">
+      <div class="chip">Pillars <b id="pillars_val">0</b><span class="mono">/100</span></div>
+      <div class="chip">Cycles <b id="cycles_val">0</b><span class="mono">/10</span></div>
+      <div class="chip">Certainty <b id="certainty_val">5</b><span class="mono">/10</span></div>
+      <div class="chip">Energy <b id="energy_val">5</b><span class="mono">/10</span></div>
+    </div>
 
-  <div class="tabs">
-    <button class="tab active" data-view="home" onclick="setView('home')">Home</button>
-    <button class="tab" data-view="practice" onclick="setView('practice')">Practice</button>
-    <button class="tab" data-view="names" onclick="setView('names')">72 Names</button>
-    <button class="tab" data-view="gematria" onclick="setView('gematria')">Gematria</button>
-    <button class="tab" data-view="settings" onclick="setView('names72')">Settings</button>
-    <button class="tab" data-view="zohar" onclick="setView('zohar')">Zohar</button>
-    <button class="tab" data-view="share" onclick="setView('share')">Share Card</button>
-    <button class="tab" data-view="history" onclick="setView('history')">History</button>
-    <button class="tab" data-view="settings" onclick="setView('settings')">Settings</button>
-      </div>
+    <div class="tabs">
+      <button class="tabbtn active" data-tab="home">Home</button>
+      <button class="tabbtn" data-tab="practice">Practice</button>
+      <button class="tabbtn" data-tab="names72">72 Names</button>
+      <button class="tabbtn" data-tab="gematria">Gematria</button>
+      <button class="tabbtn" data-tab="zohar">Zohar</button>
+      <button class="tabbtn" data-tab="share">Share Card</button>
+      <button class="tabbtn" data-tab="history">History</button>
+      <button class="tabbtn" data-tab="settings">Settings</button>
+    </div>
 
-  <!-- HOME -->
-  <div id="view_home">
-    <div class="grid">
-      <div class="card">
-        <div class="label">Daily Metrics</div>
-        <div class="two">
-          <div>
-            <div class="label">Certainty</div>
-            <input id="certainty" type="range" min="0" max="10" value="5" oninput="setMetric('certainty', this.value)" />
-            <div class="mini">Set quickly. This is your Sinai clarity gauge.</div>
+    <!-- HOME -->
+    <section class="panel active" data-tabpanel="home">
+      <div class="grid two">
+        <div class="card">
+          <h3>Daily Metrics</h3>
+          <div class="sliderRow">
+            <div class="sliderBox">
+              <div class="sliderTop"><b>Certainty</b><span id="certainty_lbl">5/10</span></div>
+              <input id="certainty_slider" type="range" min="0" max="10" step="1" value="5" />
+              <div class="hint">Fast, honest. Simple gauge.</div>
+            </div>
+            <div class="sliderBox">
+              <div class="sliderTop"><b>Energy</b><span id="energy_lbl">5/10</span></div>
+              <input id="energy_slider" type="range" min="0" max="10" step="1" value="5" />
+              <div class="hint">No story. Just data.</div>
+            </div>
           </div>
-          <div>
-            <div class="label">Energy</div>
-            <input id="energy" type="range" min="0" max="10" value="5" oninput="setMetric('energy', this.value)" />
-            <div class="mini">Simple and honest. No story, just data.</div>
-          </div>
-        </div>
-        <div class="hr"></div>
-        <div class="label">Quick Actions</div>
-        <div class="two">
-          <button class="smallbtn ok" onclick="pressConnect()">CONNECT (+pillar)</button>
-          <button class="smallbtn" onclick="setView('practice')">Run Full Cycle</button>
-        </div>
-        <div id="sinaiMessage"></div>
-        <div class="mini" id="meta"></div>
-      </div>
 
-      <div class="card">
-        <div class="label">Profile</div>
-        <div class="two">
-          <div>
-            <label class="mini">Birthday</label>
-            <input id="birthday" type="date" onchange="saveProfile()" />
+          <div style="height:12px"></div>
+
+          <h3>Quick Actions</h3>
+          <div class="row">
+            <button class="btn good" id="btn_connect">CONNECT (+pillar)</button>
+            <button class="btn primary" id="btn_runCycle">Run Full Cycle</button>
+            <button class="btn" id="btn_resetDay">Reset Today</button>
           </div>
-          <div>
-            <label class="mini">Astrological Sign</label>
-            <input id="zodiac" disabled />
+          <div style="height:10px"></div>
+          <div class="hint">
+            CONNECT increments your Pillars. “Run Full Cycle” walks you through the five steps in a light, usable way.
           </div>
         </div>
-        <div class="two" style="margin-top:10px;">
-          <div>
-            <label class="mini">Tikkun (enter for now)</label>
-            <input id="tikkun" placeholder="e.g., (enter Centre method result)" onchange="saveProfile()" />
+
+        <div class="card">
+          <h3>Profile</h3>
+          <div class="grid two">
+            <div class="field">
+              <label>Birthday</label>
+              <input id="profile_bday" type="date" />
+            </div>
+            <div class="field">
+              <label>Astrological Sign</label>
+              <input id="profile_sign" type="text" placeholder="e.g., Taurus" />
+            </div>
           </div>
-          <div>
-            <label class="mini">Notes</label>
-            <input id="profileNote" placeholder="Optional…" onchange="saveProfile()" />
+          <div style="height:10px"></div>
+          <div class="grid two">
+            <div class="field">
+              <label>Tikkun (enter for now)</label>
+              <input id="profile_tikkun" type="text" placeholder="e.g., (Centre method later)" />
+            </div>
+            <div class="field">
+              <label>Notes</label>
+              <input id="profile_notes" type="text" placeholder="Optional…" />
+            </div>
           </div>
-        </div>
-        <div class="mini muted" style="margin-top:10px;">
-          We’ll automate tikkun once you tell me the exact Centre method you want to use.
-        </div>
-      </div>
-    </div>
-  </div>
-<div id="n72_panel" style="display:none">
-  <div class="panel">
-    <div class="row" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center">
-      <input id="n72_search" placeholder="Search (e.g., Unity, Fear, #48)" style="flex:1; min-width:220px" />
-      <button class="btn" id="n72_random">Random</button>
-    </div>
-
-    <div id="n72_list" class="list" style="margin-top:12px"></div>
-
-    <div id="n72_detail" class="panel" style="margin-top:12px; display:none">
-      <div id="n72_title" style="font-size:20px; font-weight:700"></div>
-      <div id="n72_letters" style="font-size:28px; margin-top:6px"></div>
-      <div id="n72_subtitle" style="opacity:.8; margin-top:6px"></div>
-      <div id="n72_practice" style="margin-top:10px"></div>
-    </div>
-  </div>
-</div>
-  <!-- PRACTICE -->
-  <div id="view_practice" style="display:none;">
-    <div class="card">
-      <div class="label">Sequence: CONNECT → ALIGN → RESTRICT → ELEVATE → SEAL</div>
-<button class="btn" onclick="pressConnect()">CONNECT (+pillar)</button>
-      <button class="btn" id="alignBtn" onclick="pressStep(2)" disabled>ALIGN</button>
-      <button class="btn" id="restrictBtn" onclick="pressStep(3)" disabled>RESTRICT</button>
-      <button class="btn" id="elevateBtn" onclick="pressStep(4)" disabled>ELEVATE</button>
-      <button class="btn" id="sealBtn" onclick="pressStep(5)" disabled>SEAL</button>
-
-      <div class="controls">
-        <button class="smallbtn" onclick="undoConnect()">Undo CONNECT</button>
-        <button class="smallbtn" onclick="resetSequence()">Reset Sequence</button>
-      </div>
-      <div class="mini muted" style="margin-top:8px;">
-        Pillar counts on CONNECT. Cycle counts when you complete SEAL.
-      </div>
-    </div>
-  </div>
-
-  <!-- 72 NAMES -->
-  <div id="view_names" style="display:none;">
-    <div class="grid">
-      <div class="card">
-        <div class="label">Today’s Name</div>
-        <div class="big mono" id="todayName">---</div>
-        <div class="sub" id="todayNameMeaning"></div>
-        <div class="hr"></div>
-
-        <div class="label">Edit meaning & practice</div>
-        <input id="nameTitle" placeholder="English encapsulation (e.g., Defying Gravity)" />
-        <textarea id="nameMeaning" placeholder="Meaning behind the Name (Centre language)."></textarea>
-        <textarea id="namePractice" placeholder="Practice: what should I DO today?"></textarea>
-
-        <div class="controls">
-          <button class="smallbtn" onclick="prevName()">Prev</button>
-          <button class="smallbtn" onclick="nextName()">Next</button>
-          <button class="smallbtn ok" onclick="saveNameMeaning()">Save</button>
-        </div>
-        <div class="controls">
-          <button class="smallbtn" onclick="logTodayName()">Log</button>
-          <button class="smallbtn" onclick="setView('share')">Make Share Card</button>
-        </div>
-        <div class="mini muted">This is where you paste the “meaning behind the name.” Once you seed the dictionary, KAI stops sounding empty.</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Browse / Jump</div>
-        <div class="two">
-          <div>
-            <label class="mini">Jump to #</label>
-            <input id="nameNumber" inputmode="numeric" placeholder="1–72" />
+          <div style="height:12px"></div>
+          <div class="row">
+            <button class="btn primary" id="btn_saveProfile">Save</button>
+            <div class="spacer"></div>
+            <div class="mono" id="build_lbl">Build v1</div>
           </div>
-          <div>
-            <label class="mini">Search letters</label>
-            <input id="nameSearch" placeholder="e.g., וול" />
+          <div style="height:8px"></div>
+          <div class="hint">We’ll keep tikkun as text until you tell me the exact Centre method you want to use.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRACTICE -->
+    <section class="panel" data-tabpanel="practice">
+      <div class="grid two">
+        <div class="card">
+          <h3>Five-Step Flow</h3>
+          <div class="row tight" style="margin-bottom:10px;">
+            <span class="pill">CONNECT</span>
+            <span class="pill">ALIGN</span>
+            <span class="pill">RESTRICT</span>
+            <span class="pill">ELEVATE</span>
+            <span class="pill">SEAL</span>
+          </div>
+          <div class="hint">
+            This prototype keeps the language clean and consistent with Centre tone: practical, direct, focused on transformation.
+          </div>
+          <div style="height:12px"></div>
+
+          <div class="field">
+            <label>Today’s Focus (one line)</label>
+            <input id="practice_focus" type="text" placeholder="e.g., ‘Choose unity over division’" />
+          </div>
+          <div style="height:10px"></div>
+
+          <div class="field">
+            <label>Restriction (what you’re restricting today)</label>
+            <input id="practice_restriction" type="text" placeholder="e.g., ‘No reactive speech’" />
+          </div>
+          <div style="height:10px"></div>
+
+          <div class="field">
+            <label>Evening Review (what you noticed)</label>
+            <textarea id="practice_review" placeholder="Simple notes…"></textarea>
+          </div>
+
+          <div style="height:12px"></div>
+          <div class="row">
+            <button class="btn primary" id="btn_savePractice">Save</button>
+            <button class="btn" id="btn_loadPractice">Load</button>
+            <button class="btn danger" id="btn_clearPractice">Clear</button>
           </div>
         </div>
-        <div class="controls">
-          <button class="smallbtn" onclick="goToNameNumber()">Go</button>
-          <button class="smallbtn" onclick="searchName()">Search</button>
-          <button class="smallbtn" onclick="randomName()">Random</button>
+
+        <div class="card">
+          <h3>72 Name for Today</h3>
+          <div class="hint">KAI picks a “Today” Name based on date (deterministic). You can override anytime in 72 Names.</div>
+          <div style="height:12px"></div>
+
+          <div id="today_name_box"></div>
+
+          <div style="height:12px"></div>
+          <div class="row">
+            <button class="btn" id="btn_todayToShare">Send Today → Share Card</button>
+            <button class="btn" id="btn_todayRandom">Random Name</button>
+          </div>
         </div>
-        <div class="list" id="nameResults"></div>
-        <div class="hr"></div>
-        <div class="label">All 72</div>
-        <div class="list" id="allNames"></div>
       </div>
-    </div>
+    </section>
+
+    <!-- 72 NAMES -->
+    <section class="panel" data-tabpanel="names72">
+      <div class="grid two">
+        <div class="card">
+          <h3>Browse</h3>
+          <div class="row">
+            <div class="field" style="min-width:280px;">
+              <label>Search (title, subtitle, #48)</label>
+              <input id="n72_search" type="text" placeholder="e.g., Unity / #48 / Gravity" />
+            </div>
+            <button class="btn" id="n72_random">Random</button>
+            <button class="btn primary" id="n72_today">Today</button>
+          </div>
+          <div class="n72-list" id="n72_list"></div>
+        </div>
+
+        <div class="card">
+          <h3>Detail</h3>
+          <div id="n72_detail" class="hint">Select a Name to view detail.</div>
+          <div style="height:12px"></div>
+          <div class="row">
+            <button class="btn primary" id="n72_saveDetail">Save Detail</button>
+            <button class="btn" id="n72_sendToShare">Send → Share Card</button>
+          </div>
+          <div style="height:10px"></div>
+          <div class="hint">You can refine meanings/practice one Name at a time. KAI stores edits locally.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GEMATRIA -->
+    <section class="panel" data-tabpanel="gematria">
+      <div class="grid two">
+        <div class="card">
+          <h3>Gematria</h3>
+          <div class="field">
+            <label>Enter Hebrew (or English letters)</label>
+            <input id="gem_input" type="text" placeholder="e.g., אהבה / אחדות / Emunah" />
+          </div>
+          <div style="height:12px"></div>
+          <div class="row">
+            <button class="btn primary" id="gem_calc">Calculate</button>
+            <button class="btn" id="gem_clear">Clear</button>
+          </div>
+          <div style="height:12px"></div>
+          <div class="card" style="background:rgba(0,0,0,.20); border-radius:14px;">
+            <div class="row" style="align-items:flex-start;">
+              <div style="min-width: 180px;">
+                <div class="hint">Value</div>
+                <div style="font-size:36px; font-weight:900; color:var(--gold);" id="gem_val">—</div>
+              </div>
+              <div class="spacer"></div>
+              <div style="flex:2;">
+                <div class="hint">Insight (placeholder)</div>
+                <div id="gem_insight" class="hint" style="color:var(--text);">
+                  This will become the “insight engine” layer: interpretation + resonance + practice prompt.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Notes</h3>
+          <div class="hint">
+            For now, gematria is reliable calculation + a place to write your own insight. Later we can add:
+            “themes”, “pairings”, and “practice prompts” without leaving Centre language.
+          </div>
+          <div style="height:12px"></div>
+          <div class="field">
+            <label>Your Insight</label>
+            <textarea id="gem_userInsight" placeholder="Write your interpretation…"></textarea>
+          </div>
+          <div style="height:12px"></div>
+          <button class="btn primary" id="gem_saveInsight">Save Insight</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZOHAR -->
+    <section class="panel" data-tabpanel="zohar">
+      <div class="grid two">
+        <div class="card">
+          <h3>Library</h3>
+          <div class="row">
+            <button class="btn primary" id="zohar_add">Add Passage</button>
+            <button class="btn" id="zohar_reload">Reload</button>
+            <button class="btn danger" id="zohar_reset">Reset Starter Set</button>
+          </div>
+          <div style="height:10px"></div>
+          <div id="zohar_list" class="n72-list"></div>
+        </div>
+
+        <div class="card">
+          <h3>Passage</h3>
+          <div class="field">
+            <label>Title</label>
+            <input id="zohar_title" type="text" placeholder="e.g., Parashat … / Atika Kadisha …" />
+          </div>
+          <div style="height:10px"></div>
+          <div class="field">
+            <label>Source/Reference (optional)</label>
+            <input id="zohar_ref" type="text" placeholder="e.g., Zohar, …" />
+          </div>
+          <div style="height:10px"></div>
+          <div class="field">
+            <label>Text (short excerpt)</label>
+            <textarea id="zohar_text" placeholder="Paste a short excerpt…"></textarea>
+          </div>
+          <div style="height:10px"></div>
+          <div class="field">
+            <label>Practice / Reflection</label>
+            <textarea id="zohar_practice" placeholder="Simple practice prompt…"></textarea>
+          </div>
+          <div style="height:12px"></div>
+          <div class="row">
+            <button class="btn primary" id="zohar_save">Save</button>
+            <button class="btn" id="zohar_clear">Clear</button>
+            <button class="btn danger" id="zohar_delete">Delete</button>
+          </div>
+          <div style="height:10px"></div>
+          <div class="hint">Keep excerpts short (copyright-safe). Use KAI as an index + practice engine.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHARE -->
+    <section class="panel" data-tabpanel="share">
+      <div class="grid two">
+        <div class="card">
+          <h3>Share Card Builder</h3>
+          <div class="field">
+            <label>Header</label>
+            <input id="share_header" type="text" placeholder="e.g., 72 Name #48 — Unity" />
+          </div>
+          <div style="height:10px"></div>
+          <div class="field">
+            <label>Triad (Hebrew letters)</label>
+            <input id="share_triad" type="text" placeholder="e.g., מיה" />
+          </div>
+          <div style="height:10px"></div>
+          <div class="field">
+            <label>Body</label>
+            <textarea id="share_body" placeholder="Short meaning + practice…"></textarea>
+          </div>
+          <div style="height:10px"></div>
+          <div class="row">
+            <button class="btn primary" id="share_render">Render</button>
+            <button class="btn" id="share_download">Download PNG</button>
+            <button class="btn" id="share_clear">Clear</button>
+          </div>
+          <div style="height:10px"></div>
+          <div class="hint">This creates a clean card image you can text/email to Eitan.</div>
+        </div>
+
+        <div class="card">
+          <h3>Preview</h3>
+          <div class="shareCanvasWrap">
+            <canvas id="share_canvas" width="1080" height="1350"></canvas>
+          </div>
+          <div style="height:10px"></div>
+          <div class="mono">KAI • <span id="share_date"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="panel" data-tabpanel="history">
+      <div class="grid two">
+        <div class="card">
+          <h3>Activity</h3>
+          <div class="row">
+            <button class="btn" id="hist_reload">Reload</button>
+            <button class="btn danger" id="hist_clear">Clear History</button>
+          </div>
+          <div style="height:10px"></div>
+          <div id="hist_list" class="n72-list"></div>
+        </div>
+
+        <div class="card">
+          <h3>Export</h3>
+          <div class="hint">For now: copy JSON (quick + reliable).</div>
+          <div style="height:12px"></div>
+          <button class="btn primary" id="export_json">Copy All Data (JSON)</button>
+          <div style="height:10px"></div>
+          <div class="mono" id="export_status"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="panel" data-tabpanel="settings">
+      <div class="grid two">
+        <div class="card">
+          <h3>Build Controls</h3>
+          <div class="row">
+            <button class="btn" id="btn_cacheHint">Cache Bust Hint</button>
+            <button class="btn danger" id="btn_factoryReset">Factory Reset (All Data)</button>
+          </div>
+          <div style="height:12px"></div>
+          <div class="hint">
+            If the icon or build looks “stuck”: use a cache-bust URL like <span class="mono">?v=20260221-1</span>.
+            If you later re-enable the service worker, bump <span class="mono">CACHE</span> in <span class="mono">sw.js</span>.
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>About</h3>
+          <div class="hint">
+            KAI is a prototype ritual tool. Keep language consistent with Centre tone and teaching.
+            This build stores data only on-device (<span class="mono">localStorage</span>).
+          </div>
+          <div style="height:12px"></div>
+          <div class="mono" id="about_debug"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="toast" id="toast"></div>
   </div>
-
-  <!-- GEMATRIA -->
-  <div id="view_gematria" style="display:none;">
-    <div class="grid">
-      <div class="card">
-        <div class="label">Gematria</div>
-        <input id="gemInput" placeholder="Enter Hebrew word/phrase (e.g., שלום)" />
-        <div class="controls">
-          <button class="smallbtn" onclick="calcGematria()">Calculate</button>
-          <button class="smallbtn ok" onclick="saveGematria()">Save</button>
-          <button class="smallbtn" onclick="clearGematria()">Clear</button>
-        </div>
-        <div class="hr"></div>
-
-        <div class="label">Result</div>
-        <div class="big" id="gemValue">—</div>
-        <div class="sub mono" id="gemBreakdown"></div>
-
-        <div class="hr"></div>
-        <div class="label">Insight (editable)</div>
-        <textarea id="gemInsight" placeholder="KAI Insight Engine output… (you can edit)"></textarea>
-        <div class="controls">
-          <button class="smallbtn" onclick="autofillInsight()">Auto Insight</button>
-          <button class="smallbtn ok" onclick="saveGemInsight()">Save Insight</button>
-        </div>
-        <div class="mini muted">Auto Insight is a starter. The real magic is your voice + Centre language.</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Saved Gematria</div>
-        <input id="gemSavedSearch" placeholder="Search saved…" oninput="renderSavedGematria()" />
-        <div class="list" id="gemSavedList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ZOHAR -->
-  <div id="view_zohar" style="display:none;">
-    <div class="grid">
-      <div class="card">
-        <div class="label">Add Passage (your notes / short excerpt)</div>
-        <input id="zTitle" placeholder="Title (e.g., Terumah: 100 Pillars)" />
-        <div class="two">
-          <div><input id="zSource" placeholder="Source (e.g., Zohar Terumah / Eitan notes)" /></div>
-          <div><input id="zTags" placeholder="Tags (comma) e.g., mishkan, restriction, certainty" /></div>
-        </div>
-        <textarea id="zText" placeholder="Paste your paraphrase/notes (recommended) or a short excerpt."></textarea>
-        <div class="controls">
-          <button class="smallbtn ok" onclick="saveZohar()">Save</button>
-          <button class="smallbtn" onclick="clearZoharForm()">Clear</button>
-        </div>
-        <div class="mini muted">You can build a real library fast by pasting class notes + your own summaries.</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Library</div>
-        <input id="zSearch" placeholder="Search…" oninput="renderZohar()" />
-        <div class="controls">
-          <button class="smallbtn" onclick="seedZoharStarter()">Starter Pack</button>
-          <button class="smallbtn" onclick="exportZohar()">Export JSON</button>
-          <label class="smallbtn" style="cursor:pointer;">
-            Import JSON <input id="zImport" type="file" accept="application/json" style="display:none" onchange="importZohar(event)" />
-          </label>
-          <button class="smallbtn danger" onclick="clearZoharAll()">Clear</button>
-        </div>
-        <div class="list" id="zList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SHARE CARD -->
-  <div id="view_share" style="display:none;">
-    <div class="grid">
-      <div class="card">
-        <div class="label">Build a Share Card</div>
-        <select id="cardType" onchange="renderCardDefaults()">
-          <option value="name">72 Name</option>
-          <option value="zohar">Zohar Note</option>
-          <option value="gem">Gematria</option>
-          <option value="practice">Practice Moment</option>
-        </select>
-        <div class="hr"></div>
-        <input id="cardTitle" placeholder="Title" />
-        <textarea id="cardBody" placeholder="Body"></textarea>
-        <div class="controls">
-          <button class="smallbtn ok" onclick="generateCard()">Generate</button>
-          <button class="smallbtn" onclick="clearCard()">Clear</button>
-        </div>
-        <div class="mini muted">On iOS, after generation: long-press image to Save or Share.</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Preview</div>
-        <canvas id="cardCanvas" class="preview"></canvas>
-        <div class="controls">
-          <button class="smallbtn" onclick="downloadCard()">Download PNG</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- HISTORY -->
-  <div id="view_history" style="display:none;">
-    <div class="card">
-      <div class="label">Today’s History</div>
-      <div class="controls">
-        <button class="smallbtn" onclick="exportAll()">Export All JSON</button>
-        <button class="smallbtn danger" onclick="clearHistory()">Clear History</button>
-      </div>
-      <div class="list" id="historyList"></div>
-    </div>
-  </div>
-
-  <!-- SETTINGS -->
-  <div id="view_settings" style="display:none;">
-    <div class="card">
-      <div class="label">Goals</div>
-      <div class="two">
-        <div><label class="mini">Pillars</label><input id="goalPillars" inputmode="numeric" /></div>
-        <div><label class="mini">Cycles</label><input id="goalCycles" inputmode="numeric" /></div>
-      </div>
-      <div class="controls">
-        <button class="smallbtn ok" onclick="saveGoals()">Save</button>
-        <button class="smallbtn danger" onclick="resetTodayAll()">Reset Today</button>
-      </div>
-
-      <div class="hr"></div>
-      <div class="label">Data</div>
-      <div class="controls">
-        <button class="smallbtn" onclick="exportAll()">Export All JSON</button>
-        <button class="smallbtn danger" onclick="clearAllData()">Clear ALL Data</button>
-      </div>
-      <div class="mini muted" id="storageNote"></div>
-    </div>
-  </div>
-
-  <div class="overlay" id="overlay"></div>
-</div>
 
 <script>
-/* -------------------- storage -------------------- */
-const today = new Date().toISOString().split("T")[0];
-const baseKey = "kai_" + today;
+/* =========================
+   KAI — SINGLE FILE APP
+   Error-resistant, localStorage-based
+========================= */
 
-const KEY = {
-  goals: "kai_goals_v3",
-  metrics: baseKey + "_metrics",
-  pillars: baseKey + "_pillars",
-  cycles: baseKey + "_cycles",
-  history: baseKey + "_history",
-  profile: "kai_profile_v3",
-  zohar: "kai_zohar_v3",
-  gem: "kai_gem_v3",
-  names: "kai_72_meanings_v3"
-};
+(function(){
+  "use strict";
 
-const DEFAULT_GOALS = { pillars: 100, cycles: 10 };
+  // ---------- Storage keys ----------
+  const K = {
+    state: "kai_state_v1",
+    profile: "kai_profile_v1",
+    practice: "kai_practice_v1",
+    history: "kai_history_v1",
+    n72_overrides: "kai_72_overrides_v1",
+    gem_notes: "kai_gem_notes_v1",
+    zohar: "kai_zohar_v1",
+    shareDraft: "kai_share_draft_v1",
+  };
 
-let goals = safeParse(localStorage.getItem(KEY.goals), DEFAULT_GOALS) || DEFAULT_GOALS;
-let metrics = safeParse(localStorage.getItem(KEY.metrics), { certainty: 5, energy: 5 }) || { certainty: 5, energy: 5 };
+  // ---------- Helpers ----------
+  const $ = (id)=>document.getElementById(id);
+  const q = (sel, root=document)=>root.querySelector(sel);
+  const qa = (sel, root=document)=>Array.from(root.querySelectorAll(sel));
+  const clamp = (n,min,max)=>Math.max(min, Math.min(max, n));
+  const todayISO = ()=> new Date().toISOString().slice(0,10);
 
-let pillars = parseInt(localStorage.getItem(KEY.pillars) || "0", 10);
-let cycles  = parseInt(localStorage.getItem(KEY.cycles)  || "0", 10);
+  function safeParse(json, fallback){
+    try{ return JSON.parse(json); } catch(e){ return fallback; }
+  }
+  function load(key, fallback){
+    return safeParse(localStorage.getItem(key), fallback);
+  }
+  function save(key, val){
+    localStorage.setItem(key, JSON.stringify(val));
+  }
 
-let history = safeParse(localStorage.getItem(KEY.history), []) || [];
-let zoharLib = safeParse(localStorage.getItem(KEY.zohar), []) || [];
-let gemSaved = safeParse(localStorage.getItem(KEY.gem), []) || [];
-let profile = safeParse(localStorage.getItem(KEY.profile), { birthday:"", tikkun:"", note:"" }) || { birthday:"", tikkun:"", note:"" };
+  function toast(msg){
+    const t = $("toast");
+    t.textContent = msg;
+    t.style.display = "block";
+    clearTimeout(toast._tm);
+    toast._tm = setTimeout(()=>{ t.style.display="none"; }, 1500);
+  }
 
-let namesMeaning = safeParse(localStorage.getItem(KEY.names), {}) || {}; // { "1": {title, meaning, practice}, ... }
+  function logEvent(type, detail){
+    const hist = load(K.history, []);
+    hist.unshift({
+      at: new Date().toISOString(),
+      type,
+      detail: detail || ""
+    });
+    save(K.history, hist.slice(0, 250));
+  }
 
-/* -------------------- utils -------------------- */
-function safeParse(str, fallback){ try { return str ? JSON.parse(str) : fallback; } catch(e){ return fallback; } }
-function saveAll(){
-  localStorage.setItem(KEY.goals, JSON.stringify(goals));
-  localStorage.setItem(KEY.metrics, JSON.stringify(metrics));
-  localStorage.setItem(KEY.pillars, String(pillars));
-  localStorage.setItem(KEY.cycles, String(cycles));
-  localStorage.setItem(KEY.history, JSON.stringify(history));
-  localStorage.setItem(KEY.zohar, JSON.stringify(zoharLib));
-  localStorage.setItem(KEY.gem, JSON.stringify(gemSaved));
-  localStorage.setItem(KEY.profile, JSON.stringify(profile));
-  localStorage.setItem(KEY.names, JSON.stringify(namesMeaning));
-}
-function nowTime(){
-  const d = new Date();
-  return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-}
-function escapeHtml(s){
-  return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
-function showOverlay(text){
-  const overlay = document.getElementById("overlay");
-  overlay.innerText = text;
-  overlay.style.display = "block";
-  setTimeout(()=> overlay.style.display="none", 1100);
-}
-function logEvent(type, detail){
-  history.unshift({ t: nowTime(), type, detail });
-  if (history.length > 500) history.pop();
-  saveAll();
-}
+  // ---------- App state ----------
+  const defaultState = {
+    pillars: 0,
+    cycles: 0,
+    certainty: 5,
+    energy: 5,
+    lastDay: todayISO(),
+  };
 
-/* -------------------- tabs -------------------- */
-function setView(name){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.querySelector(`.tab[data-view="${name}"]`).classList.add("active");
+  let state = load(K.state, defaultState);
 
-  ["home","practice","names","gematria","zohar","share","history","settings"].forEach(v=>{
-    document.getElementById("view_"+v).style.display = (v===name) ? "" : "none";
-  });
+  // daily reset if date changed
+  if (state.lastDay !== todayISO()){
+    state.lastDay = todayISO();
+    state.pillars = 0;
+    state.cycles = 0;
+    save(K.state, state);
+  }
 
-  if (name==="names"){ renderTodayName(); renderAllNames(); }
-  if (name==="gematria"){ renderSavedGematria(); }
-  if (name==="zohar"){ renderZohar(); }
-  if (name==="history"){ renderHistory(); }
-  if (name==="settings"){ loadSettings(); }
-  if (name==="share"){ renderCardDefaults(); }
-}
-
-/* -------------------- top chips + metrics -------------------- */
-function updateChips(){
-  document.getElementById("pillarsChip").innerText = pillars;
-  document.getElementById("pillarsGoalChip").innerText = "/" + goals.pillars;
-  document.getElementById("cyclesChip").innerText = cycles;
-  document.getElementById("cyclesGoalChip").innerText = "/" + goals.cycles;
-  document.getElementById("certaintyChip").innerText = metrics.certainty;
-  document.getElementById("energyChip").innerText = metrics.energy;
-
-  const sinai = (pillars >= goals.pillars);
-  document.getElementById("sinaiMessage").innerHTML = sinai ? `<div class="sinai">Sinai Mode Activated. Clarity Stabilizing.</div>` : "";
-  document.getElementById("meta").innerText = `Today: ${today} | Stored locally on this device`;
-  document.getElementById("storageNote").innerText = `Saved locally (localStorage). Export JSON if you want portability.`;
-}
-
-function setMetric(k, v){
-  metrics[k] = parseInt(v,10);
-  saveAll();
-  updateChips();
-}
-function loadMetrics(){
-  document.getElementById("certainty").value = metrics.certainty ?? 5;
-  document.getElementById("energy").value = metrics.energy ?? 5;
-  updateChips();
-}
-
-/* -------------------- practice engine -------------------- */
-let currentStep = 0; // 0 none, 1 connect, 2 align, 3 restrict, 4 elevate, 5 seal
-const LINES = {
-  1: "The Light of the Creator is here.",
-  2: "I align myself with the Light.",
-  3: "I restrict my reactive desire.",
-  4: "I elevate this moment.",
-  5: "Thank you for this Light."
-};
-
-function setButtons(){
-  const map = [
-    ["connectBtn",1],["alignBtn",2],["restrictBtn",3],["elevateBtn",4],["sealBtn",5]
+  // ---------- 72 Names data ----------
+  // Titles/Subtitles from your screenshots (IDs 1-72).
+  const N72_TITLES = [
+    {id:1,title:"Time Travel",subtitle:"How to fix the past"},
+    {id:2,title:"Recapturing the Sparks",subtitle:"Recharging when you are depleted"},
+    {id:3,title:"Miracle Making",subtitle:"A recipe"},
+    {id:4,title:"Eliminating Negative Thoughts",subtitle:"When and how"},
+    {id:5,title:"Healing",subtitle:"Meditation for yourself and others"},
+    {id:6,title:"Dream State",subtitle:"Activating messages from the subconscious"},
+    {id:7,title:"DNA of Soul",subtitle:"Restoring to their perfect state"},
+    {id:8,title:"Defusing Negative Energy and Stress",subtitle:"Releasing the pressure"},
+    {id:9,title:"Angelic Influences",subtitle:"Harnessing help from above"},
+    {id:10,title:"Looks Can Kill",subtitle:"Protecting yourself from the evil-eye"},
+    {id:11,title:"Banishing the Remnants of Evil",subtitle:"Purifying places and spaces"},
+    {id:12,title:"Unconditional Love",subtitle:"How to awaken love, especially when you don't want to"},
+    {id:13,title:"Heaven on Earth",subtitle:"Creating harmony within and without"},
+    {id:14,title:"Farewell to Arms",subtitle:"Diffusing conflict"},
+    {id:15,title:"Long-Range Vision",subtitle:"Seeing the effect of decisions before you make them"},
+    {id:16,title:"Dumping Depression",subtitle:"How to pick yourself up when you fall"},
+    {id:17,title:"Great Escape",subtitle:"Breaking the limits of ego"},
+    {id:18,title:"Fertility",subtitle:"When conception is difficult"},
+    {id:19,title:"Dialing God",subtitle:"Receiving answers to your prayers"},
+    {id:20,title:"Victory Over Addictions",subtitle:"Overcoming your negative self"},
+    {id:21,title:"Eradicate Plague",subtitle:"Effecting change in the physical world"},
+    {id:22,title:"Stop Fatal Attraction",subtitle:"How to stop drawing the wrong people into your life"},
+    {id:23,title:"Sharing the Flame",subtitle:"Passing the wisdom along"},
+    {id:24,title:"Jealousy",subtitle:"Undoing chaos resulting from our jealousy before it is manifested"},
+    {id:25,title:"Speak Your Mind",subtitle:"For those times when you need help expressing the truth"},
+    {id:26,title:"Order from Chaos",subtitle:"Reversing Murphy's Law"},
+    {id:27,title:"Silent Partner",subtitle:"Choosing positivity as your partner"},
+    {id:28,title:"Soul Mate",subtitle:"Attracting “The One”"},
+    {id:29,title:"Removing Hatred",subtitle:"Drawing out the poison"},
+    {id:30,title:"Building Bridges",subtitle:"Mending Broken Relationships"},
+    {id:31,title:"Finish What You Start",subtitle:"Finding the power to finish what you start"},
+    {id:32,title:"Memories",subtitle:"Breaking the cycle"},
+    {id:33,title:"Revealing the Dark Side",subtitle:"Removing the obstacles you create"},
+    {id:34,title:"Forget Thyself",subtitle:"Opening up to another view"},
+    {id:35,title:"Sexual Energy",subtitle:"How to get more from your sexual experience"},
+    {id:36,title:"Fear(less)",subtitle:"Overcoming the ties that bind"},
+    {id:37,title:"The Big Picture",subtitle:"Seeing the opportunity for good hidden in every challenge"},
+    {id:38,title:"Circuitry",subtitle:"Sharing so you can truly receive"},
+    {id:39,title:"Diamond in the Rough",subtitle:"Turning the coal in your life into diamonds"},
+    {id:40,title:"Speaking the Right Words",subtitle:"Using language to make good things happen"},
+    {id:41,title:"Self-Esteem",subtitle:"Finding the power to lift yourself up"},
+    {id:42,title:"Revealing the Concealed",subtitle:"Seeing the truth and handling it"},
+    {id:43,title:"Defying Gravity",subtitle:"Achieving mind over matter"},
+    {id:44,title:"Sweetening Judgment",subtitle:"Ducking the boomerang you send out there; stop the judgment that is happening against you"},
+    {id:45,title:"The Power of Prosperity",subtitle:"What to do when you need money"},
+    {id:46,title:"Absolute Certainty",subtitle:"What to do when doubts creep in"},
+    {id:47,title:"Global Transformation",subtitle:"Helping to bring about world peace"},
+    {id:48,title:"Unity",subtitle:"When there is conflict and only togetherness will do"},
+    {id:49,title:"Happiness",subtitle:"When you need the power to choose happiness"},
+    {id:50,title:"Enough Is Never Enough",subtitle:"When you need the passion from keep from settling for less"},
+    {id:51,title:"No Guilt",subtitle:"Removing negativity aspects of your nature while you repair the damage they cause"},
+    {id:52,title:"Passion",subtitle:"Awaken the earning in your heart"},
+    {id:53,title:"No Agenda",subtitle:"Giving with no strings attached"},
+    {id:54,title:"The Death of Death",subtitle:"When things are good and you want them to stay that way"},
+    {id:55,title:"Thought into Action",subtitle:"The power to make it happen"},
+    {id:56,title:"Dispelling Anger",subtitle:"Overcoming it before it overcomes you"},
+    {id:57,title:"Listen to Your Soul",subtitle:"Increasing the volume of the soft voice within"},
+    {id:58,title:"Letting Go",subtitle:"When you need the power to walk away"},
+    {id:59,title:"Umbilical Cord",subtitle:"Connecting to the Light Force"},
+    {id:60,title:"Freedom",subtitle:"Passing the test and going to the next level"},
+    {id:61,title:"Water",subtitle:"Removing negativity from the source of life"},
+    {id:62,title:"Parent–Teacher, Not Preacher",subtitle:"When you need to teach your children"},
+    {id:63,title:"Appreciation",subtitle:"How to keep what you have and get more"},
+    {id:64,title:"Casting Yourself in a Favorable Light",subtitle:"Revealing the best you"},
+    {id:65,title:"Fear of God",subtitle:"When you need to remember that there is a system, and how to work it"},
+    {id:66,title:"Accountability",subtitle:"The power to take accountability for your happiness and life"},
+    {id:67,title:"Great Expectations",subtitle:"How to stop getting disappointed"},
+    {id:68,title:"Contacting Departed Souls",subtitle:"Making positive connections with people that have passed on"},
+    {id:69,title:"Lost and Found",subtitle:"What to do when you are lost and confused"},
+    {id:70,title:"Recognizing Design Beneath Disorder",subtitle:"Finding the solution within the problem"},
+    {id:71,title:"Prophecy and Parallel Universes",subtitle:"Switching your universe for a better one"},
+    {id:72,title:"Spiritual Cleansing",subtitle:"Purging yourself of negativity"},
   ];
-  map.forEach(([id,step])=>{
-    const b = document.getElementById(id);
-    b.disabled = true;
-    b.classList.remove("active");
-    if (currentStep >= step) b.classList.add("active");
-  });
-  document.getElementById("connectBtn").disabled = false;
-  if (currentStep>=1 && currentStep<5){
-    const nextId = map[currentStep][0]; // step 1 enables alignBtn, etc
-    document.getElementById(nextId).disabled = false;
+
+  // Triads (optional). We only hardcode a few you already referenced.
+  // You can fill the rest later; app won’t break if empty.
+  const N72_TRIADS = {
+    48: "מיה", // Unity (from your card)
+    43: "וול", // Defying Gravity (your offsite day-2 name)
+  };
+
+  // Minimal runtime list (what browse uses)
+  const N72_MIN = N72_TITLES.map(x => ({
+    id: x.id,
+    title: x.title,
+    subtitle: x.subtitle,
+    triad: N72_TRIADS[x.id] || ""
+  }));
+
+  // Overrides: per-name editable fields you write (meaning, practice, notes, triad)
+  let n72_overrides = load(K.n72_overrides, {}); // { "48": { triad, meaning, practice, notes } }
+
+  function n72_get(id){
+    const base = N72_MIN.find(x=>x.id===id);
+    const o = n72_overrides[String(id)] || {};
+    return {
+      id,
+      title: base ? base.title : ("Name #" + id),
+      subtitle: base ? base.subtitle : "",
+      triad: (o.triad ?? (base ? base.triad : "")) || "",
+      meaning: o.meaning || "",
+      practice: o.practice || "",
+      notes: o.notes || ""
+    };
   }
-}
 
-function pressConnect(){
-  // Pillar counts on CONNECT
-  if (pillars < goals.pillars) pillars++;
-  currentStep = 1;
-  showOverlay(LINES[1]);
-  logEvent("CONNECT", "pillar +1");
-  saveAll();
-  updateChips();
-  setButtons();
-}
-
-function pressStep(stepNum){
-  if (stepNum !== currentStep + 1) return;
-  currentStep = stepNum;
-  showOverlay(LINES[stepNum]);
-  logEvent(["","CONNECT","ALIGN","RESTRICT","ELEVATE","SEAL"][stepNum], "step");
-  if (stepNum === 5){
-    cycles++;
-    logEvent("CYCLE", "completed +1");
-    saveAll();
-    updateChips();
-    setTimeout(()=>{ currentStep=0; setButtons(); }, 450);
-    return;
+  function n72_set(id, patch){
+    const key = String(id);
+    const prev = n72_overrides[key] || {};
+    n72_overrides[key] = {...prev, ...patch};
+    save(K.n72_overrides, n72_overrides);
   }
-  saveAll(); updateChips(); setButtons();
-}
 
-function undoConnect(){
-  if (pillars>0) pillars--;
-  logEvent("UNDO","pillar -1");
-  saveAll(); updateChips();
-}
-
-function resetSequence(){
-  currentStep=0;
-  logEvent("RESET","sequence reset");
-  saveAll(); setButtons();
-}
-
-/* -------------------- profile (birthday/zodiac/tikkun) -------------------- */
-function zodiacSignFromDate(iso){
-  if (!iso) return "";
-  const d = new Date(iso+"T00:00:00");
-  const m = d.getMonth()+1, day = d.getDate();
-  const z = [
-    ["Capricorn", 1, 19], ["Aquarius", 2, 18], ["Pisces", 3, 20], ["Aries", 4, 19],
-    ["Taurus", 5, 20], ["Gemini", 6, 20], ["Cancer", 7, 22], ["Leo", 8, 22],
-    ["Virgo", 9, 22], ["Libra", 10, 22], ["Scorpio", 11, 21], ["Sagittarius", 12, 21],
-    ["Capricorn", 12, 31]
-  ];
-  for (const [name, mm, dd] of z){
-    if (m < mm || (m === mm && day <= dd)) return name;
+  function dailyNameIndex(){
+    // deterministic “Today Name” (0..71)
+    const d = new Date();
+    const seed = (d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate());
+    return seed % 72; // 0..71
   }
-  return "Capricorn";
-}
 
-function saveProfile(){
-  profile.birthday = document.getElementById("birthday").value || "";
-  profile.tikkun = document.getElementById("tikkun").value || "";
-  profile.note = document.getElementById("profileNote").value || "";
-  saveAll();
-  document.getElementById("zodiac").value = zodiacSignFromDate(profile.birthday);
-  showOverlay("Saved");
-}
+  // ---------- UI render: chips ----------
+  function renderChips(){
+    $("pillars_val").textContent = String(state.pillars);
+    $("cycles_val").textContent = String(state.cycles);
+    $("certainty_val").textContent = String(state.certainty);
+    $("energy_val").textContent = String(state.energy);
+    $("certainty_lbl").textContent = `${state.certainty}/10`;
+    $("energy_lbl").textContent = `${state.energy}/10`;
+  }
 
-function loadProfile(){
-  document.getElementById("birthday").value = profile.birthday || "";
-  document.getElementById("tikkun").value = profile.tikkun || "";
-  document.getElementById("profileNote").value = profile.note || "";
-  document.getElementById("zodiac").value = zodiacSignFromDate(profile.birthday);
-}
+  // ---------- Tabs ----------
+  function showTab(name){
+    qa(".tabbtn").forEach(b=> b.classList.toggle("active", b.dataset.tab===name));
+    qa("[data-tabpanel]").forEach(p=> p.classList.toggle("active", p.dataset.tabpanel===name));
 
-/* -------------------- 72 Names -------------------- */
-const NAMES72 = [
-  "והו","ילי","סיט","עלם","מהש","ללה","אכא","כהת","הזי","אלד","לאו","ההה",
-  "יזל","מבה","הרי","הקם","לאו","כלי","לוו","פהל","נלכ","ייי","מלה","חהו",
-  "נתה","האא","ירת","שאה","ריי","אומ","לכב","ושר","יחו","להח","כוק","מנד",
-  "אני","חעם","רהע","ייז","ההו","מיכ","וול","ילה","סאל","ערי","עשא","מיה",
-  "והו","דני","החש","עמם","ננא","נית","מבה","פוי","נמם","ייל","הרח","מצר",
-  "ומב","יהה","ענו","מחי","דמב","מנק","איע","חבו","ראה","יבמ","היי","מום"
-];
+    if (name === "names72") n72_init();
+    if (name === "history") hist_render();
+    if (name === "zohar") zohar_renderList();
+    if (name === "share") share_renderCanvas(); // keep preview alive
+    if (name === "practice") practice_renderTodayBox();
+  }
 
-// =======================
-// 72 NAMES (minimal)
-// =======================
+  // ---------- Practice ----------
+  function practice_load(){
+    return load(K.practice, { focus:"", restriction:"", review:"" });
+  }
+  function practice_save(data){
+    save(K.practice, data);
+  }
 
-const N72_MIN = [
-  // Put full 72 here. For now I’m giving you a compact starter set + a slot for the rest.
-  // Format: { id: 48, title: "Unity", subtitle: "...", letters: "מיה", practice: "Build my Mishkan" }
+  function practice_renderTodayBox(){
+    const idx = dailyNameIndex() + 1;
+    const obj = n72_get(idx);
+    const html = `
+      <div class="bigName">72 Name #${obj.id} — ${escapeHtml(obj.title)}</div>
+      <div class="triad">${escapeHtml(obj.triad || "")}</div>
+      <div class="hint">${escapeHtml(obj.subtitle || "")}</div>
+      <div style="height:10px"></div>
+      <div class="hint" style="color:var(--text)">${escapeHtml(obj.meaning || "Add meaning in 72 Names → Detail.")}</div>
+      <div style="height:8px"></div>
+      <div class="hint"><b>Practice:</b> ${escapeHtml(obj.practice || "Add a practice prompt in 72 Names → Detail.")}</div>
+    `;
+    $("today_name_box").innerHTML = html;
+  }
 
-  { id: 48, title: "Unity", subtitle: "When there is conflict and only togetherness will do", letters: "מיה", practice: "Build my Mishkan" },
-  { id: 43, title: "Defying Gravity", subtitle: "Achieving mind over matter", letters: "", practice: "" },
-  { id: 46, title: "Absolute Certainty", subtitle: "What to do when doubts creep in", letters: "", practice: "" },
-  { id: 44, title: "Sweetening Judgment", subtitle: "Stop judgment from boomeranging back", letters: "", practice: "" },
+  // ---------- 72 Names ----------
+  let n72_selectedId = null;
 
-  // TODO: paste the remaining 68 entries here (same structure).
-];
+  function n72_filter(qs){
+    const q = (qs||"").trim().toLowerCase();
+    if (!q) return N72_MIN;
 
-function n72_showPanel(show) {
-  const el = document.getElementById("n72_panel");
-  if (!el) return;
-  el.style.display = show ? "block" : "none";
-}
+    // allow #48
+    const num = q.startsWith("#") ? parseInt(q.slice(1),10) : parseInt(q,10);
+    if (!Number.isNaN(num) && num>=1 && num<=72){
+      return N72_MIN.filter(x=>x.id===num);
+    }
 
-function n72_renderList(items) {
-  const list = document.getElementById("n72_list");
-  if (!list) return;
+    return N72_MIN.filter(x=>{
+      return (x.title||"").toLowerCase().includes(q) || (x.subtitle||"").toLowerCase().includes(q);
+    });
+  }
 
-  list.innerHTML = "";
+  function n72_renderList(list){
+    const box = $("n72_list");
+    box.innerHTML = "";
+    list.forEach(x=>{
+      const div = document.createElement("div");
+      div.className = "n72-item";
+      div.innerHTML = `
+        <div class="n72-head">
+          <div class="n72-num">#${x.id}</div>
+          <div class="n72-title">${escapeHtml(x.title)}</div>
+        </div>
+        <div class="n72-sub">${escapeHtml(x.subtitle || "")}</div>
+      `;
+      div.addEventListener("click", ()=> n72_renderDetail(x.id));
+      box.appendChild(div);
+    });
+  }
 
-  items.forEach(item => {
-    const row = document.createElement("button");
-    row.className = "chip"; // uses your existing styling; change if needed
-    row.style.justifyContent = "space-between";
-    row.style.width = "100%";
-    row.style.margin = "6px 0";
-    row.style.textAlign = "left";
+  function n72_renderDetail(id){
+    n72_selectedId = id;
+    const obj = n72_get(id);
 
-    row.innerHTML = `
-      <span><b>#${item.id}</b> ${item.title}</span>
-      <small style="opacity:.7">${item.subtitle || ""}</small>
+    const meaning = obj.meaning || "";
+    const practice = obj.practice || "";
+    const notes = obj.notes || "";
+    const triad = obj.triad || "";
+
+    $("n72_detail").innerHTML = `
+      <div class="bigName">72 Name #${obj.id} — ${escapeHtml(obj.title)}</div>
+      <div class="hint">${escapeHtml(obj.subtitle || "")}</div>
+      <div class="triad">${escapeHtml(triad)}</div>
+
+      <div class="grid two">
+        <div class="field">
+          <label>Triad (Hebrew letters)</label>
+          <input id="n72_edit_triad" type="text" value="${escapeAttr(triad)}" placeholder="e.g., מיה" />
+        </div>
+        <div class="field">
+          <label>Short Meaning (Centre tone)</label>
+          <input id="n72_edit_meaning_short" type="text" value="${escapeAttr(meaning)}" placeholder="One clean paragraph, no fluff." />
+        </div>
+      </div>
+
+      <div style="height:10px"></div>
+      <div class="field">
+        <label>Practice</label>
+        <input id="n72_edit_practice" type="text" value="${escapeAttr(practice)}" placeholder="One concrete action." />
+      </div>
+
+      <div style="height:10px"></div>
+      <div class="field">
+        <label>Notes</label>
+        <textarea id="n72_edit_notes" placeholder="Optional…">${escapeHtml(notes)}</textarea>
+      </div>
     `;
 
-    row.addEventListener("click", () => n72_renderDetail(item));
-    list.appendChild(row);
-  });
-}
-
-function n72_renderDetail(item) {
-  const box = document.getElementById("n72_detail");
-  if (!box) return;
-
-  document.getElementById("n72_title").textContent = `72 Name #${item.id} — ${item.title}`;
-  document.getElementById("n72_letters").textContent = item.letters ? item.letters : "";
-  document.getElementById("n72_subtitle").textContent = item.subtitle || "";
-  document.getElementById("n72_practice").textContent = item.practice ? `Practice: ${item.practice}` : "";
-
-  box.style.display = "block";
-}
-
-function n72_filter(q) {
-  q = (q || "").trim().toLowerCase();
-  if (!q) return N72_MIN;
-
-  // allow "#48"
-  const num = q.startsWith("#") ? parseInt(q.slice(1), 10) : parseInt(q, 10);
-  if (!Number.isNaN(num)) return N72_MIN.filter(x => x.id === num);
-
-  return N72_MIN.filter(x =>
-    (x.title || "").toLowerCase().includes(q) ||
-    (x.subtitle || "").toLowerCase().includes(q)
-  );
-}
-
-function n72_init() {
-  const search = document.getElementById("n72_search");
-  const btnRand = document.getElementById("n72_random");
-
-  n72_renderList(N72_MIN);
-
-  if (search) {
-    search.addEventListener("input", () => {
-      const filtered = n72_filter(search.value);
-      n72_renderList(filtered);
-    });
+    logEvent("72_NAME_VIEW", `#${id} ${obj.title}`);
   }
 
-  if (btnRand) {
-    btnRand.addEventListener("click", () => {
-      const pick = N72_MIN[Math.floor(Math.random() * N72_MIN.length)];
-      n72_renderDetail(pick);
-    });
+  function n72_init(){
+    // only init once per tab load, but safe to call repeatedly
+    const search = $("n72_search");
+    if (search && !search._wired){
+      search._wired = true;
+      search.addEventListener("input", ()=> n72_renderList(n72_filter(search.value)));
+    }
+    if ($("n72_random") && !$("n72_random")._wired){
+      $("n72_random")._wired = true;
+      $("n72_random").addEventListener("click", ()=>{
+        const pick = N72_MIN[Math.floor(Math.random()*N72_MIN.length)];
+        n72_renderDetail(pick.id);
+        toast("Random Name");
+      });
+    }
+    if ($("n72_today") && !$("n72_today")._wired){
+      $("n72_today")._wired = true;
+      $("n72_today").addEventListener("click", ()=>{
+        const id = dailyNameIndex() + 1;
+        n72_renderDetail(id);
+        toast("Today’s Name");
+      });
+    }
+    n72_renderList(n72_filter(search ? search.value : ""));
   }
-}let nameIndex = dailyNameIndex();
-function dailyNameIndex(){
-  const d = new Date();
-  const y=d.getFullYear(), m=d.getMonth()+1, day=d.getDate();
-  return (y*10000 + m*100 + day) % 72;
-}
 
-function renderTodayName(){
-  const triplet = NAMES72[nameIndex];
-  document.getElementById("todayName").innerText = `${nameIndex+1}. ${triplet}`;
-
-  const entry = namesMeaning[String(nameIndex+1)] || {};
-  const title = entry.title ? `<span class="pill">${escapeHtml(entry.title)}</span>` : `<span class="pill">Needs meaning</span>`;
-  document.getElementById("todayNameMeaning").innerHTML =
-    `${title}<br><span class="muted">${escapeHtml(entry.meaning || "Add meaning + practice so this stops sounding generic.")}</span>`;
-
-  document.getElementById("nameTitle").value = entry.title || "";
-  document.getElementById("nameMeaning").value = entry.meaning || "";
-  document.getElementById("namePractice").value = entry.practice || "";
-}
-
-function saveNameMeaning(){
-  const k = String(nameIndex+1);
-  namesMeaning[k] = {
-    title: document.getElementById("nameTitle").value || "",
-    meaning: document.getElementById("nameMeaning").value || "",
-    practice: document.getElementById("namePractice").value || ""
-  };
-  saveAll();
-  logEvent("72NAME_MEANING", `#${k} saved`);
-  renderTodayName();
-  showOverlay("Saved");
-}
-
-function prevName(){ nameIndex=(nameIndex+71)%72; renderTodayName(); }
-function nextName(){ nameIndex=(nameIndex+1)%72; renderTodayName(); }
-
-function goToNameNumber(){
-  const n = parseInt((document.getElementById("nameNumber").value||"").trim(),10);
-  if (!Number.isFinite(n) || n<1 || n>72) return;
-  nameIndex=n-1; renderTodayName(); showOverlay("Jumped");
-}
-
-function searchName(){
-  const q = (document.getElementById("nameSearch").value||"").trim();
-  const el = document.getElementById("nameResults");
-  if (!q){ el.innerHTML = `<div class="mini muted">Enter letters to search.</div>`; return; }
-  const hits=[];
-  for (let i=0;i<72;i++) if (NAMES72[i].includes(q)) hits.push(i);
-  if (!hits.length){ el.innerHTML=`<div class="mini muted">No matches.</div>`; return; }
-  el.innerHTML = hits.map(i=>`
-    <div class="item">
-      <div class="top">
-        <div><strong>#${i+1}</strong> <span class="mono">${NAMES72[i]}</span></div>
-        <button class="smallbtn" onclick="selectName(${i})">Select</button>
-      </div>
-    </div>
-  `).join("");
-}
-
-function randomName(){ nameIndex=Math.floor(Math.random()*72); renderTodayName(); showOverlay("Random"); }
-function selectName(i){ nameIndex=i; renderTodayName(); showOverlay("Selected"); }
-
-function renderAllNames(){
-  const el=document.getElementById("allNames");
-  el.innerHTML = NAMES72.map((t,i)=>`
-    <div class="item">
-      <div class="top">
-        <div><strong>#${i+1}</strong> <span class="mono">${t}</span></div>
-        <button class="smallbtn" onclick="selectName(${i})">Set</button>
-      </div>
-    </div>
-  `).join("");
-}
-
-function logTodayName(){
-  const k = String(nameIndex+1);
-  const triplet = NAMES72[nameIndex];
-  const entry = namesMeaning[k] || {};
-  logEvent("72NAME", `#${k} ${triplet} ${entry.title ? "— "+entry.title : ""}`);
-  showOverlay("Logged");
-}
-
-/* -------------------- Gematria -------------------- */
-const GEM = {"א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,"י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,"ע":70,"פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,"ש":300,"ת":400};
-
-function gematriaOf(s){
-  let total=0; const parts=[];
-  for (const ch of (s||"")){
-    if (GEM[ch]){ total+=GEM[ch]; parts.push(`${ch}(${GEM[ch]})`); }
+  // ---------- Share Card ----------
+  function share_loadDraft(){
+    return load(K.shareDraft, { header:"", triad:"", body:"" });
   }
-  return {total, breakdown: parts.join(" + ") + (parts.length ? ` = ${total}` : "")};
-}
+  function share_saveDraft(d){
+    save(K.shareDraft, d);
+  }
 
-function calcGematria(){
-  const s=(document.getElementById("gemInput").value||"").trim();
-  const {total, breakdown} = gematriaOf(s);
-  document.getElementById("gemValue").innerText = s ? String(total) : "—";
-  document.getElementById("gemBreakdown").innerText = breakdown || "";
-  if (s) autofillInsight();
-}
+  function share_setFrom72(id){
+    const obj = n72_get(id);
+    const header = `72 Name #${obj.id} — ${obj.title}`;
+    const triad = obj.triad || "";
+    const body = `${(obj.meaning||"").trim()}${obj.practice ? ("\n\nPractice: " + obj.practice.trim()) : ""}`.trim();
+    $("share_header").value = header;
+    $("share_triad").value = triad;
+    $("share_body").value = body || "";
+    share_saveDraft({header, triad, body: body||""});
+    share_renderCanvas();
+    toast("Sent to Share Card");
+  }
 
-function autofillInsight(){
-  const s=(document.getElementById("gemInput").value||"").trim();
-  if (!s) return;
-  const {total} = gematriaOf(s);
+  function share_renderCanvas(){
+    const c = $("share_canvas");
+    const ctx = c.getContext("2d");
 
-  // simple, Centre-aligned starter insight (editable):
-  // ties number -> frequency -> restriction -> action
-  const n = total;
-  const cue = (n % 5) + 1;
-  const stepCue = {1:"CONNECT",2:"ALIGN",3:"RESTRICT",4:"ELEVATE",5:"SEAL"}[cue];
+    const header = ($("share_header")?.value || "").trim();
+    const triad = ($("share_triad")?.value || "").trim();
+    const body = ($("share_body")?.value || "").trim();
+    $("share_date").textContent = todayISO();
 
-  const text =
-`Value: ${n}.
-Cue: ${stepCue}.
+    // background
+    ctx.clearRect(0,0,c.width,c.height);
+    ctx.fillStyle = "#0b0b0c";
+    ctx.fillRect(0,0,c.width,c.height);
 
-Insight starter:
-Use this number as a consciousness trigger today. Each time you see or think of “${s}”, pause and CONNECT (“The Light is here”), then RESTRICT reactivity, then do one concrete act of sharing that reveals Light.`;
+    // top gold line
+    ctx.fillStyle = "#ffd54a";
+    ctx.fillRect(0,0,c.width,18);
 
-  document.getElementById("gemInsight").value = text;
-}
+    // text layout
+    const pad = 90;
+    let y = 150;
 
-<div id="view_names72" style="display:none;">
-  <div class="grid">
-    <div class="card">
-      <div class="label">Today’s Name</div>
-      <div class="big mono" id="n72_todayTriad">---</div>
-      <div class="sub" id="n72_todayTitle"></div>
-      <div class="sub" id="n72_todaySubtitle"></div>
+    ctx.fillStyle = "#f2f2f2";
+    ctx.font = "900 64px " + getCanvasFont();
+    wrapText(ctx, header || "KAI Share Card", pad, y, c.width - pad*2, 78);
+    y += 120;
 
-      <div class="hr"></div>
+    if (triad){
+      ctx.fillStyle = "#ffd54a";
+      ctx.font = "900 54px " + getCanvasFont();
+      ctx.fillText(triad, pad, y);
+      y += 70;
+    }
 
-      <div class="label">Meaning (editable)</div>
-      <input id="n72_meaningTitle" placeholder="Short encapsulation (optional)" />
-      <textarea id="n72_meaningCore" placeholder="Centre-aligned meaning (short, practical)."></textarea>
-      <textarea id="n72_meaningPractice" placeholder="Practice: 1–3 concrete actions."></textarea>
+    ctx.fillStyle = "#d9d9d9";
+    ctx.font = "500 34px " + getCanvasFont();
+    const bodyText = body || "Add meaning + practice (short, direct).";
+    y = wrapText(ctx, bodyText, pad, y, c.width - pad*2, 46);
 
-      <div class="controls">
-        <button class="smallbtn" onclick="n72_prev()">Prev</button>
-        <button class="smallbtn" onclick="n72_next()">Next</button>
-        <button class="smallbtn ok" onclick="n72_saveMeaning()">Save</button>
-      </div>
+    // footer
+    ctx.fillStyle = "rgba(255,255,255,.35)";
+    ctx.font = "500 26px " + getCanvasFont();
+    ctx.fillText("KAI • " + todayISO(), pad, c.height - 70);
 
-      <div class="controls">
-        <button class="smallbtn ok" onclick="n72_useNow()">Use This Name (+1 connection)</button>
-        <button class="smallbtn" onclick="n72_makeShareText()">Load into Share Card</button>
-      </div>
+    // save draft
+    share_saveDraft({ header, triad, body });
+  }
 
-      <div class="mini muted" style="margin-top:8px;">
-        “Use This Name” increments your daily connection counter (it calls CONNECT if available).
-      </div>
-    </div>
+  function getCanvasFont(){
+    // safe system stack
+    return "system-ui, -apple-system, Segoe UI, Roboto, Arial";
+  }
 
-    <div class="card">
-      <div class="label">Assessment (72 statements)</div>
-
-      <div id="n72_assessIntro">
-        <div class="mini muted">Agree / Neutral / Disagree. Results recommend your top Names right now.</div>
-        <div class="controls" style="margin-top:10px;">
-          <button class="smallbtn ok" onclick="n72_startAssessment()">Start</button>
-          <button class="smallbtn" onclick="n72_resumeAssessment()">Resume</button>
-          <button class="smallbtn danger" onclick="n72_resetAssessment()">Reset</button>
-        </div>
-      </div>
-
-      <div id="n72_assessRun" style="display:none;">
-        <div class="mini muted" id="n72_assessProgress">1 / 72</div>
-        <div class="hr"></div>
-        <div id="n72_assessText" style="font-size:18px;line-height:1.35;"></div>
-
-        <div class="controls" style="margin-top:12px;">
-          <button class="smallbtn" onclick="n72_answer('agree')">Agree</button>
-          <button class="smallbtn" onclick="n72_answer('neutral')">Neutral</button>
-          <button class="smallbtn" onclick="n72_answer('disagree')">Disagree</button>
-        </div>
-
-        <div class="controls">
-          <button class="smallbtn" onclick="n72_back()">Back</button>
-          <button class="smallbtn" onclick="n72_skip()">Skip</button>
-        </div>
-      </div>
-
-      <div id="n72_assessResults" style="display:none;">
-        <div class="label">Your Top Names Now</div>
-        <div class="list" id="n72_resultsList"></div>
-        <div class="controls">
-          <button class="smallbtn ok" onclick="n72_applyTop()">Set #1 as Today’s Name</button>
-          <button class="smallbtn" onclick="n72_exportAssessment()">Export JSON</button>
-        </div>
-      </div>
-
-      <div class="hr"></div>
-      <div class="label">Browse all 72</div>
-      <input id="n72_search" placeholder="Search titles…" oninput="n72_renderBrowse()" />
-      <div class="list" id="n72_browse"></div>
-    </div>
-  </div>
-</div>
-  
-function saveGematria(){
-  const s=(document.getElementById("gemInput").value||"").trim();
-  if (!s) return;
-  const {total, breakdown} = gematriaOf(s);
-  const insight = document.getElementById("gemInsight").value || "";
-  gemSaved.unshift({ id:String(Date.now()), t: nowTime(), text:s, value:total, breakdown, insight });
-  if (gemSaved.length>250) gemSaved.pop();
-  logEvent("GEMATRIA", `${s}=${total}`);
-  saveAll();
-  renderSavedGematria();
-  showOverlay("Saved");
-}
-
-function saveGemInsight(){
-  // saves insight into the most recent matching saved entry, or creates one
-  const s=(document.getElementById("gemInput").value||"").trim();
-  if (!s) return;
-  const {total, breakdown} = gematriaOf(s);
-  const insight = document.getElementById("gemInsight").value || "";
-  const idx = gemSaved.findIndex(x=>x.text===s && x.value===total);
-  if (idx>=0) gemSaved[idx].insight = insight;
-  else gemSaved.unshift({ id:String(Date.now()), t: nowTime(), text:s, value:total, breakdown, insight });
-  saveAll();
-  renderSavedGematria();
-  showOverlay("Insight saved");
-}
-
-function clearGematria(){
-  document.getElementById("gemInput").value="";
-  document.getElementById("gemValue").innerText="—";
-  document.getElementById("gemBreakdown").innerText="";
-  document.getElementById("gemInsight").value="";
-}
-
-function renderSavedGematria(){
-  const q=(document.getElementById("gemSavedSearch")?.value||"").trim();
-  const el=document.getElementById("gemSavedList");
-  const rows=gemSaved.filter(r=>{
-    if(!q) return true;
-    return (r.text||"").includes(q) || String(r.value).includes(q);
-  });
-  if(!rows.length){ el.innerHTML=`<div class="mini muted">No saved gematria yet.</div>`; return; }
-  el.innerHTML = rows.map((r,idx)=>`
-    <div class="item">
-      <div class="top">
-        <div>
-          <div><strong class="mono">${escapeHtml(r.text)}</strong> <span class="pill">${r.value}</span></div>
-          <div class="mini muted">${escapeHtml(r.t)} • ${escapeHtml(r.breakdown||"")}</div>
-        </div>
-        <div>
-          <button class="smallbtn" onclick="loadGem(${idx})">Load</button>
-          <button class="smallbtn danger" onclick="delGem(${idx})">Del</button>
-        </div>
-      </div>
-      ${r.insight ? `<div class="hr"></div><div class="mini">${escapeHtml(r.insight).replace(/\n/g,"<br>")}</div>` : ""}
-    </div>
-  `).join("");
-}
-
-function loadGem(idx){
-  const r=gemSaved[idx]; if(!r) return;
-  document.getElementById("gemInput").value=r.text;
-  document.getElementById("gemValue").innerText=String(r.value);
-  document.getElementById("gemBreakdown").innerText=r.breakdown||"";
-  document.getElementById("gemInsight").value=r.insight||"";
-  showOverlay("Loaded");
-}
-function delGem(idx){ gemSaved.splice(idx,1); saveAll(); renderSavedGematria(); }
-
-/* -------------------- Zohar library -------------------- */
-function saveZohar(){
-  const title=(document.getElementById("zTitle").value||"").trim();
-  const source=(document.getElementById("zSource").value||"").trim();
-  const tags=(document.getElementById("zTags").value||"").trim();
-  const text=(document.getElementById("zText").value||"").trim();
-  if(!title && !text) return;
-
-  zoharLib.unshift({
-    id:String(Date.now()), t: nowTime(),
-    title, source,
-    tags: tags.split(",").map(x=>x.trim()).filter(Boolean),
-    text
-  });
-  if(zoharLib.length>400) zoharLib.pop();
-  logEvent("ZOHAR", title || "(untitled)");
-  saveAll();
-  clearZoharForm();
-  renderZohar();
-  showOverlay("Saved");
-}
-function clearZoharForm(){
-  document.getElementById("zTitle").value="";
-  document.getElementById("zSource").value="";
-  document.getElementById("zTags").value="";
-  document.getElementById("zText").value="";
-}
-function renderZohar(){
-  const q=(document.getElementById("zSearch")?.value||"").trim().toLowerCase();
-  const el=document.getElementById("zList");
-  const rows=zoharLib.filter(r=>{
-    if(!q) return true;
-    const blob=[r.title||"",r.source||"", (r.tags||[]).join(","), r.text||""].join(" ").toLowerCase();
-    return blob.includes(q);
-  });
-  if(!rows.length){ el.innerHTML=`<div class="mini muted">No notes yet. Tap Starter Pack, then add your own.</div>`; return; }
-  el.innerHTML = rows.map(r=>`
-    <div class="item">
-      <div class="top">
-        <div>
-          <div><strong>${escapeHtml(r.title||"Untitled")}</strong></div>
-          <div class="mini muted">${escapeHtml(r.source||"")} ${r.source?"•":""} ${escapeHtml(r.t||"")}</div>
-        </div>
-        <div>
-          <button class="smallbtn" onclick="copyZ('${r.id}')">Copy</button>
-          <button class="smallbtn danger" onclick="delZ('${r.id}')">Del</button>
-        </div>
-      </div>
-      <div class="mini" style="margin-top:8px;">
-        ${(r.tags||[]).map(t=>`<span class="pill" style="margin-right:6px;">${escapeHtml(t)}</span>`).join("")}
-      </div>
-      <div class="hr"></div>
-      <div class="mini">${escapeHtml(r.text||"").replace(/\n/g,"<br>")}</div>
-    </div>
-  `).join("");
-}
-function delZ(id){ zoharLib=zoharLib.filter(x=>x.id!==id); saveAll(); renderZohar(); }
-function copyZ(id){
-  const r=zoharLib.find(x=>x.id===id); if(!r) return;
-  const txt=`${r.title||""}\n${r.source||""}\n\n${r.text||""}`.trim();
-  navigator.clipboard?.writeText(txt);
-  showOverlay("Copied");
-}
-function clearZoharAll(){ if(!confirm("Clear entire Zohar library?")) return; zoharLib=[]; saveAll(); renderZohar(); }
-function exportZohar(){ downloadJSON({zoharLib}, `kai_zohar_${today}.json`); }
-function importZohar(ev){
-  const file = ev.target.files?.[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try{
-      const obj = JSON.parse(reader.result);
-      const arr = obj.zoharLib || obj;
-      if(Array.isArray(arr)){
-        // merge at top
-        zoharLib = [...arr, ...zoharLib].slice(0, 600);
-        saveAll(); renderZohar(); showOverlay("Imported");
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+    const paragraphs = String(text).split("\n");
+    for (const p of paragraphs){
+      const words = p.split(/\s+/).filter(Boolean);
+      let line = "";
+      for (let i=0;i<words.length;i++){
+        const testLine = line ? (line + " " + words[i]) : words[i];
+        const w = ctx.measureText(testLine).width;
+        if (w > maxWidth && line){
+          ctx.fillText(line, x, y);
+          line = words[i];
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
       }
-    }catch(e){ alert("Could not import JSON."); }
-  };
-  reader.readAsText(file);
-}
+      if (line){
+        ctx.fillText(line, x, y);
+        y += lineHeight;
+      }
+      y += Math.floor(lineHeight/2); // paragraph spacing
+    }
+    return y;
+  }
 
-function seedZoharStarter(){
-  const starter = [
+  // ---------- Gematria ----------
+  // Standard (mispar hechrechi) values for Hebrew letters.
+  const HEB = {
+    "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
+    "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,"ע":70,"פ":80,"ף":80,"צ":90,"ץ":90,
+    "ק":100,"ר":200,"ש":300,"ת":400
+  };
+
+  function gematriaValue(s){
+    if (!s) return 0;
+    let total = 0;
+    for (const ch of s){
+      if (HEB[ch]) total += HEB[ch];
+      else if (/[a-z]/i.test(ch)) total += (ch.toUpperCase().charCodeAt(0) - 64); // A=1..Z=26
+    }
+    return total;
+  }
+
+  // ---------- Zohar ----------
+  const STARTER_ZOHAR = [
     {
-      title:"Mishkan: 100 Pillars (practice notes)",
-      source:"Parsha Terumah (your notes)",
-      tags:["mishkan","100","certainty","connect"],
-      text:"A complete day is built on 100 moments of consciousness. Every ~10 minutes: pause, acknowledge the Light is here, and return. Frequency builds intimacy and vessel."
+      id: uid(),
+      title: "Building the Mishkan (starter)",
+      ref: "Zohar (short excerpt placeholder)",
+      text: "Keep excerpts short. Use this as an index and a practice engine.",
+      practice: "What is one action today that builds your inner Mishkan?"
     },
     {
-      title:"Restriction (Tzimtzum) in a trigger moment",
-      source:"Centre language (practice card)",
-      tags:["restriction","reactivity","vessel"],
-      text:"When reactive desire flares: pause. Restrict the impulse. Ask: what action reveals Light here? Choose sharing over ego."
-    },
-    {
-      title:"Desire to Run (indicator of Light resting)",
-      source:"Zohar concept (your notes)",
-      tags:["desire","run","awakening"],
-      text:"A sign of spiritual progress: renewed desire to run toward connection and work. Ask for desire. Track it. Strengthen it."
+      id: uid(),
+      title: "Atika Kadisha (starter)",
+      ref: "Zohar (placeholder)",
+      text: "Add a short excerpt here.",
+      practice: "Choose one restriction that creates more certainty."
     }
   ];
-  starter.forEach(s=>zoharLib.unshift({id:String(Date.now()+Math.random()), t: nowTime(), ...s}));
-  saveAll(); renderZohar(); showOverlay("Starter added");
-}
 
-/* -------------------- share card (canvas) -------------------- */
-function renderCardDefaults(){
-  const type = document.getElementById("cardType").value;
-  if (type === "name"){
-    const k = String(nameIndex+1);
-    const triplet = NAMES72[nameIndex];
-    const entry = namesMeaning[k] || {};
-    document.getElementById("cardTitle").value = `72 Name #${k} — ${entry.title || triplet}`;
-    document.getElementById("cardBody").value =
-`${triplet}
-${entry.meaning || ""}
-
-Practice:
-${entry.practice || ""}`.trim();
-  } else if (type === "gem"){
-    const s = (document.getElementById("gemInput").value||"").trim();
-    const val = document.getElementById("gemValue").innerText;
-    const insight = document.getElementById("gemInsight").value || "";
-    document.getElementById("cardTitle").value = s ? `Gematria — ${s} = ${val}` : `Gematria`;
-    document.getElementById("cardBody").value = insight || "Connect. Restrict reactivity. Reveal Light through a concrete act of sharing.";
-  } else if (type === "zohar"){
-    const first = zoharLib[0];
-    document.getElementById("cardTitle").value = first ? (first.title || "Zohar Note") : "Zohar Note";
-    document.getElementById("cardBody").value = first ? (first.text || "") : "Add a Zohar note in the library, then generate a card.";
-  } else {
-    document.getElementById("cardTitle").value = `KAI Practice`;
-    document.getElementById("cardBody").value = `CONNECT: The Light is here.\nRESTRICT: pause reactive desire.\nELEVATE: choose the higher move.\nSEAL: gratitude stabilizes.`;
-  }
-}
-
-function clearCard(){
-  document.getElementById("cardTitle").value = "";
-  document.getElementById("cardBody").value = "";
-}
-
-function generateCard(){
-  const title = (document.getElementById("cardTitle").value||"").trim();
-  const body = (document.getElementById("cardBody").value||"").trim();
-  const canvas = document.getElementById("cardCanvas");
-  const ctx = canvas.getContext("2d");
-
-  // set size (shareable portrait)
-  canvas.width = 1080;
-  canvas.height = 1350;
-
-  // background
-  ctx.fillStyle = "#0b0b0b";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  // gold header line
-  ctx.fillStyle = "#ffd54a";
-  ctx.fillRect(0,0,canvas.width,14);
-
-  // title
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 54px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-  wrapText(ctx, title || "KAI", 60, 120, 960, 64);
-
-  // body
-  ctx.fillStyle = "#d9d9d9";
-  ctx.font = "36px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-  wrapText(ctx, body || "", 60, 260, 960, 48);
-
-  // footer
-  ctx.fillStyle = "#888";
-  ctx.font = "28px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-  ctx.fillText(`KAI • ${today}`, 60, canvas.height - 70);
-
-  canvas.style.display = "block";
-  showOverlay("Generated");
-}
-
-function wrapText(ctx, text, x, y, maxWidth, lineHeight){
-  const words = (text||"").split(/\s+/);
-  let line = "";
-  for (let n=0;n<words.length;n++){
-    const testLine = line + words[n] + " ";
-    const metrics = ctx.measureText(testLine);
-    if (metrics.width > maxWidth && n > 0){
-      ctx.fillText(line, x, y);
-      line = words[n] + " ";
-      y += lineHeight;
-    } else {
-      line = testLine;
+  function zohar_load(){
+    const z = load(K.zohar, null);
+    if (!z || !Array.isArray(z) || z.length===0){
+      save(K.zohar, STARTER_ZOHAR);
+      return STARTER_ZOHAR.slice();
     }
-  }
-  ctx.fillText(line, x, y);
-}
-
-function downloadCard(){
-  const canvas = document.getElementById("cardCanvas");
-  if (canvas.style.display === "none") return;
-  const url = canvas.toDataURL("image/png");
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `kai_card_${today}.png`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-
-/* -------------------- history render + exports -------------------- */
-function renderHistory(){
-  const el=document.getElementById("historyList");
-  if(!history.length){ el.innerHTML=`<div class="mini muted">No events yet today.</div>`; return; }
-  el.innerHTML = history.map(h=>`
-    <div class="item">
-      <div class="top">
-        <div><span class="mono">${escapeHtml(h.t)}</span> <span class="muted">•</span> <strong>${escapeHtml(h.type)}</strong></div>
-        <span class="pill">${escapeHtml(h.detail||"")}</span>
-      </div>
-    </div>
-  `).join("");
-}
-function clearHistory(){ history=[]; saveAll(); renderHistory(); showOverlay("Cleared"); }
-
-function downloadJSON(obj, filename){
-  const blob = new Blob([JSON.stringify(obj,null,2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href=url; a.download=filename;
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-}
-function exportAll(){
-  downloadJSON({
-    date: today,
-    goals, metrics, profile,
-    pillars, cycles,
-    history,
-    zoharLib,
-    gemSaved,
-    namesMeaning
-  }, `kai_export_${today}.json`);
-}
-
-/* -------------------- settings -------------------- */
-function loadSettings(){
-  document.getElementById("goalPillars").value = String(goals.pillars ?? 100);
-  document.getElementById("goalCycles").value = String(goals.cycles ?? 10);
-}
-function saveGoals(){
-  const gp = parseInt(document.getElementById("goalPillars").value,10);
-  const gc = parseInt(document.getElementById("goalCycles").value,10);
-  if (Number.isFinite(gp) && gp>0) goals.pillars = gp;
-  if (Number.isFinite(gc) && gc>0) goals.cycles = gc;
-  saveAll(); updateChips(); showOverlay("Saved");
-}
-function resetTodayAll(){
-  pillars=0; cycles=0; history=[]; currentStep=0;
-  localStorage.removeItem(KEY.pillars);
-  localStorage.removeItem(KEY.cycles);
-  localStorage.removeItem(KEY.history);
-  saveAll(); updateChips(); setButtons(); renderHistory();
-  showOverlay("Reset");
-}
-function clearAllData(){
-  if(!confirm("Clear ALL KAI data on this device?")) return;
-  Object.values(KEY).forEach(k=>localStorage.removeItem(k));
-  location.reload();
-}
-
-/* -------------------- init -------------------- */
-saveAll();
-loadMetrics();
-loadProfile();
-setButtons();
-updateChips();
-renderHistory();
-/* =========================================================
-   KAI 72 NAMES MODULE (titles/subtitles + assessment + wiring)
-========================================================= */
-
-// --- storage keys (versioned) ---
-const N72_KEYS = {
-  meaning: "kai_72_meanings_v1",          // { "48": {title, core, practice}, ... }
-  assess: "kai_72_assess_v1",             // { idx, answers: { "1":"agree"... }, startedAt, finishedAt }
-  assessHistory: "kai_72_assess_history_v1" // array of past assessment results
-};
-
-function n72_safeParse(s, fb){ try{ return s ? JSON.parse(s) : fb; } catch(e){ return fb; } }
-
-// --- TITLES/SUBTITLES (from your screenshots) ---
-const N72_TITLES = [
-  {id:1, title:"Time Travel", subtitle:"How to fix the past"},
-  {id:2, title:"Recapturing the Sparks", subtitle:"Recharging when you are depleted"},
-  {id:3, title:"Miracle Making", subtitle:"A recipe"},
-  {id:4, title:"Eliminating Negative Thoughts", subtitle:"When and how"},
-  {id:5, title:"Healing", subtitle:"Meditation for yourself and others"},
-  {id:6, title:"Dream State", subtitle:"Activating messages from the subconscious"},
-  {id:7, title:"DNA of Soul", subtitle:"Restoring to their perfect state"},
-  {id:8, title:"Defusing Negative Energy and Stress", subtitle:"Releasing the pressure"},
-  {id:9, title:"Angelic Influences", subtitle:"Harnessing help from above"},
-  {id:10, title:"Looks Can Kill", subtitle:"Protecting yourself from the evil-eye"},
-  {id:11, title:"Banishing the Remnants of Evil", subtitle:"Purifying places and spaces"},
-  {id:12, title:"Unconditional Love", subtitle:"How to awaken love, especially when you don’t want to"},
-  {id:13, title:"Heaven on Earth", subtitle:"Creating harmony within and without"},
-  {id:14, title:"Farewell to Arms", subtitle:"Diffusing conflict"},
-  {id:15, title:"Long-Range Vision", subtitle:"Seeing the effect of decisions before you make them"},
-  {id:16, title:"Dumping Depression", subtitle:"How to pick yourself up when you fall"},
-  {id:17, title:"Great Escape", subtitle:"Breaking the limits of ego"},
-  {id:18, title:"Fertility", subtitle:"When conception is difficult"},
-  {id:19, title:"Dialing God", subtitle:"Receiving answers to your prayers"},
-  {id:20, title:"Victory Over Addictions", subtitle:"Overcoming your negative self"},
-  {id:21, title:"Eradicate Plague", subtitle:"Effecting change in the physical world"},
-  {id:22, title:"Stop Fatal Attraction", subtitle:"How to stop drawing the wrong people into your life"},
-  {id:23, title:"Sharing the Flame", subtitle:"Passing the wisdom along"},
-  {id:24, title:"Jealousy", subtitle:"Undoing chaos resulting from our jealousy before it is manifested"},
-  {id:25, title:"Speak Your Mind", subtitle:"For those times when you need help expressing the truth"},
-  {id:26, title:"Order from Chaos", subtitle:"Reversing Murphy’s Law"},
-  {id:27, title:"Silent Partner", subtitle:"Choosing positivity as your partner"},
-  {id:28, title:"Soul Mate", subtitle:"Attracting “The One”"},
-  {id:29, title:"Removing Hatred", subtitle:"Drawing out the poison"},
-  {id:30, title:"Building Bridges", subtitle:"Mending Broken Relationships"},
-  {id:31, title:"Finish What You Start", subtitle:"Finding the power to finish what you start"},
-  {id:32, title:"Memories", subtitle:"Breaking the cycle"},
-  {id:33, title:"Revealing the Dark Side", subtitle:"Removing the obstacles you create"},
-  {id:34, title:"Forget Thyself", subtitle:"Opening up to another view"},
-  {id:35, title:"Sexual Energy", subtitle:"How to get more from your sexual experience"},
-  {id:36, title:"Fear(less)", subtitle:"Overcoming the ties that bind"},
-  {id:37, title:"The Big Picture", subtitle:"Seeing the opportunity for good hidden in every challenge"},
-  {id:38, title:"Circuitry", subtitle:"Sharing so you can truly receive"},
-  {id:39, title:"Diamond in the Rough", subtitle:"Turning the coal in your life into diamonds"},
-  {id:40, title:"Speaking the Right Words", subtitle:"Using language to make good things happen"},
-  {id:41, title:"Self-Esteem", subtitle:"Finding the power to lift yourself up"},
-  {id:42, title:"Revealing the Concealed", subtitle:"Seeing the truth and handling it"},
-  {id:43, title:"Defying Gravity", subtitle:"Achieving mind over matter"},
-  {id:44, title:"Sweetening Judgment", subtitle:"Ducking the boomerang you send out there; stop the judgment happening against you"},
-  {id:45, title:"The Power of Prosperity", subtitle:"What to do when you need money"},
-  {id:46, title:"Absolute Certainty", subtitle:"What to do when doubts creep in"},
-  {id:47, title:"Global Transformation", subtitle:"Helping to bring about world peace"},
-  {id:48, title:"Unity", subtitle:"When there is conflict and only togetherness will do"},
-  {id:49, title:"Happiness", subtitle:"When you need the power to choose happiness"},
-  {id:50, title:"Enough Is Never Enough", subtitle:"When you need the passion to keep from settling for less"},
-  {id:51, title:"No Guilt", subtitle:"Removing negativity aspects of your nature while you repair the damage they cause"},
-  {id:52, title:"Passion", subtitle:"Awaken the earning in your heart"},
-  {id:53, title:"No Agenda", subtitle:"Giving with no strings attached"},
-  {id:54, title:"The Death of Death", subtitle:"When things are good and you want them to stay that way"},
-  {id:55, title:"Thought into Action", subtitle:"The power to make it happen"},
-  {id:56, title:"Dispelling Anger", subtitle:"Overcoming it before it overcomes you"},
-  {id:57, title:"Listen to Your Soul", subtitle:"Increasing the volume of the soft voice within"},
-  {id:58, title:"Letting Go", subtitle:"When you need the power to walk away"},
-  {id:59, title:"Umbilical Cord", subtitle:"Connecting to the Light Force"},
-  {id:60, title:"Freedom", subtitle:"Passing the test and going to the next level"},
-  {id:61, title:"Water", subtitle:"Removing negativity from the source of life"},
-  {id:62, title:"Parent–Teacher, Not Preacher", subtitle:"When you need to teach your children"},
-  {id:63, title:"Appreciation", subtitle:"How to keep what you have and get more"},
-  {id:64, title:"Casting Yourself in a Favorable Light", subtitle:"Revealing the best you"},
-  {id:65, title:"Fear of God", subtitle:"When you need to remember that there is a system, and how to work it"},
-  {id:66, title:"Accountability", subtitle:"The power to take accountability for your happiness and life"},
-  {id:67, title:"Great Expectations", subtitle:"How to stop getting disappointed"},
-  {id:68, title:"Contacting Departed Souls", subtitle:"Making positive connections with people that have passed on"},
-  {id:69, title:"Lost and Found", subtitle:"What to do when you are lost and confused"},
-  {id:70, title:"Recognizing Design Beneath Disorder", subtitle:"Finding the solution within the problem"},
-  {id:71, title:"Prophecy and Parallel Universes", subtitle:"Switching your universe for a better one"},
-  {id:72, title:"Spiritual Cleansing", subtitle:"Purging yourself of negativity"}
-];
-
-// --- Triads source of truth:
-// If your app already has a 72 triads array (like NAMES72), we use it.
-// Otherwise, we fall back to a minimal stub so the module runs.
-// IMPORTANT: keep your existing triads if you have them.
-const N72_TRIADS = (typeof NAMES72 !== "undefined" && Array.isArray(NAMES72) && NAMES72.length === 72)
-  ? NAMES72.map(x => (typeof x === "string" ? x : (x.hebrew || x.triad || x.letters || "")))
-  : new Array(72).fill("---");
-
-// --- Assessment statements
-// You likely have the full Centre list already in your old app.
-// This runs with placeholders until you paste the full list.
-// You can paste the real statements later without changing any logic.
-const N72_STATEMENTS = (() => {
-  const arr = [];
-  for (let i=1; i<=72; i++){
-    arr.push({ id:i, text:`Statement for Name #${i} (paste Centre statement here)` });
-  }
-  // Seed one real example you mentioned:
-  arr[47] = { id:48, text:"I tend to feel very distant from people who don’t agree with me." };
-  return arr;
-})();
-
-// --- runtime state ---
-let n72_index = ((new Date().getFullYear()*10000 + (new Date().getMonth()+1)*100 + new Date().getDate()) % 72); // 0-71
-let n72_meaning = n72_safeParse(localStorage.getItem(N72_KEYS.meaning), {}) || {};
-let n72_assess = n72_safeParse(localStorage.getItem(N72_KEYS.assess), null);
-
-// --- wiring: increment daily connection counter (calls CONNECT if available)
-function n72_addConnection(){
-  // Try calling your existing CONNECT action if it exists
-  if (typeof pressConnect === "function"){
-    pressConnect();
-    return;
+    return z;
   }
 
-  // If you have pillars variables + updateChips() (from earlier builds)
-  if (typeof pillars !== "undefined"){
-    try{
-      pillars = Math.max(0, (parseInt(pillars,10)||0) + 1);
-      if (typeof saveAll === "function") saveAll();
-      if (typeof updateChips === "function") updateChips();
-      if (typeof logEvent === "function") logEvent("CONNECT","(via 72 Names)");
+  function zohar_saveAll(list){
+    save(K.zohar, list);
+  }
+
+  let zohar = zohar_load();
+  let zohar_selectedId = null;
+
+  function zohar_renderList(){
+    zohar = zohar_load();
+    const box = $("zohar_list");
+    box.innerHTML = "";
+    zohar.forEach(p=>{
+      const div = document.createElement("div");
+      div.className = "n72-item";
+      div.innerHTML = `
+        <div class="n72-head">
+          <div class="n72-num">✦</div>
+          <div class="n72-title">${escapeHtml(p.title)}</div>
+        </div>
+        <div class="n72-sub">${escapeHtml(p.ref || "")}</div>
+      `;
+      div.addEventListener("click", ()=> zohar_select(p.id));
+      box.appendChild(div);
+    });
+  }
+
+  function zohar_select(id){
+    zohar_selectedId = id;
+    const p = zohar.find(x=>x.id===id);
+    if (!p) return;
+    $("zohar_title").value = p.title || "";
+    $("zohar_ref").value = p.ref || "";
+    $("zohar_text").value = p.text || "";
+    $("zohar_practice").value = p.practice || "";
+    logEvent("ZOHAR_VIEW", p.title);
+  }
+
+  function zohar_clearForm(){
+    zohar_selectedId = null;
+    $("zohar_title").value = "";
+    $("zohar_ref").value = "";
+    $("zohar_text").value = "";
+    $("zohar_practice").value = "";
+  }
+
+  // ---------- History render ----------
+  function hist_render(){
+    const hist = load(K.history, []);
+    const box = $("hist_list");
+    box.innerHTML = "";
+    if (!hist.length){
+      box.innerHTML = `<div class="hint">No history yet.</div>`;
       return;
-    } catch(e){}
+    }
+    hist.slice(0,120).forEach(h=>{
+      const div = document.createElement("div");
+      div.className = "n72-item";
+      div.innerHTML = `
+        <div class="n72-head">
+          <div class="n72-num">•</div>
+          <div class="n72-title">${escapeHtml(h.type)}</div>
+        </div>
+        <div class="n72-sub">${escapeHtml(h.detail || "")}</div>
+        <div class="mono">${escapeHtml(h.at)}</div>
+      `;
+      box.appendChild(div);
+    });
   }
 
-  // Worst-case fallback: just toast
-  if (typeof showOverlay === "function") showOverlay("Connection +1");
-}
+  // ---------- Connect/Cycle ----------
+  function pressConnect(){
+    state.pillars = clamp((state.pillars||0) + 1, 0, 100);
+    save(K.state, state);
+    renderChips();
+    logEvent("CONNECT", "Pillar +1");
+    toast("CONNECT +1");
+  }
 
-function n72_init(){
-  n72_renderToday();
-  n72_renderBrowse();
-  n72_renderAssessmentUI();
-}
+  async function runFullCycle(){
+    // Simple guided prompts. No heavy prose.
+    const focus = prompt("ALIGN: One sentence focus for today:", $("practice_focus").value || "");
+    if (focus !== null) $("practice_focus").value = focus;
 
-function n72_titleById(id){
-  return N72_TITLES.find(x=>x.id===id) || {id, title:`Name #${id}`, subtitle:""};
-}
-function n72_triadById(id){
-  return N72_TRIADS[id-1] || "---";
-}
+    const restriction = prompt("RESTRICT: What are you restricting today?", $("practice_restriction").value || "");
+    if (restriction !== null) $("practice_restriction").value = restriction;
 
-// --- Today rendering
-function n72_renderToday(){
-  const id = n72_index + 1;
-  const triad = n72_triadById(id);
-  const t = n72_titleById(id);
-  const m = n72_meaning[String(id)] || {};
+    const elevate = prompt("ELEVATE: One action to elevate today:", "");
+    if (elevate !== null && elevate.trim()){
+      logEvent("ELEVATE", elevate.trim());
+    }
 
-  const triEl = document.getElementById("n72_todayTriad");
-  const titleEl = document.getElementById("n72_todayTitle");
-  const subEl = document.getElementById("n72_todaySubtitle");
+    const seal = prompt("SEAL: One word to seal the day:", "");
+    if (seal !== null && seal.trim()){
+      logEvent("SEAL", seal.trim());
+    }
 
-  if (triEl) triEl.innerText = `${id}. ${triad}`;
-  if (titleEl) titleEl.innerHTML = `<span class="pill">${escapeHtml(t.title)}</span>`;
-  if (subEl) subEl.innerText = t.subtitle || "";
+    // count cycle
+    state.cycles = clamp((state.cycles||0) + 1, 0, 10);
+    save(K.state, state);
+    renderChips();
 
-  const mt = document.getElementById("n72_meaningTitle");
-  const mc = document.getElementById("n72_meaningCore");
-  const mp = document.getElementById("n72_meaningPractice");
-  if (mt) mt.value = m.title || "";
-  if (mc) mc.value = m.core || "";
-  if (mp) mp.value = m.practice || "";
-}
+    // persist practice
+    practice_save({
+      focus: $("practice_focus").value || "",
+      restriction: $("practice_restriction").value || "",
+      review: $("practice_review").value || ""
+    });
 
-function n72_prev(){ n72_index = (n72_index + 71) % 72; n72_renderToday(); }
-function n72_next(){ n72_index = (n72_index + 1) % 72; n72_renderToday(); }
+    logEvent("CYCLE", "Completed one cycle");
+    toast("Cycle complete");
+  }
 
-function n72_saveMeaning(){
-  const id = n72_index + 1;
-  n72_meaning[String(id)] = {
-    title: (document.getElementById("n72_meaningTitle")?.value || "").trim(),
-    core: (document.getElementById("n72_meaningCore")?.value || "").trim(),
-    practice: (document.getElementById("n72_meaningPractice")?.value || "").trim()
-  };
-  localStorage.setItem(N72_KEYS.meaning, JSON.stringify(n72_meaning));
-  if (typeof showOverlay === "function") showOverlay("Saved");
-}
+  // ---------- Profile ----------
+  function profile_load(){
+    return load(K.profile, { bday:"", sign:"", tikkun:"", notes:"" });
+  }
+  function profile_save(p){
+    save(K.profile, p);
+  }
 
-function n72_useNow(){
-  n72_addConnection();
-  if (typeof showOverlay === "function") showOverlay("Used Name (+1)");
-}
+  function profile_render(){
+    const p = profile_load();
+    $("profile_bday").value = p.bday || "";
+    $("profile_sign").value = p.sign || "";
+    $("profile_tikkun").value = p.tikkun || "";
+    $("profile_notes").value = p.notes || "";
+  }
 
-function n72_makeShareText(){
-  // If your share card screen has these IDs (from earlier builds): cardTitle/cardBody, we fill them.
-  const id = n72_index + 1;
-  const triad = n72_triadById(id);
-  const t = n72_titleById(id);
-  const m = n72_meaning[String(id)] || {};
+  // ---------- Escaping ----------
+  function escapeHtml(s){
+    return String(s||"")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+  function escapeAttr(s){
+    return escapeHtml(s).replaceAll("\n"," ").replaceAll("\r"," ");
+  }
 
-  const title = `72 Name #${id} — ${t.title}`;
-  const body =
-`${triad}
-${t.subtitle}
+  // ---------- UID ----------
+  function uid(){
+    return "id_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+  }
 
-${m.core ? "Meaning:\n" + m.core + "\n\n" : ""}${m.practice ? "Practice:\n" + m.practice : ""}`.trim();
+  // ---------- Wiring ----------
+  function wire(){
+    // Tabs
+    qa(".tabbtn").forEach(btn=>{
+      btn.addEventListener("click", ()=> showTab(btn.dataset.tab));
+    });
 
-  const ct = document.getElementById("cardTitle");
-  const cb = document.getElementById("cardBody");
-  if (ct) ct.value = title;
-  if (cb) cb.value = body;
+    // Sliders
+    $("certainty_slider").addEventListener("input", ()=>{
+      state.certainty = parseInt($("certainty_slider").value,10);
+      save(K.state, state);
+      renderChips();
+    });
+    $("energy_slider").addEventListener("input", ()=>{
+      state.energy = parseInt($("energy_slider").value,10);
+      save(K.state, state);
+      renderChips();
+    });
 
-  if (typeof setView === "function") setView("share");
-  if (typeof showOverlay === "function") showOverlay("Loaded to Share Card");
-}
+    // Buttons
+    $("btn_connect").addEventListener("click", pressConnect);
+    $("btn_runCycle").addEventListener("click", runFullCycle);
 
-// --- Browse list
-function n72_renderBrowse(){
-  const q = (document.getElementById("n72_search")?.value || "").trim().toLowerCase();
-  const el = document.getElementById("n72_browse");
-  if (!el) return;
+    $("btn_resetDay").addEventListener("click", ()=>{
+      if (!confirm("Reset today’s pillars + cycles?")) return;
+      state.pillars = 0;
+      state.cycles = 0;
+      state.lastDay = todayISO();
+      save(K.state, state);
+      renderChips();
+      logEvent("RESET_DAY", todayISO());
+      toast("Reset today");
+    });
 
-  const rows = N72_TITLES.filter(r=>{
-    if (!q) return true;
-    return (r.title||"").toLowerCase().includes(q) || (r.subtitle||"").toLowerCase().includes(q) || String(r.id).includes(q);
+    // Practice
+    $("btn_savePractice").addEventListener("click", ()=>{
+      practice_save({
+        focus: $("practice_focus").value || "",
+        restriction: $("practice_restriction").value || "",
+        review: $("practice_review").value || ""
+      });
+      logEvent("PRACTICE_SAVE", "Saved");
+      toast("Saved");
+    });
+
+    $("btn_loadPractice").addEventListener("click", ()=>{
+      const p = practice_load();
+      $("practice_focus").value = p.focus || "";
+      $("practice_restriction").value = p.restriction || "";
+      $("practice_review").value = p.review || "";
+      toast("Loaded");
+    });
+
+    $("btn_clearPractice").addEventListener("click", ()=>{
+      if (!confirm("Clear practice fields?")) return;
+      $("practice_focus").value = "";
+      $("practice_restriction").value = "";
+      $("practice_review").value = "";
+      practice_save({focus:"", restriction:"", review:""});
+      logEvent("PRACTICE_CLEAR", "Cleared");
+      toast("Cleared");
+    });
+
+    $("btn_todayToShare").addEventListener("click", ()=>{
+      const id = dailyNameIndex()+1;
+      share_setFrom72(id);
+      showTab("share");
+    });
+
+    $("btn_todayRandom").addEventListener("click", ()=>{
+      const pick = N72_MIN[Math.floor(Math.random()*N72_MIN.length)];
+      share_setFrom72(pick.id);
+      showTab("share");
+    });
+
+    // 72 detail save / send
+    $("n72_saveDetail").addEventListener("click", ()=>{
+      if (!n72_selectedId){
+        toast("Select a Name first");
+        return;
+      }
+      const triad = (q("#n72_edit_triad")?.value || "").trim();
+      const meaning = (q("#n72_edit_meaning_short")?.value || "").trim();
+      const practice = (q("#n72_edit_practice")?.value || "").trim();
+      const notes = (q("#n72_edit_notes")?.value || "").trim();
+
+      n72_set(n72_selectedId, { triad, meaning, practice, notes });
+      logEvent("72_NAME_SAVE", `#${n72_selectedId}`);
+      toast("Saved");
+      // refresh today box if this was today's
+      practice_renderTodayBox();
+    });
+
+    $("n72_sendToShare").addEventListener("click", ()=>{
+      if (!n72_selectedId){
+        toast("Select a Name first");
+        return;
+      }
+      share_setFrom72(n72_selectedId);
+      showTab("share");
+    });
+
+    // Share card
+    $("share_render").addEventListener("click", ()=> share_renderCanvas());
+    $("share_clear").addEventListener("click", ()=>{
+      $("share_header").value = "";
+      $("share_triad").value = "";
+      $("share_body").value = "";
+      share_saveDraft({header:"", triad:"", body:""});
+      share_renderCanvas();
+      toast("Cleared");
+    });
+
+    $("share_download").addEventListener("click", ()=>{
+      const c = $("share_canvas");
+      const a = document.createElement("a");
+      a.download = `KAI_${todayISO()}.png`;
+      a.href = c.toDataURL("image/png");
+      a.click();
+      logEvent("SHARE_DOWNLOAD", a.download);
+      toast("Downloaded");
+    });
+
+    // Gematria
+    $("gem_calc").addEventListener("click", ()=>{
+      const s = ($("gem_input").value || "").trim();
+      const val = gematriaValue(s);
+      $("gem_val").textContent = String(val);
+      logEvent("GEMATRIA", `${s} → ${val}`);
+      toast("Calculated");
+    });
+    $("gem_clear").addEventListener("click", ()=>{
+      $("gem_input").value = "";
+      $("gem_val").textContent = "—";
+      toast("Cleared");
+    });
+    $("gem_saveInsight").addEventListener("click", ()=>{
+      const notes = load(K.gem_notes, {});
+      notes[($("gem_input").value || "").trim()] = $("gem_userInsight").value || "";
+      save(K.gem_notes, notes);
+      logEvent("GEM_INSIGHT_SAVE", "Saved");
+      toast("Saved");
+    });
+
+    // Zohar
+    $("zohar_add").addEventListener("click", ()=>{
+      zohar_clearForm();
+      $("zohar_title").focus();
+    });
+    $("zohar_reload").addEventListener("click", ()=>{
+      zohar_renderList();
+      toast("Reloaded");
+    });
+    $("zohar_reset").addEventListener("click", ()=>{
+      if (!confirm("Reset Zohar library to starter set?")) return;
+      zohar_saveAll(STARTER_ZOHAR.slice());
+      zohar = zohar_load();
+      zohar_renderList();
+      zohar_clearForm();
+      logEvent("ZOHAR_RESET", "Starter set");
+      toast("Reset");
+    });
+    $("zohar_save").addEventListener("click", ()=>{
+      const title = ($("zohar_title").value || "").trim();
+      if (!title){
+        toast("Title required");
+        return;
+      }
+      const ref = ($("zohar_ref").value || "").trim();
+      const text = ($("zohar_text").value || "").trim();
+      const practice = ($("zohar_practice").value || "").trim();
+
+      if (zohar_selectedId){
+        const i = zohar.findIndex(x=>x.id===zohar_selectedId);
+        if (i>=0) zohar[i] = { ...zohar[i], title, ref, text, practice };
+      } else {
+        const item = { id: uid(), title, ref, text, practice };
+        zohar.unshift(item);
+        zohar_selectedId = item.id;
+      }
+      zohar_saveAll(zohar);
+      zohar_renderList();
+      logEvent("ZOHAR_SAVE", title);
+      toast("Saved");
+    });
+    $("zohar_clear").addEventListener("click", ()=>{
+      zohar_clearForm();
+      toast("Cleared");
+    });
+    $("zohar_delete").addEventListener("click", ()=>{
+      if (!zohar_selectedId){
+        toast("Select a passage first");
+        return;
+      }
+      if (!confirm("Delete this passage?")) return;
+      const p = zohar.find(x=>x.id===zohar_selectedId);
+      zohar = zohar.filter(x=>x.id!==zohar_selectedId);
+      zohar_saveAll(zohar);
+      zohar_renderList();
+      zohar_clearForm();
+      logEvent("ZOHAR_DELETE", p ? p.title : "");
+      toast("Deleted");
+    });
+
+    // History
+    $("hist_reload").addEventListener("click", ()=> hist_render());
+    $("hist_clear").addEventListener("click", ()=>{
+      if (!confirm("Clear history?")) return;
+      save(K.history, []);
+      hist_render();
+      toast("Cleared");
+    });
+
+    // Export
+    $("export_json").addEventListener("click", async ()=>{
+      const payload = {
+        state: load(K.state, defaultState),
+        profile: load(K.profile, {}),
+        practice: load(K.practice, {}),
+        history: load(K.history, []),
+        names72_overrides: load(K.n72_overrides, {}),
+        gem_notes: load(K.gem_notes, {}),
+        zohar: load(K.zohar, []),
+        shareDraft: load(K.shareDraft, {}),
+      };
+      const text = JSON.stringify(payload, null, 2);
+      try{
+        await navigator.clipboard.writeText(text);
+        $("export_status").textContent = "Copied to clipboard.";
+        toast("Copied");
+      } catch(e){
+        $("export_status").textContent = "Clipboard blocked. Copy manually from console.";
+        console.log(text);
+        toast("Clipboard blocked");
+      }
+    });
+
+    // Settings
+    $("btn_cacheHint").addEventListener("click", ()=>{
+      const hint = `Use: ${location.origin}${location.pathname}?v=${Date.now()}`;
+      toast("Cache bust hint copied (see console)");
+      console.log(hint);
+    });
+
+    $("btn_factoryReset").addEventListener("click", ()=>{
+      if (!confirm("Factory reset ALL local data?")) return;
+      Object.values(K).forEach(k=> localStorage.removeItem(k));
+      toast("Reset. Reloading…");
+      setTimeout(()=> location.reload(), 450);
+    });
+
+    // Profile save
+    $("btn_saveProfile").addEventListener("click", ()=>{
+      const p = {
+        bday: $("profile_bday").value || "",
+        sign: ($("profile_sign").value || "").trim(),
+        tikkun: ($("profile_tikkun").value || "").trim(),
+        notes: ($("profile_notes").value || "").trim(),
+      };
+      profile_save(p);
+      logEvent("PROFILE_SAVE", p.sign || "");
+      toast("Saved");
+    });
+
+    // 72 quick buttons within tab
+    $("n72_random").addEventListener("click", ()=>{}); // wired in n72_init guard, safe noop
+    $("n72_today").addEventListener("click", ()=>{});  // wired in n72_init guard, safe noop
+
+    // Re-render share canvas when fields change (light)
+    ["share_header","share_triad","share_body"].forEach(id=>{
+      $(id).addEventListener("input", ()=>{
+        // don’t spam render on every keystroke; schedule
+        clearTimeout(share_renderCanvas._t);
+        share_renderCanvas._t = setTimeout(share_renderCanvas, 150);
+      });
+    });
+  }
+
+  // ---------- Boot ----------
+  function boot(){
+    // Build label
+    $("build_lbl").textContent = "Build v1 • " + todayISO();
+
+    // sliders initial values
+    $("certainty_slider").value = String(state.certainty);
+    $("energy_slider").value = String(state.energy);
+
+    renderChips();
+    profile_render();
+
+    // load practice
+    const pr = practice_load();
+    $("practice_focus").value = pr.focus || "";
+    $("practice_restriction").value = pr.restriction || "";
+    $("practice_review").value = pr.review || "";
+
+    // share draft
+    const draft = share_loadDraft();
+    $("share_header").value = draft.header || "";
+    $("share_triad").value = draft.triad || "";
+    $("share_body").value = draft.body || "";
+    share_renderCanvas();
+
+    // today name on practice
+    practice_renderTodayBox();
+
+    // debug
+    $("about_debug").textContent = `localStorage keys: ${Object.values(K).length} • today: ${todayISO()}`;
+
+    // wire up everything
+    wire();
+
+    // init list if user starts there later
+    n72_init();
+    zohar_renderList();
+    hist_render();
+
+    // Optional: service worker (safe to leave off until stable)
+    // if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(console.error);
+
+    logEvent("BOOT", "KAI loaded");
+  }
+
+  // ---------- Run ----------
+  document.addEventListener("DOMContentLoaded", ()=>{
+    try{ boot(); }
+    catch(e){
+      console.error("BOOT ERROR", e);
+      alert("KAI boot error. See console.");
+    }
   });
 
-  el.innerHTML = rows.map(r=>{
-    const triad = n72_triadById(r.id);
-    return `
-      <div class="item">
-        <div class="top">
-          <div>
-            <div><strong>#${r.id}</strong> <span class="mono">${escapeHtml(triad)}</span> <span class="muted">•</span> ${escapeHtml(r.title)}</div>
-            <div class="mini muted">${escapeHtml(r.subtitle||"")}</div>
-          </div>
-          <button class="smallbtn" onclick="n72_select(${r.id})">Open</button>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-function n72_select(id){
-  n72_index = (id - 1 + 72) % 72;
-  n72_renderToday();
-  if (typeof showOverlay === "function") showOverlay("Opened");
-}
-
-// --- Assessment UI control
-function n72_renderAssessmentUI(){
-  const intro = document.getElementById("n72_assessIntro");
-  const run = document.getElementById("n72_assessRun");
-  const res = document.getElementById("n72_assessResults");
-
-  if (!intro || !run || !res) return;
-
-  if (!n72_assess){
-    intro.style.display = "";
-    run.style.display = "none";
-    res.style.display = "none";
-    return;
-  }
-
-  if (n72_assess.finishedAt){
-    intro.style.display = "none";
-    run.style.display = "none";
-    res.style.display = "";
-    n72_renderResults();
-    return;
-  }
-
-  intro.style.display = "none";
-  run.style.display = "";
-  res.style.display = "none";
-  n72_renderQuestion();
-}
-
-function n72_startAssessment(){
-  n72_assess = {
-    idx: 0,
-    answers: {}, // { "1":"agree" | "neutral" | "disagree" }
-    startedAt: new Date().toISOString(),
-    finishedAt: null
-  };
-  localStorage.setItem(N72_KEYS.assess, JSON.stringify(n72_assess));
-  n72_renderAssessmentUI();
-}
-
-function n72_resumeAssessment(){
-  n72_assess = n72_safeParse(localStorage.getItem(N72_KEYS.assess), null);
-  if (!n72_assess) return n72_startAssessment();
-  n72_renderAssessmentUI();
-}
-
-function n72_resetAssessment(){
-  localStorage.removeItem(N72_KEYS.assess);
-  n72_assess = null;
-  n72_renderAssessmentUI();
-  if (typeof showOverlay === "function") showOverlay("Reset");
-}
-
-function n72_renderQuestion(){
-  const p = document.getElementById("n72_assessProgress");
-  const t = document.getElementById("n72_assessText");
-  if (!p || !t || !n72_assess) return;
-
-  const idx = Math.max(0, Math.min(71, n72_assess.idx || 0));
-  const item = N72_STATEMENTS[idx];
-
-  p.innerText = `${idx+1} / 72`;
-  t.innerText = item?.text || `Statement ${idx+1}`;
-}
-
-function n72_answer(choice){
-  if (!n72_assess) return;
-  const idx = Math.max(0, Math.min(71, n72_assess.idx || 0));
-  const item = N72_STATEMENTS[idx];
-  if (item) n72_assess.answers[String(item.id)] = choice;
-
-  if (idx >= 71){
-    n72_finishAssessment();
-    return;
-  }
-  n72_assess.idx = idx + 1;
-  localStorage.setItem(N72_KEYS.assess, JSON.stringify(n72_assess));
-  n72_renderQuestion();
-}
-
-function n72_back(){
-  if (!n72_assess) return;
-  n72_assess.idx = Math.max(0, (n72_assess.idx||0) - 1);
-  localStorage.setItem(N72_KEYS.assess, JSON.stringify(n72_assess));
-  n72_renderQuestion();
-}
-
-function n72_skip(){
-  if (!n72_assess) return;
-  n72_assess.idx = Math.min(71, (n72_assess.idx||0) + 1);
-  localStorage.setItem(N72_KEYS.assess, JSON.stringify(n72_assess));
-  n72_renderQuestion();
-}
-
-function n72_scoreAnswers(answers){
-  const score = {};
-  for (let i=1;i<=72;i++) score[String(i)] = 0;
-
-  // Agree=2, Neutral=1, Disagree=0
-  for (const [id, val] of Object.entries(answers || {})){
-    score[id] = (val==="agree") ? 2 : (val==="neutral" ? 1 : 0);
-  }
-  return score;
-}
-
-function n72_finishAssessment(){
-  n72_assess.finishedAt = new Date().toISOString();
-  localStorage.setItem(N72_KEYS.assess, JSON.stringify(n72_assess));
-
-  // append to history
-  const hist = n72_safeParse(localStorage.getItem(N72_KEYS.assessHistory), []) || [];
-  const scored = n72_scoreAnswers(n72_assess.answers);
-  hist.unshift({ date: new Date().toISOString(), answers: n72_assess.answers, score: scored });
-  localStorage.setItem(N72_KEYS.assessHistory, JSON.stringify(hist.slice(0, 50)));
-
-  n72_renderAssessmentUI();
-  if (typeof showOverlay === "function") showOverlay("Assessment complete");
-}
-
-function n72_topN(scoreObj, n){
-  const rows = [];
-  for (let i=1;i<=72;i++){
-    const id = String(i);
-    rows.push({ id:i, score: (scoreObj?.[id] ?? 0) });
-  }
-  rows.sort((a,b)=> b.score - a.score || a.id - b.id);
-  return rows.slice(0, n);
-}
-
-function n72_renderResults(){
-  const el = document.getElementById("n72_resultsList");
-  if (!el || !n72_assess) return;
-
-  const score = n72_scoreAnswers(n72_assess.answers);
-  const top = n72_topN(score, 6);
-
-  el.innerHTML = top.map(r=>{
-    const t = n72_titleById(r.id);
-    const tri = n72_triadById(r.id);
-    return `
-      <div class="item">
-        <div class="top">
-          <div>
-            <div><strong>#${r.id}</strong> <span class="mono">${escapeHtml(tri)}</span> <span class="muted">•</span> ${escapeHtml(t.title)}</div>
-            <div class="mini muted">${escapeHtml(t.subtitle||"")}</div>
-          </div>
-          <span class="pill">${r.score}</span>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  // stash top #1 for apply
-  window.__n72_top1 = top[0]?.id || 1;
-}
-
-function n72_applyTop(){
-  const id = window.__n72_top1 || 1;
-  n72_select(id);
-  if (typeof showOverlay === "function") showOverlay("Set to top recommendation");
-}
-
-function n72_exportAssessment(){
-  const hist = n72_safeParse(localStorage.getItem(N72_KEYS.assessHistory), []) || [];
-  const payload = { exportedAt: new Date().toISOString(), current: n72_assess, history: hist };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `kai_72_assessment_export.json`;
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-}
-
-// expose init in case your setView calls it
-window.n72_init = n72_init;
-<script>
-
-// existing functions here...
-
-// ============================
-// 72 NAMES DATA STARTS HERE
-// ============================
-
-const NAMES72 = [
-  {
-    id: 48,
-    title: "Unity",
-    subtitle: "When there is conflict and only togetherness will do",
-    hebrew: "מיה"
-  }
-];
-
-// ============================
-// END 72 NAMES DATA
-// ============================
-
-</script>  
+})();
 </script>
 </body>
 </html>
