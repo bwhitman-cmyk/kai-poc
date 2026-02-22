@@ -704,7 +704,14 @@
   };
 
   // ---------- Helpers ----------
-  const $ = (id)=>document.getElementById(id);
+  const $ = (id)=>{
+    const el = document.getElementById(id);
+    if (!el) {
+      // don’t throw, just report
+      showErr("Missing element id: #" + id);
+    }
+    return el;
+  };
   const q = (sel, root=document)=>root.querySelector(sel);
   const qa = (sel, root=document)=>Array.from(root.querySelectorAll(sel));
   const clamp = (n,min,max)=>Math.max(min, Math.min(max, n));
