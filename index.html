@@ -1,612 +1,434 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>KAI — Prototype (Stable)</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KAI — Prototype (Clean 72)</title>
 
-  <!-- PWA hooks (keep yours if already working) -->
-  <link rel="manifest" href="./manifest.json?v=20260222a">
-  <link rel="apple-touch-icon" href="./apple-touch-icon-v3.png?v=20260222a">
-  <link rel="icon" href="./icon-192-v3.png?v=20260222a">
+  <!-- PWA hooks (keep your filenames) -->
+  <link rel="manifest" href="./manifest.webmanifest?v=20260222" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon-v3.png?v=20260222" />
+  <link rel="icon" sizes="192x192" href="./icon-192-v3.png?v=20260222" />
+  <link rel="icon" sizes="512x512" href="./icon-512-v3.png?v=20260222" />
 
   <style>
     :root{
       --bg:#0b0b0c;
-      --panel:#141416;
-      --panel2:#101012;
-      --line:#2a2a2f;
+      --panel:#131314;
+      --panel2:#171719;
+      --line:#262628;
       --text:#f2f2f2;
-      --muted:#a7a7ad;
-      --gold:#f6d35a;
-      --ok:#5bffb1;
-      --danger:#ff5b5b;
-      --chip:#1b1b1f;
-      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --muted:#a6a6a9;
+      --gold:#d8b24b;
+      --green:#1f6f46;
+      --red:#7c2e2e;
+      --shadow: 0 24px 70px rgba(0,0,0,.55);
       --radius:18px;
-      --radius2:14px;
-      --tap: 46px;
     }
 
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:-apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 50% 0%, #161618 0%, var(--bg) 55%);
+      font-family:-apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
-      padding:18px 14px 24px;
+      background: radial-gradient(1200px 700px at 50% 0%, rgba(255,255,255,.06), transparent 55%),
+                  radial-gradient(800px 500px at 10% 20%, rgba(216,178,75,.10), transparent 55%),
+                  var(--bg);
     }
-    .wrap{max-width:980px;margin:0 auto}
+
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 18px 70px}
+    header{display:flex;align-items:center;justify-content:center;margin:10px 0 10px}
     .title{
-      text-align:center;
-      letter-spacing:.8px;
       font-weight:800;
-      font-size:34px;
-      margin:8px 0 10px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      opacity:.95;
+      font-size:30px;
     }
 
-    .chips{
-      display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
-      margin:8px 0 14px;
-    }
+    /* top chips */
+    .chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0 14px}
     .chip{
-      background:rgba(255,255,255,.04);
-      border:1px solid var(--line);
-      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.07);
       padding:8px 12px;
-      display:flex;gap:8px;align-items:baseline;
-      min-height:36px;
-      box-shadow: 0 6px 14px rgba(0,0,0,.25);
-    }
-    .chip b{color:var(--gold)}
-    .chip small{color:var(--muted);font-size:12px}
-
-    .tabs{
-      display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
-      margin: 12px 0 18px;
-    }
-    .tab{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
       border-radius:999px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      box-shadow:0 10px 25px rgba(0,0,0,.25);
+      font-size:13px;
+      color:var(--muted);
+    }
+    .chip b{color:var(--gold);font-weight:800}
+
+    /* tabs */
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0 18px}
+    .tabbtn{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--text);
       padding:10px 14px;
-      min-height:var(--tap);
+      border-radius:999px;
       cursor:pointer;
       user-select:none;
-      font-weight:650;
+      transition:transform .08s ease, border-color .12s ease, background .12s ease;
+      font-size:14px;
     }
-    .tab.active{
-      background: rgba(246,211,90,.16);
-      border-color: rgba(246,211,90,.5);
-      color: var(--gold);
+    .tabbtn:active{transform:scale(.98)}
+    .tabbtn.active{
+      background:rgba(216,178,75,.12);
+      border-color:rgba(216,178,75,.35);
+      color:var(--gold);
     }
-    .tab:active{transform: translateY(1px)}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
-    }
-    @media(max-width:860px){ .grid{grid-template-columns:1fr} }
+    /* layout */
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
 
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--radius);
       padding:16px;
-      box-shadow: var(--shadow);
+      box-shadow:var(--shadow);
     }
-    .card h3{
-      margin:0 0 10px;
-      font-size:15px;
-      color: var(--muted);
-      font-weight:700;
-      letter-spacing:.25px;
-    }
-    .row{display:flex;gap:10px;align-items:center}
-    .row.wrap{flex-wrap:wrap}
-    .spacer{height:10px}
+    .card h3{margin:0 0 10px;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    .row > *{flex:1}
 
-    label{display:block;color:var(--muted);font-size:12px;margin:0 0 6px}
-    input[type="text"], input[type="date"], textarea, select{
-      width:100%;
-      padding:12px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.35);
-      color: var(--text);
-      outline:none;
-      min-height: var(--tap);
-    }
-    textarea{min-height:110px;resize:vertical}
-
+    .sliderline{display:flex;align-items:center;justify-content:space-between;gap:12px}
     input[type="range"]{width:100%}
 
-    .btn{
-      min-height:var(--tap);
-      border-radius: 14px;
-      padding: 11px 14px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
+    .hint{color:var(--muted);font-size:13px;margin-top:6px}
+
+    .btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
       cursor:pointer;
-      user-select:none;
-      font-weight:750;
+      color:var(--text);
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 14px 35px rgba(0,0,0,.35);
+      transition:transform .08s ease, background .12s ease, border-color .12s ease;
+      font-weight:700;
     }
-    .btn.primary{
-      background: rgba(91,255,177,.16);
-      border-color: rgba(91,255,177,.35);
-      color: var(--ok);
-    }
-    .btn.gold{
-      background: rgba(246,211,90,.16);
-      border-color: rgba(246,211,90,.45);
-      color: var(--gold);
-    }
-    .btn.danger{
-      background: rgba(255,91,91,.14);
-      border-color: rgba(255,91,91,.35);
-      color: var(--danger);
-    }
-    .btn:active{transform: translateY(1px)}
-    .btn[disabled]{opacity:.5;cursor:not-allowed}
+    button:active{transform:scale(.98)}
+    button.primary{background:rgba(31,111,70,.35);border-color:rgba(31,111,70,.55);color:#b7f6d1}
+    button.gold{background:rgba(216,178,75,.18);border-color:rgba(216,178,75,.35);color:var(--gold)}
+    button.ghost{background:transparent;border-color:rgba(255,255,255,.12)}
 
-    .hint{color:var(--muted);font-size:12px;line-height:1.35}
+    /* views */
+    .view{display:none}
+    .view.active{display:block}
 
-    .section{display:none}
-    .section.active{display:block}
-
-    .list{
-      display:flex;flex-direction:column;gap:10px;
-      max-height: 420px; overflow:auto; padding-right:6px;
+    /* 72 list */
+    .n72-top{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .n72-top input{
+      flex:2;
+      min-width:220px;
+      background:rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:12px;
+      padding:12px 12px;
+      color:var(--text);
+      outline:none;
     }
-    .item{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 14px;
-      padding:12px;
+    .n72-list{border-top:1px solid rgba(255,255,255,.08);margin-top:10px}
+    .n72-item{
+      display:flex;
+      gap:12px;
+      padding:12px 6px;
+      border-bottom:1px solid rgba(255,255,255,.08);
       cursor:pointer;
-      user-select:none;
     }
-    .item:hover{border-color: rgba(246,211,90,.35)}
-    .item b{display:block}
-    .item small{color:var(--muted)}
-    .pill{
-      display:inline-flex;align-items:center;justify-content:center;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.3);
-      color: var(--muted);
-      border-radius:999px;
-      padding:4px 10px;
+    .n72-id{
+      width:52px;
+      color:var(--gold);
+      font-weight:900;
+      text-align:right;
+      padding-right:8px;
+    }
+    .n72-meta{flex:1}
+    .n72-title{font-weight:800}
+    .n72-sub{color:var(--muted);font-size:13px;margin-top:2px}
+
+    /* detail */
+    .detailHead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .detailHead h2{margin:0;font-size:22px}
+    .hebrew{
+      font-size:34px;
+      letter-spacing:.15em;
+      margin:10px 0 6px;
+      color:var(--gold);
+      direction:rtl;
+    }
+    .meaning{color:var(--text);line-height:1.45}
+    .practice{color:var(--muted);margin-top:10px}
+
+    /* share card */
+    .shareWrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+    @media (max-width: 900px){ .shareWrap{grid-template-columns:1fr} }
+    canvas{width:100%;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:#000}
+
+    /* error overlay */
+    .err{
+      display:none;
+      background:rgba(124,46,46,.40);
+      border:1px solid rgba(255,120,120,.35);
+      border-radius:18px;
+      padding:14px 14px;
+      margin:12px 0 10px;
+      box-shadow:0 20px 60px rgba(0,0,0,.55);
+      white-space:pre-wrap;
+      color:#ffd6d6;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
       font-size:12px;
     }
 
-    .detailTitle{
-      display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
-    }
-    .hebrew{font-size:22px;letter-spacing:1px}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
-    .hr{height:1px;background:var(--line);margin:12px 0}
-
+    /* tiny toast */
     .toast{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 18px;
-      background: rgba(0,0,0,.82);
-      border: 1px solid rgba(255,255,255,.14);
-      padding: 10px 12px;
-      border-radius: 999px;
-      color: var(--text);
-      font-size: 13px;
-      z-index: 9999;
-      max-width: calc(100vw - 24px);
-      box-shadow: 0 10px 30px rgba(0,0,0,.5);
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.12);
+      padding:10px 12px;
+      border-radius:12px;
+      color:var(--text);
       display:none;
+      z-index:50;
+      max-width:92vw;
     }
-    .errbox{
-      display:none;
-      background: rgba(255,91,91,.12);
-      border: 1px solid rgba(255,91,91,.35);
-      color: #ffd3d3;
-      border-radius: 14px;
-      padding: 12px;
-      white-space: pre-wrap;
-      font-size: 12px;
-      line-height: 1.35;
-      margin: 12px 0;
-    }
-
-    canvas{max-width:100%;border-radius:14px;border:1px solid var(--line);background:#000}
-    .foot{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
   </style>
 </head>
 
 <body>
-<div class="wrap">
-  <div class="title">KAI</div>
+  <div class="wrap">
+    <header><div class="title">KAI</div></header>
 
-  <div id="errbox" class="errbox"></div>
+    <div id="errBox" class="err"></div>
 
-  <div class="chips" aria-label="Top metrics">
-    <div class="chip"><small>Pillars</small> <b id="chip_pillars">0</b><small>/100</small></div>
-    <div class="chip"><small>Cycles</small> <b id="chip_cycles">0</b><small>/10</small></div>
-    <div class="chip"><small>Certainty</small> <b id="chip_cert">5</b><small>/10</small></div>
-    <div class="chip"><small>Energy</small> <b id="chip_energy">5</b><small>/10</small></div>
-  </div>
-
-  <div class="tabs" role="tablist" aria-label="Navigation">
-    <button class="tab active" data-tab="home" type="button">Home</button>
-    <button class="tab" data-tab="practice" type="button">Practice</button>
-    <button class="tab" data-tab="names72" type="button">72 Names</button>
-    <button class="tab" data-tab="gematria" type="button">Gematria</button>
-    <button class="tab" data-tab="zohar" type="button">Zohar</button>
-    <button class="tab" data-tab="share" type="button">Share Card</button>
-    <button class="tab" data-tab="history" type="button">History</button>
-    <button class="tab" data-tab="settings" type="button">Settings</button>
-  </div>
-
-  <!-- HOME -->
-  <section id="sec_home" class="section active">
-    <div class="grid">
-      <div class="card">
-        <h3>Daily Metrics</h3>
-
-        <div class="row" style="gap:14px">
-          <div style="flex:1">
-            <label>Certainty</label>
-            <input id="rng_cert" type="range" min="0" max="10" step="1" />
-            <div class="hint">Set quickly. This is your Sinai clarity gauge.</div>
-          </div>
-          <div style="flex:1">
-            <label>Energy</label>
-            <input id="rng_energy" type="range" min="0" max="10" step="1" />
-            <div class="hint">Simple and honest. No story, just data.</div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <h3>Quick Actions</h3>
-        <div class="row wrap">
-          <button id="btn_connect" class="btn primary" type="button">CONNECT (+pillar)</button>
-          <button id="btn_cycle" class="btn" type="button">Run Full Cycle</button>
-          <button id="btn_today72" class="btn gold" type="button">Today’s 72 Name</button>
-        </div>
-
-        <div class="spacer"></div>
-        <div class="hint">
-          “Pillars” = connection reps. “Cycles” = full 5-step CARES cycle completed.
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Profile</h3>
-        <div class="row" style="gap:14px">
-          <div style="flex:1">
-            <label>Birthday</label>
-            <input id="inp_bday" type="date" />
-          </div>
-          <div style="flex:1">
-            <label>Astrological Sign</label>
-            <input id="inp_sign" type="text" placeholder="Auto from birthday (basic)" />
-          </div>
-        </div>
-
-        <div class="spacer"></div>
-
-        <div class="row" style="gap:14px">
-          <div style="flex:1">
-            <label>Tikkun (enter for now)</label>
-            <input id="inp_tikkun" type="text" placeholder="e.g., (enter Centre method later)" />
-          </div>
-          <div style="flex:1">
-            <label>Notes</label>
-            <input id="inp_notes" type="text" placeholder="Optional…" />
-          </div>
-        </div>
-
-        <div class="spacer"></div>
-        <div class="hint">
-          This build stays “Centre language” neutral: tool-first, not preachy. We can deepen once Eitan guides exact framing.
-        </div>
-      </div>
+    <div class="chips">
+      <div class="chip">Pillars <b id="pillarsChip">0</b> /100</div>
+      <div class="chip">Cycles <b id="cyclesChip">0</b> /10</div>
+      <div class="chip">Certainty <b id="certaintyChip">5</b> /10</div>
+      <div class="chip">Energy <b id="energyChip">5</b> /10</div>
     </div>
-  </section>
 
-  <!-- PRACTICE -->
-  <section id="sec_practice" class="section">
-    <div class="grid">
-      <div class="card">
-        <h3>Cycle</h3>
-        <div class="hint"><b class="mono">CONNECT → ALIGN → RESTRICT → ELEVATE → SEAL</b></div>
-        <div class="spacer"></div>
-        <div class="row wrap">
-          <button class="btn primary" id="step_connect" type="button">CONNECT</button>
-          <button class="btn" id="step_align" type="button">ALIGN</button>
-          <button class="btn" id="step_restrict" type="button">RESTRICT</button>
-          <button class="btn" id="step_elevate" type="button">ELEVATE</button>
-          <button class="btn gold" id="step_seal" type="button">SEAL</button>
-        </div>
-        <div class="spacer"></div>
-        <label>One-line note (optional)</label>
-        <input id="inp_line" type="text" placeholder="One line: what I’m choosing now…" />
-        <div class="spacer"></div>
-        <button id="btn_save_line" class="btn" type="button">Save Line to History</button>
-        <div class="spacer"></div>
-        <div class="hint">
-          “Line” = a single sentence of alignment you can revisit later. Not an essay. Not a manifesto.
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Today</h3>
-        <div id="practice_today" class="hint">Loading…</div>
-        <div class="hr"></div>
-        <button id="btn_pick_random72" class="btn gold" type="button">Pick Random 72 Name</button>
-        <div class="spacer"></div>
-        <div class="hint">Tip: Use the 72 Names tab for titles, assessment, and saving reflections.</div>
-      </div>
+    <div class="tabs">
+      <div class="tabbtn active" data-tab="home">Home</div>
+      <div class="tabbtn" data-tab="names72">72 Names</div>
+      <div class="tabbtn" data-tab="share">Share Card</div>
+      <div class="tabbtn" data-tab="settings">Settings</div>
     </div>
-  </section>
 
-  <!-- 72 NAMES -->
-  <section id="sec_names72" class="section">
-    <div class="grid">
-      <div class="card">
-        <h3>Browse</h3>
-        <div class="row">
-          <input id="n72_search" type="text" placeholder="Search title/subtitle or “#48”" />
-          <button id="n72_random" class="btn gold" type="button" style="min-width:140px">Random</button>
+    <!-- HOME -->
+    <section id="view-home" class="view active">
+      <div class="grid">
+        <div class="card">
+          <h3>Daily Metrics</h3>
+
+          <div class="sliderline">
+            <div style="flex:1">
+              <div class="row" style="margin-bottom:6px">
+                <div style="flex:1;color:var(--muted);font-size:13px">Certainty</div>
+                <div style="width:44px;text-align:right"><b id="certaintyVal" style="color:var(--gold)">5</b></div>
+              </div>
+              <input id="certainty" type="range" min="0" max="10" step="1" value="5" />
+              <div class="hint">Set quickly. This is your Sinai clarity gauge.</div>
+            </div>
+
+            <div style="flex:1">
+              <div class="row" style="margin-bottom:6px">
+                <div style="flex:1;color:var(--muted);font-size:13px">Energy</div>
+                <div style="width:44px;text-align:right"><b id="energyVal" style="color:var(--gold)">5</b></div>
+              </div>
+              <input id="energy" type="range" min="0" max="10" step="1" value="5" />
+              <div class="hint">Simple and honest. No story, just data.</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,.08);padding-top:12px">
+            <h3 style="margin-bottom:8px">Quick Actions</h3>
+            <div class="btnrow">
+              <button id="btnConnect" class="primary">CONNECT (+pillar)</button>
+              <button id="btnCycle">Run Full Cycle</button>
+              <button id="btnToday" class="gold">Today’s 72 Name</button>
+            </div>
+            <div class="hint">“Pillars” = connection reps. “Cycles” = a full practice pass.</div>
+          </div>
         </div>
-        <div class="spacer"></div>
-        <div id="n72_list" class="list"></div>
-      </div>
 
-      <div class="card">
-        <h3>Detail</h3>
-        <div id="n72_detail" class="hint">Select a Name…</div>
-        <div class="hr"></div>
+        <div class="card">
+          <h3>Profile</h3>
+          <div class="row">
+            <div>
+              <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Birthday</div>
+              <input id="birthday" placeholder="YYYY-MM-DD"
+                style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);outline:none" />
+            </div>
+            <div>
+              <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Astrological Sign</div>
+              <input id="sign" placeholder="Auto from birthday (basic)"
+                style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);outline:none" />
+            </div>
+          </div>
 
-        <h3>Self-Assessment (72 statements)</h3>
-        <div class="hint">Agree/Disagree. Save. Track over time.</div>
-        <div class="spacer"></div>
-        <div class="row wrap">
-          <button id="assess_start" class="btn primary" type="button">Start / Continue</button>
-          <button id="assess_save" class="btn gold" type="button">Save Snapshot</button>
-          <button id="assess_reset" class="btn danger" type="button">Reset</button>
+          <div class="row" style="margin-top:12px">
+            <div>
+              <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Tikkun (enter for now)</div>
+              <input id="tikkun" placeholder="e.g., (enter Centre method later)"
+                style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);outline:none" />
+            </div>
+            <div>
+              <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Notes</div>
+              <input id="notes" placeholder="Optional..."
+                style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);outline:none" />
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:10px">
+            This build stays “Centre-language” neutral: tool-first, not preachy.
+          </div>
         </div>
-        <div class="spacer"></div>
-        <div id="assess_ui" class="list" style="max-height:320px"></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- GEMATRIA -->
-  <section id="sec_gematria" class="section">
-    <div class="grid">
+    <!-- 72 NAMES -->
+    <section id="view-names72" class="view">
       <div class="card">
-        <h3>Gematria</h3>
-        <label>Enter Hebrew (preferred) or letters</label>
-        <input id="gem_input" type="text" placeholder="Example: אהבה" />
-        <div class="spacer"></div>
-        <div class="row wrap">
-          <button id="gem_calc" class="btn gold" type="button">Calculate</button>
-          <button id="gem_clear" class="btn danger" type="button">Clear</button>
+        <div class="detailHead">
+          <h2 id="n72Header">The 72 Names</h2>
+          <div class="btnrow" style="margin:0">
+            <button id="btnBack" class="ghost" style="display:none">Back to list</button>
+            <button id="btnRand" class="gold">Random</button>
+          </div>
         </div>
-        <div class="hr"></div>
-        <div id="gem_out" class="hint">Enter a word and calculate.</div>
-      </div>
 
-      <div class="card">
-        <h3>Insight Stub</h3>
-        <div class="hint">
-          You were right: calculation alone is not enough. This build keeps a clean slot for “Insight” so we can plug in Centre-aligned interpretation later (Eitan-approved language).
+        <div id="n72ListPane">
+          <div class="n72-top">
+            <input id="n72Search" placeholder="Search by title, subtitle, or # (e.g., 48 or #48)" />
+            <button id="btnAll">All</button>
+          </div>
+          <div id="n72List" class="n72-list"></div>
         </div>
-        <div class="spacer"></div>
-        <label>Insight (manual for now)</label>
-        <textarea id="gem_insight" placeholder="Write a Centre-aligned insight here…"></textarea>
-        <div class="spacer"></div>
-        <button id="gem_save" class="btn primary" type="button">Save Insight to History</button>
-      </div>
-    </div>
-  </section>
 
-  <!-- ZOHAR -->
-  <section id="sec_zohar" class="section">
-    <div class="grid">
-      <div class="card">
-        <h3>Zohar Library</h3>
-        <div class="hint">Seed passages now, expand later. Keep it practical: short excerpt + practice prompt.</div>
-        <div class="spacer"></div>
-        <div id="zohar_list" class="list"></div>
+        <div id="n72DetailPane" style="display:none">
+          <div class="hebrew" id="n72Heb">—</div>
+          <div class="meaning" id="n72Meaning"></div>
+          <div class="practice" id="n72Practice"></div>
+          <div class="btnrow" style="margin-top:14px">
+            <button id="btnMakeCard" class="gold">Make Share Card</button>
+            <button id="btnCopy" class="ghost">Copy Text</button>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="card">
-        <h3>Add Passage</h3>
-        <label>Title</label>
-        <input id="z_title" type="text" placeholder="e.g., Atika Kadisha — sweetening Din" />
-        <div class="spacer"></div>
-        <label>Source (optional)</label>
-        <input id="z_src" type="text" placeholder="e.g., Zohar, Parasha…, verse…" />
-        <div class="spacer"></div>
-        <label>Excerpt (short)</label>
-        <textarea id="z_txt" placeholder="Keep it short. You can store longer study elsewhere."></textarea>
-        <div class="spacer"></div>
-        <label>Practice Prompt</label>
-        <input id="z_prac" type="text" placeholder="One action: restriction / sharing / certainty…" />
-        <div class="spacer"></div>
-        <button id="z_add" class="btn gold" type="button">Add to Library</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- SHARE -->
-  <section id="sec_share" class="section">
-    <div class="grid">
+    <!-- SHARE -->
+    <section id="view-share" class="view">
       <div class="card">
         <h3>Share Card</h3>
-        <label>Title</label>
-        <input id="sc_title" type="text" placeholder="72 Name #48 — Unity" />
-        <div class="spacer"></div>
-        <label>Hebrew Letters (optional)</label>
-        <input id="sc_hebrew" type="text" placeholder="מ־י־ה" />
-        <div class="spacer"></div>
-        <label>Text</label>
-        <textarea id="sc_text" placeholder="Short Centre-aligned text + one practice."></textarea>
-        <div class="spacer"></div>
-        <div class="row wrap">
-          <button id="sc_make" class="btn gold" type="button">Generate Card</button>
-          <button id="sc_download" class="btn primary" type="button">Download PNG</button>
+        <div class="shareWrap">
+          <div>
+            <div class="hint" style="margin-bottom:10px">Pick a Name from “72 Names,” then generate a card.</div>
+            <div class="btnrow">
+              <button id="btnRenderCard" class="gold">Render Current Card</button>
+              <button id="btnDownload" class="primary">Download PNG</button>
+              <button id="btnClearCard" class="ghost">Clear</button>
+            </div>
+            <div class="hint" style="margin-top:10px" id="cardHint">No selection yet.</div>
+          </div>
+          <div>
+            <canvas id="cardCanvas" width="1080" height="1350"></canvas>
+          </div>
         </div>
-        <div class="spacer"></div>
-        <div class="hint">On iOS, download saves the image. You can then message it to Eitan.</div>
       </div>
+    </section>
 
+    <!-- SETTINGS -->
+    <section id="view-settings" class="view">
       <div class="card">
-        <h3>Preview</h3>
-        <canvas id="sc_canvas" width="1080" height="1350"></canvas>
-        <div class="foot">KAI • <span id="sc_date"></span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HISTORY -->
-  <section id="sec_history" class="section">
-    <div class="card">
-      <h3>History</h3>
-      <div class="row wrap">
-        <button id="hist_clear" class="btn danger" type="button">Clear History</button>
-        <button id="hist_export" class="btn gold" type="button">Export JSON</button>
-      </div>
-      <div class="spacer"></div>
-      <div id="hist_list" class="list" style="max-height:520px"></div>
-    </div>
-  </section>
-
-  <!-- SETTINGS -->
-  <section id="sec_settings" class="section">
-    <div class="grid">
-      <div class="card">
-        <h3>Data</h3>
-        <div class="row wrap">
-          <button id="btn_reset_all" class="btn danger" type="button">Reset ALL Data</button>
-          <button id="btn_export_all" class="btn gold" type="button">Export ALL JSON</button>
+        <h3>Settings</h3>
+        <div class="btnrow">
+          <button id="btnReset72" class="ghost">Reset 72 storage only</button>
+          <button id="btnResetAll" class="ghost">Reset ALL KAI storage</button>
         </div>
-        <div class="spacer"></div>
-        <label>Import JSON</label>
-        <textarea id="inp_import" placeholder="Paste exported JSON here…"></textarea>
-        <div class="spacer"></div>
-        <button id="btn_import_all" class="btn primary" type="button">Import</button>
-        <div class="spacer"></div>
-        <div class="hint">This is for stabilizing builds across devices (iPhone/iPad) without weird partial state.</div>
-      </div>
-
-      <div class="card">
-        <h3>Debug</h3>
-        <div class="hint">
-          If anything ever goes “static,” it should show a red error box at top and a toast with the exact error.
+        <div class="hint" style="margin-top:10px">
+          If anything ever goes weird: “Reset 72 storage only” is the safe move.
         </div>
-        <div class="spacer"></div>
-        <div class="row wrap">
-          <button id="btn_smoke" class="btn" type="button">Run Smoke Test</button>
-        </div>
-        <div class="spacer"></div>
-        <div class="hint mono" id="dbg_out"></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <div class="toast" id="toast"></div>
-</div>
+  </div>
+
+  <div id="toast" class="toast"></div>
 
 <script>
-(function(){
-  "use strict";
+/* ==========================
+   KAI CLEAN 72 (SAFE BOOT)
+   ========================== */
 
-  // -------------------------
-  // Utilities
-  // -------------------------
-  const $ = (sel)=> document.querySelector(sel);
-  const $$ = (sel)=> Array.from(document.querySelectorAll(sel));
+(() => {
+  // ---------- helpers ----------
+  const $ = (id) => document.getElementById(id);
+  const errBox = $("errBox");
+  const toastEl = $("toast");
 
-  const toastEl = $("#toast");
-  let toastTimer = null;
   function toast(msg){
-    try{
-      toastEl.textContent = msg;
-      toastEl.style.display = "block";
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=> toastEl.style.display = "none", 2200);
-    }catch(_){}
+    toastEl.textContent = msg;
+    toastEl.style.display = "block";
+    clearTimeout(toastEl._t);
+    toastEl._t = setTimeout(()=> toastEl.style.display="none", 2200);
   }
 
-  const errBox = $("#errbox");
   function showErr(msg){
     errBox.style.display = "block";
     errBox.textContent = msg;
   }
-
-  function safeParse(json, fallback){
-    try{ return JSON.parse(json); }catch(_){ return fallback; }
-  }
-  function nowISO(){ return new Date().toISOString(); }
-  function todayKey(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,"0");
-    const da = String(d.getDate()).padStart(2,"0");
-    return `${y}-${m}-${da}`;
+  function clearErr(){
+    errBox.style.display = "none";
+    errBox.textContent = "";
   }
 
-  // -------------------------
-  // Storage Keys
-  // -------------------------
+  // ---------- storage (versioned + safe) ----------
   const KEY = {
     state: "kai_state_v1",
-    history: "kai_history_v1",
-    zohar: "kai_zohar_v1",
-    assessAnswers: "kai_72_assess_answers_v1",
-    assessSnapshots: "kai_72_assess_snapshots_v1",
-    gemInsights: "kai_gem_insights_v1",
-    today72: "kai_today72_v1"
+    n72_selected: "kai_72_selected_v1",
+    n72_notes: "kai_72_notes_v1"
   };
 
+  const defaultState = {
+    pillars: 0,
+    cycles: 0,
+    certainty: 5,
+    energy: 5,
+    profile: { birthday:"", sign:"", tikkun:"", notes:"" }
+  };
+
+  function safeParse(s, fallback){
+    try{
+      const v = JSON.parse(s);
+      return (v === null || v === undefined) ? fallback : v;
+    } catch {
+      return fallback;
+    }
+  }
   function loadState(){
-    return safeParse(localStorage.getItem(KEY.state), {
-      pillars: 0,
-      cycles: 0,
-      certainty: 5,
-      energy: 5,
-      profile: { bday:"", sign:"", tikkun:"", notes:"" },
-      practiceLine: ""
-    });
+    return safeParse(localStorage.getItem(KEY.state), structuredClone(defaultState));
   }
   function saveState(){
     localStorage.setItem(KEY.state, JSON.stringify(state));
   }
 
-  function loadHistory(){
-    return safeParse(localStorage.getItem(KEY.history), []);
-  }
-  function saveHistory(){
-    localStorage.setItem(KEY.history, JSON.stringify(history));
-  }
-  function logEvent(type, detail){
-    history.unshift({ at: nowISO(), type, detail: detail || "" });
-    if(history.length > 400) history.length = 400;
-    saveHistory();
-    renderHistory();
-  }
-
-  // -------------------------
-  // 72 Names Data (titles/subtitles from your screenshots)
-  // Notes:
-  // - This is the "topic index" layer.
-  // - The Hebrew letters + detailed "meaning text" can be added per Name later.
-  // -------------------------
-  const N72_TITLES = [
+  // ---------- 72 data (titles/subtitles from your screenshots) ----------
+  // Hebrew triples + full meaning text can be added later safely.
+  const N72 = [
     {id:1,  title:"Time Travel", subtitle:"How to fix the past"},
     {id:2,  title:"Recapturing the Sparks", subtitle:"Recharging when you are depleted"},
     {id:3,  title:"Miracle Making", subtitle:"A recipe"},
@@ -630,7 +452,7 @@
     {id:21, title:"Eradicate Plague", subtitle:"Effecting change in the physical world"},
     {id:22, title:"Stop Fatal Attraction", subtitle:"How to stop drawing the wrong people into your life"},
     {id:23, title:"Sharing the Flame", subtitle:"Passing the wisdom along"},
-    {id:24, title:"Jealousy", subtitle:"Undoing chaos resulting from jealousy before it is manifested"},
+    {id:24, title:"Jealousy", subtitle:"Undoing chaos resulting from our jealousy before it is manifested"},
     {id:25, title:"Speak Your Mind", subtitle:"For those times when you need help expressing the truth"},
     {id:26, title:"Order from Chaos", subtitle:"Reversing Murphy’s Law"},
     {id:27, title:"Silent Partner", subtitle:"Choosing positivity as your partner"},
@@ -650,7 +472,7 @@
     {id:41, title:"Self-Esteem", subtitle:"Finding the power to lift yourself up"},
     {id:42, title:"Revealing the Concealed", subtitle:"Seeing the truth and handling it"},
     {id:43, title:"Defying Gravity", subtitle:"Achieving mind over matter"},
-    {id:44, title:"Sweetening Judgment", subtitle:"Stop the judgment that is happening against you"},
+    {id:44, title:"Sweetening Judgment", subtitle:"Ducking the boomerang you send out there—stop the judgment that is happening against you"},
     {id:45, title:"The Power of Prosperity", subtitle:"What to do when you need money"},
     {id:46, title:"Absolute Certainty", subtitle:"What to do when doubts creep in"},
     {id:47, title:"Global Transformation", subtitle:"Helping to bring about world peace"},
@@ -671,703 +493,424 @@
     {id:62, title:"Parent–Teacher, Not Preacher", subtitle:"When you need to teach your children"},
     {id:63, title:"Appreciation", subtitle:"How to keep what you have and get more"},
     {id:64, title:"Casting Yourself in a Favorable Light", subtitle:"Revealing the best you"},
-    {id:65, title:"Fear of God", subtitle:"Remembering there is a system and how to work it"},
-    {id:66, title:"Accountability", subtitle:"Taking accountability for your happiness and life"},
+    {id:65, title:"Fear of God", subtitle:"When you need to remember that there is a system, and how to work it"},
+    {id:66, title:"Accountability", subtitle:"The power to take accountability for your happiness and life"},
     {id:67, title:"Great Expectations", subtitle:"How to stop getting disappointed"},
-    {id:68, title:"Contacting Departed Souls", subtitle:"Making positive connections with those who have passed on"},
+    {id:68, title:"Contacting Departed Souls", subtitle:"Making positive connections with people that have passed on"},
     {id:69, title:"Lost and Found", subtitle:"What to do when you are lost and confused"},
     {id:70, title:"Recognizing Design Beneath Disorder", subtitle:"Finding the solution within the problem"},
     {id:71, title:"Prophecy and Parallel Universes", subtitle:"Switching your universe for a better one"},
-    {id:72, title:"Spiritual Cleansing", subtitle:"Purging yourself of negativity"}
+    {id:72, title:"Spiritual Cleansing", subtitle:"Purging yourself of negativity"},
   ];
 
-  // Minimal per-Name detail (letters & meaning can be expanded later)
-  // You can later replace "hebrew" and "core/practice" per Name with Centre-approved text.
-  const N72_MIN = N72_TITLES.map(x => ({
-    id: x.id,
-    title: x.title,
-    subtitle: x.subtitle,
-    hebrew: "",           // e.g., "מיה"
-    core: "",             // core concept
-    practice: ""          // one action prompt
-  }));
-
-  // Self-assessment statements (we store them as text; you can paste the full official set later if needed)
-  // For now we seed a light placeholder set + one example you referenced (#48 theme).
-  function buildAssessStatements(){
-    const arr = [];
-    for(let i=1;i<=72;i++){
-      arr.push({ id:i, text:`Statement for Name #${i} (paste Centre statement here)` });
-    }
-    // Your example from screenshot context about #48 distance/division
-    arr[47] = { id:48, text:"I tend to feel very distant from people who don’t agree with me." };
-    return arr;
+  // Optional: small Hebrew placeholders (you can replace later with true triples)
+  function hebrewFor(id){
+    // minimal placeholder so layout works
+    return "—";
   }
-  const ASSESS = buildAssessStatements();
 
-  // -------------------------
-  // App State
-  // -------------------------
+  function meaningFor(n){
+    // Keep it neutral. You can paste Centre meanings later.
+    return `Name #${n.id} — ${n.title}\n\nFocus: ${n.subtitle}\n\nMeaning text can be added next (Centre-authentic).`;
+  }
+
+  function practiceFor(n){
+    // Clean "practice" line (no over-the-top)
+    return `Practice: Choose one small restriction today aligned to "${n.title}".`;
+  }
+
+  // ---------- runtime ----------
   let state = loadState();
-  let history = loadHistory();
+  let current72 = null;
 
-  // Zohar
-  function loadZohar(){
-    const seed = [
-      { id: "z1", title:"Atika Kadisha — Sweetening Din", src:"Seed", txt:"Short excerpt placeholder.", prac:"One restriction: pause before reacting." },
-      { id: "z2", title:"Building the Mishkan (Unity)", src:"Seed", txt:"Short excerpt placeholder.", prac:"Choose unity over division in one conversation today." }
-    ];
-    const z = safeParse(localStorage.getItem(KEY.zohar), seed);
-    return Array.isArray(z) ? z : seed;
-  }
-  let zohar = loadZohar();
-  function saveZohar(){ localStorage.setItem(KEY.zohar, JSON.stringify(zohar)); }
-
-  // Assessment answers
-  let assessAnswers = safeParse(localStorage.getItem(KEY.assess), {}) || {};
-  let assessSnaps = safeParse(localStorage.getItem(KEY.assessSnapshots), []);
-
-  // Gem insights
-  let gemInsights = safeParse(localStorage.getItem(KEY.gemInsights), []);
-
-  // Today 72 selection
-today72 = (today72 && typeof today72 === "object") ? today72 : {};
-assessAnswers = (assessAnswers && typeof assessAnswers === "object") ? assessAnswers : {};
-assessHistory = (assessHistory && typeof assessHistory === "object") ? assessHistory : [];
-n72_meaning = (n72_meaning && typeof n72_meaning === "object") ? n72_meaning : {};
-  // -------------------------
-  // Rendering helpers
-  // -------------------------
   function updateChips(){
-    $("#chip_pillars").textContent = String(state.pillars || 0);
-    $("#chip_cycles").textContent = String(state.cycles || 0);
-    $("#chip_cert").textContent = String(state.certainty ?? 5);
-    $("#chip_energy").textContent = String(state.energy ?? 5);
+    $("pillarsChip").textContent = String(state.pillars);
+    $("cyclesChip").textContent = String(state.cycles);
+    $("certaintyChip").textContent = String(state.certainty);
+    $("energyChip").textContent = String(state.energy);
+    $("certaintyVal").textContent = String(state.certainty);
+    $("energyVal").textContent = String(state.energy);
   }
 
-  function zodiacSignFromDate(iso){
-    if(!iso) return "";
-    const d = new Date(iso + "T00:00:00");
-    const m = d.getMonth()+1, day=d.getDate();
-    // basic western zodiac ranges (approx)
-    const z = [
-      ["Capricorn",1,19], ["Aquarius",2,18], ["Pisces",3,20], ["Aries",4,19],
-      ["Taurus",5,20], ["Gemini",6,20], ["Cancer",7,22], ["Leo",8,22],
-      ["Virgo",9,22], ["Libra",10,22], ["Scorpio",11,21], ["Sagittarius",12,21],
-      ["Capricorn",12,31]
-    ];
-    // Determine sign by cutoff day per month
-    const cutoffs = {1:19,2:18,3:20,4:19,5:20,6:20,7:22,8:22,9:22,10:22,11:21,12:21};
-    const signsBefore = {1:"Capricorn",2:"Aquarius",3:"Pisces",4:"Aries",5:"Taurus",6:"Gemini",7:"Cancer",8:"Leo",9:"Virgo",10:"Libra",11:"Scorpio",12:"Sagittarius"};
-    const signsAfter  = {1:"Aquarius",2:"Pisces",3:"Aries",4:"Taurus",5:"Gemini",6:"Cancer",7:"Leo",8:"Virgo",9:"Libra",10:"Scorpio",11:"Sagittarius",12:"Capricorn"};
-    return day <= cutoffs[m] ? signsBefore[m] : signsAfter[m];
-  }
-
-  function ensureToday72(){
-  const t = todayKey();
-
-  // HARD GUARD: if localStorage ever gave us null/garbage, recover gracefully
-  if(!today72 || typeof today72 !== "object"){
-    today72 = { date:"", id:null };
-  }
-
-  if(today72.date !== t || !today72.id){
-    const d = new Date();
-    const idx = (d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate()) % 72;
-    today72 = { date: t, id: idx+1 };
-    localStorage.setItem(KEY.today72, JSON.stringify(today72));
-  }
-}
-
-  function renderPracticeToday(){
-    ensureToday72();
-    const obj = N72_MIN.find(x=>x.id===today72.id) || N72_MIN[0];
-    $("#practice_today").innerHTML = `
-      <div class="detailTitle">
-        <span class="pill">Today</span>
-        <b>#${obj.id} ${escapeHtml(obj.title)}</b>
-      </div>
-      <div class="hint">${escapeHtml(obj.subtitle || "")}</div>
-      <div class="spacer"></div>
-      <div class="hint">Practice: <b>Build your Mishkan</b> (placeholder prompt)</div>
-    `;
-  }
-
-  function escapeHtml(s){
-    return String(s||"").replace(/[&<>"']/g, (c)=>({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[c]));
-  }
-
-  // 72 Names UI
-  function n72_renderList(list){
-    const box = $("#n72_list");
-    box.innerHTML = "";
-    list.forEach(x=>{
-      const el = document.createElement("div");
-      el.className = "item";
-      el.innerHTML = `<b>#${x.id} ${escapeHtml(x.title)}</b><small>${escapeHtml(x.subtitle||"")}</small>`;
-      el.addEventListener("click", ()=> n72_renderDetail(x.id));
-      box.appendChild(el);
+  function setTab(name){
+    document.querySelectorAll(".tabbtn").forEach(b => {
+      b.classList.toggle("active", b.dataset.tab === name);
     });
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    $("view-" + name).classList.add("active");
+    if (name === "names72") n72_init();
+    if (name === "share") renderCardPreview();
   }
 
-  function n72_renderDetail(id){
-    const x = N72_MIN.find(n=>n.id===id);
-    if(!x) return;
-    const detail = $("#n72_detail");
+  // ---------- 72 rendering ----------
+  function n72_init(){
+    // list view by default unless current72 is set
+    $("btnBack").style.display = current72 ? "inline-block" : "none";
+    if (!current72) n72_showList();
+    else n72_showDetail(current72);
 
-    // If you later add hebrew/core/practice, it will show automatically.
-    detail.innerHTML = `
-      <div class="detailTitle">
-        <span class="pill">72 Name</span>
-        <b>#${x.id} ${escapeHtml(x.title)}</b>
-      </div>
-      <div class="hint">${escapeHtml(x.subtitle||"")}</div>
-      <div class="spacer"></div>
-      ${x.hebrew ? `<div class="hebrew">${escapeHtml(x.hebrew)}</div>` : `<div class="hint">Hebrew letters: <span class="mono">(add later)</span></div>`}
-      <div class="spacer"></div>
-      <div class="hint"><b>Core:</b> ${x.core ? escapeHtml(x.core) : "<span class='mono'>(add later)</span>"}</div>
-      <div class="hint"><b>Practice:</b> ${x.practice ? escapeHtml(x.practice) : "<span class='mono'>(add later)</span>"}</div>
-      <div class="spacer"></div>
-      <button class="btn gold" type="button" id="btn_use_for_share">Use in Share Card</button>
-    `;
-
-    // Wire the share button
-    setTimeout(()=>{
-      const b = $("#btn_use_for_share");
-      if(b){
-        b.addEventListener("click", ()=>{
-          $("#sc_title").value = `72 Name #${x.id} — ${x.title}`;
-          $("#sc_text").value = (x.practice ? `Practice: ${x.practice}` : `Practice: ${x.subtitle || x.title}`);
-          toast("Loaded into Share Card");
-          switchTab("share");
-        });
-      }
-    },0);
+    // ensure list is populated if it isn't
+    if ($("n72List").children.length === 0) n72_renderList(N72);
   }
 
   function n72_filter(q){
-    q = (q||"").trim().toLowerCase();
-    if(!q) return N72_MIN;
-    if(q.startsWith("#")){
-      const n = parseInt(q.slice(1),10);
-      if(Number.isFinite(n)) return N72_MIN.filter(x=>x.id===n);
-    }
-    return N72_MIN.filter(x =>
-      (x.title||"").toLowerCase().includes(q) ||
-      (x.subtitle||"").toLowerCase().includes(q)
-    );"kai_72_assess_v1": null
+    q = (q || "").trim().toLowerCase();
+    if (!q) return N72;
+
+    // allow "#48" or "48"
+    let num = q.startsWith("#") ? parseInt(q.slice(1),10) : parseInt(q,10);
+    if (!Number.isNaN(num)) return N72.filter(x => x.id === num);
+
+    return N72.filter(x =>
+      (x.title || "").toLowerCase().includes(q) ||
+      (x.subtitle || "").toLowerCase().includes(q)
+    );
   }
 
-  // Assessment UI
-  function renderAssessUI(){
-      if(!assessAnswers || typeof assessAnswers !== "object") assessAnswers = {};
-    const box = $("#assess_ui");
-    box.innerHTML = "";
-    ASSESS.forEach(s=>{
-      const v = assessAnswers[s.id] ?? null; // true/false/null
-      const el = document.createElement("div");
-      el.className = "item";
-      el.innerHTML = `
-        <div class="row" style="justify-content:space-between;gap:12px">
-          <div style="flex:1">
-            <b>#${s.id}</b>
-            <small>${escapeHtml(s.text)}</small>
-          </div>
-          <div class="row" style="gap:8px">
-            <button class="btn ${v===true?'gold':''}" data-a="agree" data-id="${s.id}" type="button">Agree</button>
-            <button class="btn ${v===false?'danger':''}" data-a="disagree" data-id="${s.id}" type="button">Disagree</button>
-          </div>
+  function n72_renderList(list){
+    const host = $("n72List");
+    host.innerHTML = "";
+    list.forEach(n => {
+      const row = document.createElement("div");
+      row.className = "n72-item";
+      row.innerHTML = `
+        <div class="n72-id">${n.id}</div>
+        <div class="n72-meta">
+          <div class="n72-title">${escapeHtml(n.title)}</div>
+          <div class="n72-sub">${escapeHtml(n.subtitle)}</div>
         </div>
       `;
-      box.appendChild(el);
-    });
-
-    // Wire agree/disagree
-    box.querySelectorAll("button[data-id]").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        const id = parseInt(btn.getAttribute("data-id"),10);
-        const a = btn.getAttribute("data-a");
-        assessAnswers[id] = (a === "agree");
-        localStorage.setItem(KEY.assessAnswers, JSON.stringify(assessAnswers));
-        renderAssessUI();
-      });
+      row.addEventListener("click", () => n72_showDetail(n));
+      host.appendChild(row);
     });
   }
 
-  function saveAssessSnapshot(){
-    const snap = {
-      at: nowISO(),
-      date: todayKey(),
-      answers: assessAnswers
-    };
-    assessSnaps.unshift(snap);
-    if(assessSnaps.length > 80) assessSnaps.length = 80;
-    localStorage.setItem(KEY.assessSnapshots, JSON.stringify(assessSnaps));
-    logEvent("ASSESS_SNAPSHOT", `Saved 72-statement snapshot (${snap.date})`);
-    toast("Assessment saved");
+  function n72_showList(){
+    $("n72Header").textContent = "The 72 Names";
+    $("n72ListPane").style.display = "block";
+    $("n72DetailPane").style.display = "none";
+    $("btnBack").style.display = "none";
   }
 
-  // Zohar UI
-  function renderZoharList(){
-    const box = $("#zohar_list");
-    box.innerHTML = "";
-    zohar.forEach(z=>{
-      const el = document.createElement("div");
-      el.className = "item";
-      el.innerHTML = `
-        <b>${escapeHtml(z.title)}</b>
-        <small>${escapeHtml(z.src||"")}</small>
-        <div class="spacer"></div>
-        <div class="hint">${escapeHtml(z.txt||"")}</div>
-        <div class="spacer"></div>
-        <div class="hint"><b>Practice:</b> ${escapeHtml(z.prac||"")}</div>
-      `;
-      box.appendChild(el);
-    });
+  function n72_showDetail(n){
+    current72 = n;
+    localStorage.setItem(KEY.n72_selected, JSON.stringify({id:n.id}));
+    $("n72Header").textContent = `#${n.id} — ${n.title}`;
+    $("n72ListPane").style.display = "none";
+    $("n72DetailPane").style.display = "block";
+    $("btnBack").style.display = "inline-block";
+
+    $("n72Heb").textContent = hebrewFor(n.id);
+    $("n72Meaning").textContent = meaningFor(n);
+    $("n72Practice").textContent = practiceFor(n);
+
+    $("cardHint").textContent = `Selected: #${n.id} — ${n.title}`;
   }
 
-  // History UI
-  function renderHistory(){
-    const box = $("#hist_list");
-    if(!box) return;
-    box.innerHTML = "";
-    if(!history.length){
-      box.innerHTML = `<div class="hint">No history yet.</div>`;
+  function pickRandom72(){
+    return N72[Math.floor(Math.random()*N72.length)];
+  }
+
+  function todayIndex(){
+    // stable day-based selection 1..72
+    const d = new Date();
+    const key = Number(String(d.getFullYear()) + String(d.getMonth()+1).padStart(2,"0") + String(d.getDate()).padStart(2,"0"));
+    return (key % 72) + 1;
+  }
+
+  function get72ById(id){
+    return N72.find(x => x.id === id) || N72[0];
+  }
+
+  // ---------- share card ----------
+  function renderCardPreview(){
+    const canvas = $("cardCanvas");
+    const ctx = canvas.getContext("2d");
+    const n = current72 || restoreSelected72();
+
+    // clear
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    if (!n){
+      // draw blank
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      $("cardHint").textContent = "No selection yet.";
       return;
     }
-    history.forEach(h=>{
-      const el = document.createElement("div");
-      el.className = "item";
-      el.innerHTML = `
-        <b>${escapeHtml(h.type)}</b>
-        <small>${escapeHtml(h.at)}</small>
-        <div class="spacer"></div>
-        <div class="hint">${escapeHtml(h.detail||"")}</div>
-      `;
-      box.appendChild(el);
-    });
+
+    drawCard(ctx, canvas.width, canvas.height, n);
+    $("cardHint").textContent = `Selected: #${n.id} — ${n.title}`;
   }
 
-  // Share card
-  function drawShareCard(){
-    const c = $("#sc_canvas");
-    const ctx = c.getContext("2d");
-
-    const W = c.width, H = c.height;
-    const title = $("#sc_title").value.trim() || "KAI";
-    const heb = $("#sc_hebrew").value.trim();
-    const text = $("#sc_text").value.trim();
-
+  function drawCard(ctx, W, H, n){
     // background
-    ctx.clearRect(0,0,W,H);
-    ctx.fillStyle = "#0b0b0c";
+    ctx.fillStyle = "#0a0a0b";
     ctx.fillRect(0,0,W,H);
 
-    // gold bar
-    ctx.fillStyle = "#f6d35a";
-    ctx.fillRect(0,0,W,42);
+    // top gold bar
+    ctx.fillStyle = "rgba(216,178,75,.95)";
+    ctx.fillRect(0,0,W,22);
 
     // title
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "700 64px -apple-system, system-ui, Segoe UI, Roboto, Arial";
-    wrapText(ctx, title, 70, 150, W-140, 74);
+    ctx.fillStyle = "#f2f2f2";
+    ctx.font = "800 72px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+    ctx.textBaseline = "top";
+    ctx.fillText(`72 Name #${n.id} — ${n.title}`, 70, 110);
 
-    // hebrew
-    if(heb){
-      ctx.fillStyle = "#d7d7db";
-      ctx.font = "600 44px -apple-system, system-ui, Segoe UI, Roboto, Arial";
-      ctx.fillText(heb, 70, 310);
-    }
+    // Hebrew
+    ctx.fillStyle = "rgba(216,178,75,.95)";
+    ctx.font = "700 56px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+    ctx.fillText(hebrewFor(n.id), 70, 230);
 
-    // body text
-    ctx.fillStyle = "#bdbdc4";
-    ctx.font = "500 40px -apple-system, system-ui, Segoe UI, Roboto, Arial";
-    wrapText(ctx, text, 70, heb ? 380 : 320, W-140, 56);
+    // body
+    ctx.fillStyle = "rgba(242,242,242,.92)";
+    ctx.font = "500 40px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+    const body = `${n.subtitle}\n\n${practiceFor(n)}`;
+    wrapText(ctx, body, 70, 320, W-140, 56);
 
     // footer
-    ctx.fillStyle = "rgba(255,255,255,.25)";
-    ctx.font = "500 28px -apple-system, system-ui, Segoe UI, Roboto, Arial";
-    ctx.fillText(`KAI • ${todayKey()}`, 70, H-90);
-
-    $("#sc_date").textContent = todayKey();
+    ctx.fillStyle = "rgba(166,166,169,.8)";
+    ctx.font = "600 28px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+    const d = new Date();
+    const stamp = `KAI • ${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    ctx.fillText(stamp, 70, H-70);
   }
 
   function wrapText(ctx, text, x, y, maxWidth, lineHeight){
-    const words = String(text||"").split(/\s+/);
-    let line = "";
-    for(let n=0;n<words.length;n++){
-      const testLine = line + words[n] + " ";
-      const w = ctx.measureText(testLine).width;
-      if(w > maxWidth && n > 0){
-        ctx.fillText(line, x, y);
-        line = words[n] + " ";
-        y += lineHeight;
-      } else {
-        line = testLine;
+    const paragraphs = String(text).split("\n");
+    let yy = y;
+    paragraphs.forEach(p => {
+      const words = p.split(" ");
+      let line = "";
+      words.forEach((w, i) => {
+        const test = line ? line + " " + w : w;
+        const m = ctx.measureText(test).width;
+        if (m > maxWidth && line){
+          ctx.fillText(line, x, yy);
+          yy += lineHeight;
+          line = w;
+        } else {
+          line = test;
+        }
+      });
+      if (line){
+        ctx.fillText(line, x, yy);
+        yy += lineHeight;
       }
-    }
-    if(line) ctx.fillText(line, x, y);
+      yy += Math.floor(lineHeight/2);
+    });
   }
 
-  function downloadCanvasPNG(){
-    const c = $("#sc_canvas");
-    const url = c.toDataURL("image/png");
+  function downloadCard(){
     const a = document.createElement("a");
-    a.href = url;
-    a.download = `KAI_${todayKey()}.png`;
-    document.body.appendChild(a);
+    a.download = "kai-share-card.png";
+    a.href = $("cardCanvas").toDataURL("image/png");
     a.click();
-    a.remove();
   }
 
-  // Gematria
-  const GEM = {
-    "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
-    "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,
-    "ע":70,"פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,"ש":300,"ת":400
-  };
-
-  function gematriaValue(str){
-    let sum = 0;
-    const chars = Array.from(String(str||"").replace(/\s/g,""));
-    for(const ch of chars){
-      if(GEM[ch]) sum += GEM[ch];
+  // ---------- restore selection ----------
+  function restoreSelected72(){
+    const obj = safeParse(localStorage.getItem(KEY.n72_selected), null);
+    if (obj && obj.id) {
+      current72 = get72ById(obj.id);
+      return current72;
     }
-    return sum;
+    return null;
   }
 
-  // -------------------------
-  // Navigation
-  // -------------------------
-  function switchTab(name){
-    $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab===name));
-    $$(".section").forEach(s => s.classList.remove("active"));
-    const sec = $("#sec_"+name);
-    if(sec) sec.classList.add("active");
-
-    // tab-specific init refresh
-    if(name==="practice") renderPracticeToday();
-    if(name==="names72"){ n72_renderList(N72_MIN); renderAssessUI(); }
-    if(name==="zohar") renderZoharList();
-    if(name==="history") renderHistory();
-    if(name==="share") drawShareCard();
+  // ---------- zodiac (basic) ----------
+  function zodiacFromBirthday(str){
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(str || "");
+    if (!m) return "";
+    const month = parseInt(m[2],10);
+    const day = parseInt(m[3],10);
+    const z = [
+      ["Capricorn", 1, 19],
+      ["Aquarius",  2, 18],
+      ["Pisces",    3, 20],
+      ["Aries",     4, 19],
+      ["Taurus",    5, 20],
+      ["Gemini",    6, 20],
+      ["Cancer",    7, 22],
+      ["Leo",       8, 22],
+      ["Virgo",     9, 22],
+      ["Libra",     10,22],
+      ["Scorpio",   11,21],
+      ["Sagittarius",12,21],
+      ["Capricorn", 12,31],
+    ];
+    for (const [name, mo, endDay] of z){
+      if (month === mo && day <= endDay) return name;
+    }
+    return "";
   }
 
-  // -------------------------
-  // Wiring (no hidden invocations)
-  // -------------------------
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // ---------- wiring ----------
   function wire(){
     // tabs
-    $$(".tab").forEach(btn=>{
-      btn.addEventListener("click", ()=> switchTab(btn.dataset.tab));
+    document.querySelectorAll(".tabbtn").forEach(b => {
+      b.addEventListener("click", () => setTab(b.dataset.tab));
     });
 
-    // sliders
-    $("#rng_cert").addEventListener("input", ()=>{
-      state.certainty = parseInt($("#rng_cert").value,10);
-      updateChips(); saveState();
+    // home sliders
+    $("certainty").addEventListener("input", (e)=>{
+      state.certainty = parseInt(e.target.value,10);
+      saveState(); updateChips();
     });
-    $("#rng_energy").addEventListener("input", ()=>{
-      state.energy = parseInt($("#rng_energy").value,10);
-      updateChips(); saveState();
+    $("energy").addEventListener("input", (e)=>{
+      state.energy = parseInt(e.target.value,10);
+      saveState(); updateChips();
     });
 
     // home buttons
-    $("#btn_connect").addEventListener("click", ()=>{
-      state.pillars = (state.pillars||0) + 1;
-      updateChips(); saveState();
-      logEvent("CONNECT", "Pillar +1");
-      toast("CONNECT +1");
+    $("btnConnect").addEventListener("click", ()=>{
+      state.pillars = Math.min(100, (state.pillars||0) + 1);
+      saveState(); updateChips();
+      toast("Connection +1");
     });
-
-    $("#btn_cycle").addEventListener("click", ()=>{
-      state.cycles = (state.cycles||0) + 1;
-      updateChips(); saveState();
-      logEvent("CYCLE", "Full cycle completed");
+    $("btnCycle").addEventListener("click", ()=>{
+      state.cycles = Math.min(10, (state.cycles||0) + 1);
+      saveState(); updateChips();
       toast("Cycle +1");
     });
+    $("btnToday").addEventListener("click", ()=>{
+      const id = todayIndex();
+      const n = get72ById(id);
+      setTab("names72");
+      n72_showDetail(n);
+    });
 
-    $("#btn_today72").addEventListener("click", ()=>{
-      ensureToday72();
-      const x = N72_MIN.find(n=>n.id===today72.id);
-      if(x){
-        switchTab("names72");
-        n72_renderDetail(x.id);
-        toast(`Today: #${x.id} ${x.title}`);
+    // profile fields
+    $("birthday").addEventListener("input", (e)=>{
+      state.profile.birthday = e.target.value.trim();
+      state.profile.sign = zodiacFromBirthday(state.profile.birthday);
+      $("sign").value = state.profile.sign;
+      saveState();
+    });
+    $("sign").addEventListener("input", (e)=>{
+      state.profile.sign = e.target.value.trim();
+      saveState();
+    });
+    $("tikkun").addEventListener("input", (e)=>{
+      state.profile.tikkun = e.target.value;
+      saveState();
+    });
+    $("notes").addEventListener("input", (e)=>{
+      state.profile.notes = e.target.value;
+      saveState();
+    });
+
+    // 72 events
+    $("n72Search").addEventListener("input", (e)=>{
+      n72_renderList(n72_filter(e.target.value));
+    });
+    $("btnAll").addEventListener("click", ()=>{
+      $("n72Search").value = "";
+      n72_renderList(N72);
+    });
+    $("btnRand").addEventListener("click", ()=>{
+      setTab("names72");
+      n72_showDetail(pickRandom72());
+    });
+    $("btnBack").addEventListener("click", ()=>{
+      current72 = null;
+      localStorage.removeItem(KEY.n72_selected);
+      n72_showList();
+    });
+    $("btnMakeCard").addEventListener("click", ()=>{
+      setTab("share");
+      renderCardPreview();
+      toast("Card ready");
+    });
+    $("btnCopy").addEventListener("click", async ()=>{
+      if (!current72) return;
+      const txt = `72 Name #${current72.id} — ${current72.title}\n${current72.subtitle}\n\n${practiceFor(current72)}`;
+      try{
+        await navigator.clipboard.writeText(txt);
+        toast("Copied");
+      } catch {
+        toast("Copy blocked");
       }
     });
 
-    // profile
-    $("#inp_bday").addEventListener("change", ()=>{
-      state.profile.bday = $("#inp_bday").value;
-      const sign = zodiacSignFromDate(state.profile.bday);
-      state.profile.sign = sign;
-      $("#inp_sign").value = sign;
-      saveState();
+    // share
+    $("btnRenderCard").addEventListener("click", renderCardPreview);
+    $("btnDownload").addEventListener("click", ()=>{
+      renderCardPreview();
+      downloadCard();
     });
-    $("#inp_sign").addEventListener("input", ()=>{
-      state.profile.sign = $("#inp_sign").value;
-      saveState();
-    });
-    $("#inp_tikkun").addEventListener("input", ()=>{
-      state.profile.tikkun = $("#inp_tikkun").value;
-      saveState();
-    });
-    $("#inp_notes").addEventListener("input", ()=>{
-      state.profile.notes = $("#inp_notes").value;
-      saveState();
-    });
-
-    // practice cycle buttons
-    $("#step_connect").addEventListener("click", ()=>{
-      state.pillars = (state.pillars||0) + 1;
-      updateChips(); saveState();
-      logEvent("STEP_CONNECT", $("#inp_line").value.trim() || "");
-      toast("CONNECT");
-    });
-    $("#step_align").addEventListener("click", ()=>{ logEvent("STEP_ALIGN", $("#inp_line").value.trim() || ""); toast("ALIGN"); });
-    $("#step_restrict").addEventListener("click", ()=>{ logEvent("STEP_RESTRICT", $("#inp_line").value.trim() || ""); toast("RESTRICT"); });
-    $("#step_elevate").addEventListener("click", ()=>{ logEvent("STEP_ELEVATE", $("#inp_line").value.trim() || ""); toast("ELEVATE"); });
-    $("#step_seal").addEventListener("click", ()=>{
-      state.cycles = (state.cycles||0) + 1;
-      updateChips(); saveState();
-      logEvent("STEP_SEAL", $("#inp_line").value.trim() || "");
-      toast("SEAL + cycle");
-    });
-
-    $("#btn_save_line").addEventListener("click", ()=>{
-      const line = $("#inp_line").value.trim();
-      if(!line){ toast("Add a line first"); return; }
-      logEvent("LINE", line);
-      $("#inp_line").value = "";
-      toast("Saved");
-    });
-
-    $("#btn_pick_random72").addEventListener("click", ()=>{
-      const pick = N72_MIN[Math.floor(Math.random()*N72_MIN.length)];
-      ensureToday72();
-      $("#practice_today").innerHTML = `
-        <div class="detailTitle"><span class="pill">Random</span><b>#${pick.id} ${escapeHtml(pick.title)}</b></div>
-        <div class="hint">${escapeHtml(pick.subtitle||"")}</div>
-      `;
-      logEvent("RANDOM_72", `#${pick.id} ${pick.title}`);
-      toast(`#${pick.id} ${pick.title}`);
-    });
-
-    // 72 names browse
-    $("#n72_search").addEventListener("input", ()=>{
-      const q = $("#n72_search").value;
-      const filtered = n72_filter(q);
-      n72_renderList(filtered);
-    });
-    $("#n72_random").addEventListener("click", ()=>{
-      const pick = N72_MIN[Math.floor(Math.random()*N72_MIN.length)];
-      n72_renderDetail(pick.id);
-      toast(`#${pick.id} ${pick.title}`);
-    });
-
-    // assessment buttons
-    $("#assess_start").addEventListener("click", ()=>{
-      renderAssessUI();
-      toast("Assessment ready");
-    });
-    $("#assess_save").addEventListener("click", ()=> saveAssessSnapshot());
-    $("#assess_reset").addEventListener("click", ()=>{
-      assessAnswers = {};
-      localStorage.setItem(KEY.assessAnswers, JSON.stringify(assessAnswers));
-      renderAssessUI();
-      toast("Assessment reset");
-    });
-
-    // gematria
-    $("#gem_calc").addEventListener("click", ()=>{
-      const s = $("#gem_input").value.trim();
-      const v = gematriaValue(s);
-      $("#gem_out").innerHTML = `<div class="hint"><b>Value:</b> <span class="mono">${v}</span></div>`;
-      logEvent("GEMATRIA", `${s} = ${v}`);
-      toast("Calculated");
-    });
-    $("#gem_clear").addEventListener("click", ()=>{
-      $("#gem_input").value = "";
-      $("#gem_out").textContent = "Enter a word and calculate.";
-      $("#gem_insight").value = "";
+    $("btnClearCard").addEventListener("click", ()=>{
+      const ctx = $("cardCanvas").getContext("2d");
+      ctx.clearRect(0,0,$("cardCanvas").width,$("cardCanvas").height);
       toast("Cleared");
-    });
-    $("#gem_save").addEventListener("click", ()=>{
-      const s = $("#gem_input").value.trim();
-      const v = gematriaValue(s);
-      const ins = $("#gem_insight").value.trim();
-      if(!s){ toast("Enter a word first"); return; }
-      gemInsights.unshift({ at: nowISO(), word:s, value:v, insight:ins });
-      if(gemInsights.length>120) gemInsights.length=120;
-      localStorage.setItem(KEY.gemInsights, JSON.stringify(gemInsights));
-      logEvent("GEM_INSIGHT", `${s} (${v}) ${ins ? "saved" : "saved (no insight)"}`);
-      toast("Saved");
-      $("#gem_insight").value = "";
-    });
-
-    // zohar add
-    $("#z_add").addEventListener("click", ()=>{
-      const title = $("#z_title").value.trim();
-      const src = $("#z_src").value.trim();
-      const txt = $("#z_txt").value.trim();
-      const prac = $("#z_prac").value.trim();
-      if(!title || !txt){ toast("Need title + excerpt"); return; }
-      zohar.unshift({ id:"z"+Date.now(), title, src, txt, prac });
-      saveZohar();
-      renderZoharList();
-      logEvent("ZOHAR_ADD", title);
-      $("#z_title").value=""; $("#z_src").value=""; $("#z_txt").value=""; $("#z_prac").value="";
-      toast("Added");
-    });
-
-    // share card
-    $("#sc_make").addEventListener("click", ()=>{
-      drawShareCard();
-      logEvent("SHARE_CARD", $("#sc_title").value.trim() || "Card");
-      toast("Card generated");
-    });
-    $("#sc_download").addEventListener("click", ()=>{
-      drawShareCard();
-      downloadCanvasPNG();
-      toast("Downloading…");
-    });
-
-    // history
-    $("#hist_clear").addEventListener("click", ()=>{
-      if(!confirm("Clear history?")) return;
-      history = [];
-      saveHistory();
-      renderHistory();
-      toast("Cleared");
-    });
-    $("#hist_export").addEventListener("click", ()=>{
-      const blob = new Blob([JSON.stringify(history,null,2)], {type:"application/json"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `kai_history_${todayKey()}.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(()=> URL.revokeObjectURL(url), 1200);
-      toast("Exported");
     });
 
     // settings
-    $("#btn_reset_all").addEventListener("click", ()=>{
-      if(!confirm("Reset ALL KAI data on this device?")) return;
-      Object.values(KEY).forEach(k=> localStorage.removeItem(k));
+    $("btnReset72").addEventListener("click", ()=>{
+      localStorage.removeItem(KEY.n72_selected);
+      localStorage.removeItem(KEY.n72_notes);
+      current72 = null;
+      toast("72 storage reset");
+    });
+    $("btnResetAll").addEventListener("click", ()=>{
+      localStorage.clear();
+      state = structuredClone(defaultState);
+      saveState();
+      updateChips();
+      toast("All storage reset");
       location.reload();
     });
-
-    $("#btn_export_all").addEventListener("click", ()=>{
-      const payload = {
-        exportedAt: nowISO(),
-        state,
-        history,
-        zohar,
-        assessAnswers,
-        assessSnaps,
-        gemInsights,
-        today72
-      };
-      const txt = JSON.stringify(payload,null,2);
-      navigator.clipboard?.writeText(txt).catch(()=>{});
-      $("#inp_import").value = txt;
-      toast("Exported (copied if allowed)");
-    });
-
-    $("#btn_import_all").addEventListener("click", ()=>{
-      const raw = $("#inp_import").value.trim();
-      if(!raw){ toast("Paste JSON first"); return; }
-      const data = safeParse(raw, null);
-      if(!data){ toast("Invalid JSON"); return; }
-      try{
-        if(data.state) localStorage.setItem(KEY.state, JSON.stringify(data.state));
-        if(data.history) localStorage.setItem(KEY.history, JSON.stringify(data.history));
-        if(data.zohar) localStorage.setItem(KEY.zohar, JSON.stringify(data.zohar));
-        if(data.assessAnswers) localStorage.setItem(KEY.assessAnswers, JSON.stringify(data.assessAnswers));
-        if(data.assessSnaps) localStorage.setItem(KEY.assessSnapshots, JSON.stringify(data.assessSnaps));
-        if(data.gemInsights) localStorage.setItem(KEY.gemInsights, JSON.stringify(data.gemInsights));
-        if(data.today72) localStorage.setItem(KEY.today72, JSON.stringify(data.today72));
-        toast("Imported. Reloading…");
-        setTimeout(()=> location.reload(), 500);
-      }catch(e){
-        showErr("IMPORT ERROR: " + (e?.message || String(e)));
-      }
-    });
-
-    $("#btn_smoke").addEventListener("click", ()=>{
-      const out = $("#dbg_out");
-      const checks = [];
-      checks.push(["tabs", $$(".tab").length]);
-      checks.push(["state", !!state]);
-      checks.push(["N72", N72_MIN.length]);
-      checks.push(["Zohar", zohar.length]);
-      out.textContent = "SMOKE: " + checks.map(x=>`${x[0]}=${x[1]}`).join(" | ");
-      toast("Smoke test ran");
-    });
   }
 
-  // -------------------------
-  // Boot
-  // -------------------------
+  // ---------- boot ----------
   function boot(){
-// TEMP: clear corrupted storage once
-try{
-  const params = new URLSearchParams(location.search);
-  if (params.has("clear72")) {
-    localStorage.removeItem("kai_72_assess_v1");
-    localStorage.removeItem("kai_72_assess_answers_v1");
-    localStorage.removeItem("kai_72_assess_history_v1");
-    localStorage.removeItem("kai_72_meanings_v1");
-    localStorage.removeItem("kai_72_today_v1");
-    // optional: clear everything if you want the nuclear option:
-    // localStorage.clear();
-    history.replaceState({}, "", location.pathname); // removes ?clear72 from URL
-  }
-}catch(e){}
-    // Seed UI from state
-    $("#rng_cert").value = String(state.certainty ?? 5);
-    $("#rng_energy").value = String(state.energy ?? 5);
+    clearErr();
 
-    $("#inp_bday").value = state.profile?.bday || "";
-    $("#inp_sign").value = state.profile?.sign || "";
-    $("#inp_tikkun").value = state.profile?.tikkun || "";
-    $("#inp_notes").value = state.profile?.notes || "";
+    // crash visibility
+    window.addEventListener("error", (e)=>{
+      showErr("JS ERROR: " + (e?.message || "unknown") + "\n" + (e?.error?.stack || ""));
+    });
+    window.addEventListener("unhandledrejection", (e)=>{
+      showErr("PROMISE ERROR: " + (e?.reason?.message || String(e?.reason || "unknown")));
+    });
 
+    // load + hydrate ui
+    state = loadState();
+    $("certainty").value = String(state.certainty ?? 5);
+    $("energy").value = String(state.energy ?? 5);
+    $("birthday").value = state.profile?.birthday || "";
+    $("sign").value = state.profile?.sign || "";
+    $("tikkun").value = state.profile?.tikkun || "";
+    $("notes").value = state.profile?.notes || "";
     updateChips();
-    renderPracticeToday();
-    n72_renderList(N72_MIN);
-    renderAssessUI();
-    renderZoharList();
-    renderHistory();
 
-    // Default share card date
-    $("#sc_date").textContent = todayKey();
-    drawShareCard();
+    // initial list
+    n72_renderList(N72);
+    restoreSelected72();
 
+    // wire UI
     wire();
-    logEvent("BOOT", "KAI loaded (stable build)");
-  }
 
-  // Global crash visibility
-  window.addEventListener("error", (e)=>{
-    try{ showErr("JS ERROR: " + (e?.message || "unknown") + "\n" + (e?.error?.stack || "")); }catch(_){}
-  });
-  window.addEventListener("unhandledrejection", (e)=>{
-    try{ showErr("PROMISE ERROR: " + (e?.reason?.message || e?.reason || "unknown")); }catch(_){}
-  });
+    toast("KAI loaded");
+    console.log("KAI CLEAN 72 booted");
+  }
 
   document.addEventListener("DOMContentLoaded", ()=>{
     try{ boot(); }
     catch(e){
       console.error("BOOT ERROR", e);
       showErr("BOOT ERROR: " + (e?.message || String(e)) + "\n" + (e?.stack || ""));
-      toast("BOOT ERROR");
+      alert("KAI boot error (shown on-screen).");
     }
   });
 
