@@ -1677,12 +1677,14 @@ window.addEventListener("unhandledrejection", (e)=>{
 
   // ---------- Run ----------
   document.addEventListener("DOMContentLoaded", ()=>{
-    try{ boot(); }
-catch(e){
-  console.error("BOOT ERROR", e);
-  showErr("BOOT ERROR: " + (e?.message || String(e)) + "\n" + (e?.stack || ""));
-  alert("KAI boot error (shown on-screen).");
-}
+  try{
+    boot();
+  }
+  catch(e){
+    console.error("BOOT ERROR", e);
+    showErr("BOOT ERROR: " + (e?.message || String(e)) + "\n" + (e?.stack || ""));
+    alert("KAI boot error (shown on-screen).");
+  }
 });
 </script>
 </body>
