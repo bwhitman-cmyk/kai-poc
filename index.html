@@ -74,6 +74,18 @@
   /* share card preview */
   .preview{width:100%;border-radius:14px;border:1px solid var(--line);background:#0b0b0b;display:none;}
   .mini{font-size:12px;color:var(--muted);}
+
+/* emergency: prevent overlays from blocking taps */
+pre, code, .debug, .dump, .overlay {
+  pointer-events: none !important;
+}
+
+/* ensure buttons stay tappable */
+button, .btn, a {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 5;
+}
 </style>
 </head>
 
