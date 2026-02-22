@@ -269,7 +269,7 @@
           <div class="row">
             <div>
               <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Birthday</div>
-              <input id="birthday" placeholder="YYYY-MM-DD"
+              <input id="birthday" type="date" placeholder="YYYY-MM-DD" ... />
                 style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);outline:none" />
             </div>
             <div>
@@ -602,6 +602,7 @@ $("btnAssess").addEventListener("click", n72_showAssess);
 
   // ---------- runtime ----------
   let state = loadState();
+  state.profile = Object.assign({ birthday:"", sign:"", tikkun:"", notes:"" }, state.profile || {});
   let current72 = null;
 
   function updateChips(){
@@ -872,12 +873,12 @@ $("btnAssess").addEventListener("click", n72_showAssess);
     });
 
     // profile fields
-    $("birthday").addEventListener("input", (e)=>{
-      state.profile.birthday = e.target.value.trim();
-      state.profile.sign = zodiacFromBirthday(state.profile.birthday);
-      $("sign").value = state.profile.sign;
-      saveState();
-    });
+    $("birthday").addEventListener("input", (e) => {
+  const v = (e?.target?.value ?? "").trim();
+  state.profile = state.profile || { birthday:"", sign:"", tikkun:"", notes:"" };
+  state.profile.birthday = v;
+  saveState();
+});
     $("sign").addEventListener("input", (e)=>{
       state.profile.sign = e.target.value.trim();
       saveState();
