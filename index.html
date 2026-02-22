@@ -266,19 +266,19 @@
 
         <div class="card">
           <h3>Profile</h3>
-          <div class="row">
-            <div>
-              <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Birthday</div>
-<input id="birthday" type="date"
-style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.20);color:var(--text);">
-            </div>
-            <div>
-              <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Astrological Sign</div>
-              <input id="sign" placeholder="Auto from birthday (basic)"
-                style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);outline:none" />
-            </div>
-          </div>
+          <<div class="row">
+  <div>
+    <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Birthday</div>
+    <input id="birthday" type="date"
+      style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);" />
+  </div>
 
+  <div>
+    <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Astrological Sign</div>
+    <input id="sign" placeholder="Auto from birthday (basic)" readonly
+      style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);opacity:.9;" />
+  </div>
+</div>
           <div class="row" style="margin-top:12px">
             <div>
               <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Tikkun (enter for now)</div>
@@ -889,11 +889,11 @@ $("btnAssess").addEventListener("click", n72_showAssess);
     });
 
     // profile fields
-    $("birthday").addEventListener("input", (e) => {
-  const v = (e?.target?.value ?? "").trim();
-  state.profile = state.profile || { birthday:"", sign:"", tikkun:"", notes:"" };
-  state.profile.birthday = v;
-  saveState();
+    $("birthday").addEventListener("change", (e)=>{
+  if(!state.profile) state.profile = { birthday:"", sign:"", tikkun:"", notes:"" };
+  state.profile.birthday = e.target.value || "";
+  updateSignFromBirthday();
+  saveState(state);
 });
     $("sign").addEventListener("input", (e)=>{
       state.profile.sign = e.target.value.trim();
