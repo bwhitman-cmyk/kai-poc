@@ -1313,6 +1313,20 @@ let today72 = safeParse(localStorage.getItem(KEY.today72), { date:"", id: null }
   // Boot
   // -------------------------
   function boot(){
+// TEMP: clear corrupted storage once
+try{
+  const params = new URLSearchParams(location.search);
+  if (params.has("clear72")) {
+    localStorage.removeItem("kai_72_assess_v1");
+    localStorage.removeItem("kai_72_assess_answers_v1");
+    localStorage.removeItem("kai_72_assess_history_v1");
+    localStorage.removeItem("kai_72_meanings_v1");
+    localStorage.removeItem("kai_72_today_v1");
+    // optional: clear everything if you want the nuclear option:
+    // localStorage.clear();
+    history.replaceState({}, "", location.pathname); // removes ?clear72 from URL
+  }
+}catch(e){}
     // Seed UI from state
     $("#rng_cert").value = String(state.certainty ?? 5);
     $("#rng_energy").value = String(state.energy ?? 5);
