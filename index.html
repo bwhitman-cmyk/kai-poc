@@ -731,7 +731,10 @@
   let gemInsights = safeParse(localStorage.getItem(KEY.gemInsights), []);
 
   // Today 72 selection
-let today72 = safeParse(localStorage.getItem(KEY.today72), { date:"", id: null }) || { date:"", id: null };
+today72 = (today72 && typeof today72 === "object") ? today72 : {};
+assessAnswers = (assessAnswers && typeof assessAnswers === "object") ? assessAnswers : {};
+assessHistory = (assessHistory && typeof assessHistory === "object") ? assessHistory : [];
+n72_meaning = (n72_meaning && typeof n72_meaning === "object") ? n72_meaning : {};
   // -------------------------
   // Rendering helpers
   // -------------------------
