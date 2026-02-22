@@ -155,7 +155,23 @@
       </div>
     </div>
   </div>
+<div id="n72_panel" style="display:none">
+  <div class="panel">
+    <div class="row" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center">
+      <input id="n72_search" placeholder="Search (e.g., Unity, Fear, #48)" style="flex:1; min-width:220px" />
+      <button class="btn" id="n72_random">Random</button>
+    </div>
 
+    <div id="n72_list" class="list" style="margin-top:12px"></div>
+
+    <div id="n72_detail" class="panel" style="margin-top:12px; display:none">
+      <div id="n72_title" style="font-size:20px; font-weight:700"></div>
+      <div id="n72_letters" style="font-size:28px; margin-top:6px"></div>
+      <div id="n72_subtitle" style="opacity:.8; margin-top:6px"></div>
+      <div id="n72_practice" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
   <!-- PRACTICE -->
   <div id="view_practice" style="display:none;">
     <div class="card">
@@ -581,7 +597,98 @@ const NAMES72 = [
   "ומב","יהה","ענו","מחי","דמב","מנק","איע","חבו","ראה","יבמ","היי","מום"
 ];
 
-let nameIndex = dailyNameIndex();
+// =======================
+// 72 NAMES (minimal)
+// =======================
+
+const N72_MIN = [
+  // Put full 72 here. For now I’m giving you a compact starter set + a slot for the rest.
+  // Format: { id: 48, title: "Unity", subtitle: "...", letters: "מיה", practice: "Build my Mishkan" }
+
+  { id: 48, title: "Unity", subtitle: "When there is conflict and only togetherness will do", letters: "מיה", practice: "Build my Mishkan" },
+  { id: 43, title: "Defying Gravity", subtitle: "Achieving mind over matter", letters: "", practice: "" },
+  { id: 46, title: "Absolute Certainty", subtitle: "What to do when doubts creep in", letters: "", practice: "" },
+  { id: 44, title: "Sweetening Judgment", subtitle: "Stop judgment from boomeranging back", letters: "", practice: "" },
+
+  // TODO: paste the remaining 68 entries here (same structure).
+];
+
+function n72_showPanel(show) {
+  const el = document.getElementById("n72_panel");
+  if (!el) return;
+  el.style.display = show ? "block" : "none";
+}
+
+function n72_renderList(items) {
+  const list = document.getElementById("n72_list");
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  items.forEach(item => {
+    const row = document.createElement("button");
+    row.className = "chip"; // uses your existing styling; change if needed
+    row.style.justifyContent = "space-between";
+    row.style.width = "100%";
+    row.style.margin = "6px 0";
+    row.style.textAlign = "left";
+
+    row.innerHTML = `
+      <span><b>#${item.id}</b> ${item.title}</span>
+      <small style="opacity:.7">${item.subtitle || ""}</small>
+    `;
+
+    row.addEventListener("click", () => n72_renderDetail(item));
+    list.appendChild(row);
+  });
+}
+
+function n72_renderDetail(item) {
+  const box = document.getElementById("n72_detail");
+  if (!box) return;
+
+  document.getElementById("n72_title").textContent = `72 Name #${item.id} — ${item.title}`;
+  document.getElementById("n72_letters").textContent = item.letters ? item.letters : "";
+  document.getElementById("n72_subtitle").textContent = item.subtitle || "";
+  document.getElementById("n72_practice").textContent = item.practice ? `Practice: ${item.practice}` : "";
+
+  box.style.display = "block";
+}
+
+function n72_filter(q) {
+  q = (q || "").trim().toLowerCase();
+  if (!q) return N72_MIN;
+
+  // allow "#48"
+  const num = q.startsWith("#") ? parseInt(q.slice(1), 10) : parseInt(q, 10);
+  if (!Number.isNaN(num)) return N72_MIN.filter(x => x.id === num);
+
+  return N72_MIN.filter(x =>
+    (x.title || "").toLowerCase().includes(q) ||
+    (x.subtitle || "").toLowerCase().includes(q)
+  );
+}
+
+function n72_init() {
+  const search = document.getElementById("n72_search");
+  const btnRand = document.getElementById("n72_random");
+
+  n72_renderList(N72_MIN);
+
+  if (search) {
+    search.addEventListener("input", () => {
+      const filtered = n72_filter(search.value);
+      n72_renderList(filtered);
+    });
+  }
+
+  if (btnRand) {
+    btnRand.addEventListener("click", () => {
+      const pick = N72_MIN[Math.floor(Math.random() * N72_MIN.length)];
+      n72_renderDetail(pick);
+    });
+  }
+}let nameIndex = dailyNameIndex();
 function dailyNameIndex(){
   const d = new Date();
   const y=d.getFullYear(), m=d.getMonth()+1, day=d.getDate();
