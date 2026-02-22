@@ -304,10 +304,12 @@
       <div class="card">
         <div class="detailHead">
           <h2 id="n72Header">The 72 Names</h2>
-          <div class="btnrow" style="margin:0">
-            <button id="btnBack" class="ghost" style="display:none">Back to list</button>
-            <button id="btnRand" class="gold">Random</button>
-          </div>
+<div class="btnrow">
+  <button id="btnBack" class="ghost" style="display:none">Back to list</button>
+  <button id="btnRand" class="gold">Random</button>
+  <button id="btnHowTo">How to Use</button>
+  <button id="btnAssess">Self-Assessment</button>
+</div>          </div>
         </div>
 
         <div id="n72ListPane">
@@ -326,6 +328,13 @@
             <button id="btnMakeCard" class="gold">Make Share Card</button>
             <button id="btnCopy" class="ghost">Copy Text</button>
           </div>
+<div id="n72HowPane" style="display:none">
+  <div class="meaning" id="n72HowText"></div>
+</div>
+
+<div id="n72AssessPane" style="display:none">
+  <div class="meaning" id="n72AssessText"></div>
+</div>
         </div>
       </div>
     </section>
@@ -502,7 +511,75 @@
     {id:71, title:"Prophecy and Parallel Universes", subtitle:"Switching your universe for a better one"},
     {id:72, title:"Spiritual Cleansing", subtitle:"Purging yourself of negativity"},
   ];
+// ---------- 72 Names content layers ----------
 
+const N72_HEB = {};
+const N72_MEANINGS = {};
+const N72_PRACTICE = {};
+
+const N72_HOWTO = [
+  "Pick a Name based on the challenge, not the mood.",
+  "Read the Hebrew slowly. Intention matters.",
+  "Visualize the letters as a channel for Light.",
+  "Pair the Name with one restriction that day.",
+  "Seal it with an action."
+];
+
+const N72_ASSESS = [
+  { id:"focus",   q:"When I choose a Name, I set a clear intention." },
+  { id:"letters", q:"I engage the Hebrew letters as a tool." },
+  { id:"restrict",q:"I pair the Name with restriction." },
+  { id:"action",  q:"I translate insight into action within 24 hours." }
+];
+
+const KEY72 = {
+  assess: "kai_72_assess_answers_v1"
+};
+
+function loadAssess(){
+  const a = safeParse(localStorage.getItem(KEY72.assess), {}) || {};
+  return (a && typeof a === "object") ? a : {};
+}
+function saveAssess(obj){
+  localStorage.setItem(KEY72.assess, JSON.stringify(obj || {}));
+}function n72_showHow(){
+  $("n72Header").textContent = "How to Use the 72 Names";
+  $("n72ListPane").style.display = "none";
+  $("n72DetailPane").style.display = "none";
+  $("n72AssessPane").style.display = "none";
+  $("n72HowPane").style.display = "block";
+  $("btnBack").style.display = "inline-block";
+  $("n72HowText").textContent = "Using the 72 Names:\n\n• " + N72_HOWTO.join("\n• ");
+}
+
+function n72_showAssess(){
+  $("n72Header").textContent = "Self-Assessment";
+  $("n72ListPane").style.display = "none";
+  $("n72DetailPane").style.display = "none";
+  $("n72HowPane").style.display = "none";
+  $("n72AssessPane").style.display = "block";
+  $("btnBack").style.display = "inline-block";
+
+  const ans = loadAssess();
+
+  let out = "Rate 0–3 (tap to cycle):\n\n";
+  N72_ASSESS.forEach((s, i)=>{
+    const v = (ans[s.id] ?? 0);
+    out += `${i+1}. ${s.q}\n   Current: ${v}\n\n`;
+  });
+  $("n72AssessText").textContent = out;
+
+  $("n72AssessPane").onclick = ()=>{
+    const idx = Math.floor(Math.random() * N72_ASSESS.length);
+    const item = N72_ASSESS[idx];
+    ans[item.id] = ((ans[item.id] ?? 0) + 1) % 4;
+    saveAssess(ans);
+    n72_showAssess();
+  };
+}
+
+$("btnHowTo").addEventListener("click", n72_showHow);
+$("btnAssess").addEventListener("click", n72_showAssess);
   // Optional: small Hebrew placeholders (you can replace later with true triples)
   function hebrewFor(id){
     // minimal placeholder so layout works
@@ -841,6 +918,45 @@
       } catch {
         toast("Copy blocked");
       }
+function n72_showHow(){
+  $("n72Header").textContent = "How to Use the 72 Names";
+  $("n72ListPane").style.display = "none";
+  $("n72DetailPane").style.display = "none";
+  $("n72AssessPane").style.display = "none";
+  $("n72HowPane").style.display = "block";
+  $("btnBack").style.display = "inline-block";
+  $("n72HowText").textContent = "Using the 72 Names:\n\n• " + N72_HOWTO.join("\n• ");
+}
+
+function n72_showAssess(){
+  $("n72Header").textContent = "Self-Assessment";
+  $("n72ListPane").style.display = "none";
+  $("n72DetailPane").style.display = "none";
+  $("n72HowPane").style.display = "none";
+  $("n72AssessPane").style.display = "block";
+  $("btnBack").style.display = "inline-block";
+
+  const ans = loadAssess();
+
+  let out = "Rate 0–3 (tap to cycle):\n\n";
+  N72_ASSESS.forEach((s, i)=>{
+    const v = (ans[s.id] ?? 0);
+    out += `${i+1}. ${s.q}\n   Current: ${v}\n\n`;
+  });
+  $("n72AssessText").textContent = out;
+
+  $("n72AssessPane").onclick = ()=>{
+    const idx = Math.floor(Math.random() * N72_ASSESS.length);
+    const item = N72_ASSESS[idx];
+    ans[item.id] = ((ans[item.id] ?? 0) + 1) % 4;
+    saveAssess(ans);
+    n72_showAssess();
+  };
+}
+
+$("btnHowTo").addEventListener("click", n72_showHow);
+$("btnAssess").addEventListener("click", n72_showAssess);
+    
     });
 
     // share
