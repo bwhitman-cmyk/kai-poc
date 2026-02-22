@@ -269,8 +269,8 @@
           <div class="row">
             <div>
               <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Birthday</div>
-            <input id="birthday" type="text" placeholder="YYYY-MM-DD"
-style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);outline:none;"> 
+<input id="birthday" type="date"
+style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.20);color:var(--text);">
             </div>
             <div>
               <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Astrological Sign</div>
@@ -390,6 +390,22 @@ style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.
   if(!el) throw new Error("Missing element id: " + id);
   return el;
 }
+function zodiacFromYMD(ymd){
+  // expects "YYYY-MM-DD"
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((ymd||"").trim());
+  if(!m) return "";
+  const month = parseInt(m[2],10);
+  const day   = parseInt(m[3],10);
+
+  // Western sun signs (tropical)
+  if ((month==3  && day>=21) || (month==4  && day<=19)) return "Aries";
+  if ((month==4  && day>=20) || (month==5  && day<=20)) return "Taurus";
+  if ((month==5  && day>=21) || (month==6  && day<=20)) return "Gemini";
+  if ((month==6  && day>=21) || (month==7  && day<=22)) return "Cancer";
+  if ((month==7  && day>=23) || (month==8  && day<=22)) return "Leo";
+  if ((month==8  && day>=23) || (month==9  && day<=22)) return "Virgo";
+  if ((month==9  && day>=23) || (month==10 && day<=22)) return "Libra";
+  if
   const errBox = $("errBox");
   const toastEl = $("toast");
 
