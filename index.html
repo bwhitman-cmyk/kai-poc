@@ -2,216 +2,278 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>KAI — Prototype (Clean 72)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <meta name="theme-color" content="#0b0b0c" />
+  <title>KAI</title>
 
   <!-- PWA hooks (keep your filenames) -->
-  <link rel="manifest" href="./manifest.webmanifest?v=20260222" />
-  <link rel="apple-touch-icon" href="./apple-touch-icon-v3.png?v=20260222" />
-  <link rel="icon" sizes="192x192" href="./icon-192-v3.png?v=20260222" />
-  <link rel="icon" sizes="512x512" href="./icon-512-v3.png?v=20260222" />
+  <link rel="manifest" href="./manifest.webmanifest?v=20260223a" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon-v3.png?v=20260223a" />
+  <link rel="icon" sizes="192x192" href="./icon-192-v3.png?v=20260223a" />
+  <link rel="icon" sizes="512x512" href="./icon-512-v3.png?v=20260223a" />
 
   <style>
     :root{
       --bg:#0b0b0c;
-      --panel:#131314;
-      --panel2:#171719;
-      --line:#262628;
+      --panel:#121214;
+      --panel2:#17171a;
       --text:#f2f2f2;
-      --muted:#a6a6a9;
+      --muted:rgba(255,255,255,.72);
+      --muted2:rgba(255,255,255,.55);
+      --line:rgba(255,255,255,.10);
       --gold:#d8b24b;
-      --green:#1f6f46;
-      --red:#7c2e2e;
-      --shadow: 0 24px 70px rgba(0,0,0,.55);
+      --green:#2dbd6e;
+      --red:#e26a6a;
+      --shadow:0 24px 70px rgba(0,0,0,.55);
       --radius:18px;
+      --radius2:14px;
     }
-
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
       font-family:-apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
-      background: radial-gradient(1200px 700px at 50% 0%, rgba(255,255,255,.06), transparent 55%),
-                  radial-gradient(800px 500px at 10% 20%, rgba(216,178,75,.10), transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 700px at 50% 0%, rgba(255,255,255,.06), transparent 55%),
+        radial-gradient(900px 500px at 10% 20%, rgba(216,178,75,.10), transparent 55%),
+        var(--bg);
     }
-
     .wrap{max-width:1100px;margin:0 auto;padding:22px 18px 70px}
-    header{display:flex;align-items:center;justify-content:center;margin:10px 0 10px}
+    header{display:flex;align-items:center;justify-content:center;margin:10px 0 14px}
     .title{
-      font-weight:800;
-      letter-spacing:.16em;
+      font-weight:900;
+      letter-spacing:.18em;
       text-transform:uppercase;
-      opacity:.95;
-      font-size:30px;
+      opacity:.96;
+      font-size:34px;
+      text-align:center;
     }
 
-    /* top chips */
-    .chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0 14px}
+    .toast{
+      position:fixed;left:50%;transform:translateX(-50%);
+      bottom:22px; z-index:9999;
+      background:rgba(0,0,0,.82);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:14px;
+      box-shadow:var(--shadow);
+      display:none;
+      max-width:min(720px,92vw);
+      text-align:center;
+      font-size:14px;
+    }
+    .errBox{
+      background:rgba(226,106,106,.12);
+      border:1px solid rgba(226,106,106,.35);
+      color:#fff;
+      padding:12px 12px;
+      border-radius:16px;
+      box-shadow:var(--shadow);
+      display:none;
+      margin:12px 0 10px;
+      white-space:pre-wrap;
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .chips{
+      display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+      margin:6px 0 16px;
+    }
     .chip{
       background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.07);
-      padding:8px 12px;
+      border:1px solid rgba(255,255,255,.10);
       border-radius:999px;
-      display:flex;
-      gap:8px;
-      align-items:center;
-      box-shadow:0 10px 25px rgba(0,0,0,.25);
-      font-size:13px;
+      padding:8px 12px;
+      display:flex;gap:10px;align-items:center;
+      font-size:14px;
       color:var(--muted);
     }
     .chip b{color:var(--gold);font-weight:800}
 
-    /* tabs */
-    .tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0 18px}
+    .tabs{
+      display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+      margin:10px 0 18px;
+    }
     .tabbtn{
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-      color:var(--text);
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      color:rgba(255,255,255,.88);
       padding:10px 14px;
       border-radius:999px;
+      font-size:15px;
       cursor:pointer;
-      user-select:none;
-      transition:transform .08s ease, border-color .12s ease, background .12s ease;
-      font-size:14px;
+      -webkit-tap-highlight-color:transparent;
     }
-    .tabbtn:active{transform:scale(.98)}
     .tabbtn.active{
+      border-color:rgba(216,178,75,.45);
       background:rgba(216,178,75,.12);
-      border-color:rgba(216,178,75,.35);
-      color:var(--gold);
+      color:#fff;
     }
 
-    /* layout */
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
+    @media (max-width:880px){ .grid{grid-template-columns:1fr} }
 
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.10);
       border-radius:var(--radius);
       padding:16px;
       box-shadow:var(--shadow);
     }
-    .card h3{margin:0 0 10px;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-    .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-    .row > *{flex:1}
+    .card h3{margin:0 0 10px;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.78)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:600px){ .row{grid-template-columns:1fr} }
 
-    .sliderline{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    input[type="range"]{width:100%}
-
-    .hint{color:var(--muted);font-size:13px;margin-top:6px}
-
-    .btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
-    button{
-      appearance:none;
-      border:none;
-      border-radius:14px;
-      padding:12px 14px;
-      cursor:pointer;
-      color:var(--text);
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.10);
-      box-shadow:0 14px 35px rgba(0,0,0,.35);
-      transition:transform .08s ease, background .12s ease, border-color .12s ease;
-      font-weight:700;
+    .label{font-size:13px;color:var(--muted2);margin-bottom:6px}
+    .input, .textarea{
+      width:100%;
+      background:rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:12px;
+      padding:12px;
+      color:#fff;
+      outline:none;
+      font-size:15px;
     }
-    button:active{transform:scale(.98)}
-    button.primary{background:rgba(31,111,70,.35);border-color:rgba(31,111,70,.55);color:#b7f6d1}
-    button.gold{background:rgba(216,178,75,.18);border-color:rgba(216,178,75,.35);color:var(--gold)}
-    button.ghost{background:transparent;border-color:rgba(255,255,255,.12)}
+    .textarea{min-height:92px;resize:vertical}
+    .input[readonly]{opacity:.9}
 
-    /* views */
+    .hint{color:rgba(255,255,255,.62);font-size:13px;margin-top:8px}
+    .hr{height:1px;background:rgba(255,255,255,.10);margin:12px 0}
+
+    .btnrow{display:flex;gap:10px;flex-wrap:wrap}
+    button{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      padding:11px 13px;
+      border-radius:14px;
+      font-weight:800;
+      cursor:pointer;
+      font-size:14px;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .primary{background:rgba(45,189,110,.16);border-color:rgba(45,189,110,.35);color:#dfffea}
+    .gold{background:rgba(216,178,75,.16);border-color:rgba(216,178,75,.40);color:#fff}
+    .danger{background:rgba(226,106,106,.16);border-color:rgba(226,106,106,.35);color:#fff}
+    .ghost{background:transparent}
+
     .view{display:none}
     .view.active{display:block}
 
-    /* 72 list */
-    .n72-top{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-    .n72-top input{
-      flex:2;
-      min-width:220px;
-      background:rgba(0,0,0,.20);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:12px;
-      padding:12px 12px;
-      color:var(--text);
-      outline:none;
+    /* Onboarding overlay */
+    .gate{
+      position:fixed;inset:0;z-index:9998;
+      background:
+        radial-gradient(1200px 700px at 50% 0%, rgba(255,255,255,.10), transparent 60%),
+        radial-gradient(900px 500px at 10% 20%, rgba(216,178,75,.14), transparent 60%),
+        rgba(0,0,0,.88);
+      display:none;
+      padding:22px 18px;
     }
-    .n72-list{border-top:1px solid rgba(255,255,255,.08);margin-top:10px}
-    .n72-item{
-      display:flex;
-      gap:12px;
-      padding:12px 6px;
-      border-bottom:1px solid rgba(255,255,255,.08);
+    .gate.active{display:block}
+    .gateCard{
+      max-width:820px;margin:4vh auto 0;
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    .gateTitle{
+      text-align:center;
+      font-weight:900;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-size:28px;
+      margin:10px 0 6px;
+    }
+    .gateSub{
+      text-align:center;
+      color:rgba(255,255,255,.75);
+      margin:0 0 14px;
+      line-height:1.4;
+    }
+    .gateSteps{
+      display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px
+    }
+    @media (max-width:720px){ .gateSteps{grid-template-columns:1fr} }
+    .step{
+      background:rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      padding:14px;
+    }
+    .step b{color:var(--gold)}
+    .bigBtn{
+      width:100%;
+      padding:14px 14px;
+      border-radius:18px;
+      font-size:16px;
+    }
+
+    /* 72 list */
+    .list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:880px){ .list{grid-template-columns:1fr} }
+    .item{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      padding:12px;
       cursor:pointer;
     }
-    .n72-id{
-      width:52px;
-      color:var(--gold);
-      font-weight:900;
-      text-align:right;
-      padding-right:8px;
-    }
-    .n72-meta{flex:1}
-    .n72-title{font-weight:800}
-    .n72-sub{color:var(--muted);font-size:13px;margin-top:2px}
+    .item .k{font-size:12px;color:rgba(255,255,255,.65);letter-spacing:.10em;text-transform:uppercase}
+    .item .t{font-size:16px;font-weight:900;margin-top:2px}
+    .item .s{font-size:13px;color:rgba(255,255,255,.72);margin-top:2px}
 
-    /* detail */
-    .detailHead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-    .detailHead h2{margin:0;font-size:22px}
-    .hebrew{
-      font-size:34px;
-      letter-spacing:.15em;
-      margin:10px 0 6px;
-      color:var(--gold);
-      direction:rtl;
-    }
-    .meaning{color:var(--text);line-height:1.45}
-    .practice{color:var(--muted);margin-top:10px}
+    .detailHead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+    .detailHead h2{margin:0;font-size:18px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
 
-    /* share card */
-    .shareWrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
-    @media (max-width: 900px){ .shareWrap{grid-template-columns:1fr} }
-    canvas{width:100%;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:#000}
-
-    /* error overlay */
-    .err{
-      display:none;
-      background:rgba(124,46,46,.40);
-      border:1px solid rgba(255,120,120,.35);
-      border-radius:18px;
-      padding:14px 14px;
-      margin:12px 0 10px;
-      box-shadow:0 20px 60px rgba(0,0,0,.55);
-      white-space:pre-wrap;
-      color:#ffd6d6;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size:12px;
-    }
-
-    /* tiny toast */
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:18px;
-      transform:translateX(-50%);
-      background:rgba(0,0,0,.55);
-      border:1px solid rgba(255,255,255,.12);
-      padding:10px 12px;
-      border-radius:12px;
-      color:var(--text);
-      display:none;
-      z-index:50;
-      max-width:92vw;
-    }
+    /* Share card */
+    canvas{width:100%;max-width:820px;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.22)}
   </style>
 </head>
 
 <body>
+  <div class="gate active" id="gate">
+    <div class="gateCard">
+      <div class="gateTitle">KAI</div>
+      <p class="gateSub">
+        This is a daily connection ritual. First we <b>connect</b>, then we <b>study</b> and apply. Simple. Repeatable. ⚡️
+      </p>
+
+      <div class="gateSteps">
+        <div class="step">
+          <b>1) Connect</b><br/>
+          Take one breath, notice your impulse, choose elevation. That’s one pillar rep.
+        </div>
+        <div class="step">
+          <b>2) Enter Study</b><br/>
+          Open the 72 Names, Zohar, or Gematria. Pick one practice. Log it. Move on with your day.
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="btnrow">
+        <button class="primary bigBtn" id="gateConnect">Connect (+1 pillar) and Enter</button>
+        <button class="ghost bigBtn" id="gateEnter">Enter without Connect</button>
+      </div>
+
+      <div class="hint" style="text-align:center;margin-top:10px">
+        Tip: You can re-enable this “front gate” anytime in Settings.
+      </div>
+    </div>
+  </div>
+
   <div class="wrap">
     <header><div class="title">KAI</div></header>
 
-    <div id="errBox" class="err"></div>
+    <div class="errBox" id="errBox"></div>
 
     <div class="chips">
       <div class="chip">Pillars <b id="pillarsChip">0</b> /100</div>
@@ -221,10 +283,13 @@
     </div>
 
     <div class="tabs">
-      <div class="tabbtn active" data-tab="home">Home</div>
-      <div class="tabbtn" data-tab="names72">72 Names</div>
-      <div class="tabbtn" data-tab="share">Share Card</div>
-      <div class="tabbtn" data-tab="settings">Settings</div>
+      <button class="tabbtn active" data-tab="home">Home</button>
+      <button class="tabbtn" data-tab="names72">72 Names</button>
+      <button class="tabbtn" data-tab="gematria">Gematria</button>
+      <button class="tabbtn" data-tab="zohar">Zohar</button>
+      <button class="tabbtn" data-tab="share">Share Card</button>
+      <button class="tabbtn" data-tab="history">History</button>
+      <button class="tabbtn" data-tab="settings">Settings</button>
     </div>
 
     <!-- HOME -->
@@ -232,75 +297,52 @@
       <div class="grid">
         <div class="card">
           <h3>Daily Metrics</h3>
-<div id="gate" class="card" style="margin-bottom:14px;">
-  <h3>Welcome</h3>
-  <div class="hint" style="margin-bottom:10px;">
-    One tap = one connection rep. Then you enter Study.
-  </div>
 
-  <div class="btnrow">
-    <button id="btnGateConnect" class="primary">CONNECT ( +1 pillar )</button>
-    <button id="btnGateEnter" class="gold">Enter Study</button>
-  </div>
-
-  <div class="hint" id="gateStatus" style="margin-top:10px; opacity:.9;"></div>
-</div>
-          <div class="sliderline">
-            <div style="flex:1">
-              <div class="row" style="margin-bottom:6px">
-                <div style="flex:1;color:var(--muted);font-size:13px">Certainty</div>
-                <div style="width:44px;text-align:right"><b id="certaintyVal" style="color:var(--gold)">5</b></div>
-              </div>
-              <input id="certainty" type="range" min="0" max="10" step="1" value="5" />
+          <div class="row">
+            <div>
+              <div class="label">Certainty <span class="mono" id="certaintyVal">5</span></div>
+              <input id="certainty" class="input" type="range" min="0" max="10" step="1" />
               <div class="hint">Set quickly. This is your Sinai clarity gauge.</div>
             </div>
-
-            <div style="flex:1">
-              <div class="row" style="margin-bottom:6px">
-                <div style="flex:1;color:var(--muted);font-size:13px">Energy</div>
-                <div style="width:44px;text-align:right"><b id="energyVal" style="color:var(--gold)">5</b></div>
-              </div>
-              <input id="energy" type="range" min="0" max="10" step="1" value="5" />
+            <div>
+              <div class="label">Energy <span class="mono" id="energyVal">5</span></div>
+              <input id="energy" class="input" type="range" min="0" max="10" step="1" />
               <div class="hint">Simple and honest. No story, just data.</div>
             </div>
           </div>
 
-          <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,.08);padding-top:12px">
-            <h3 style="margin-bottom:8px">Quick Actions</h3>
-            <div class="btnrow">
-              <button id="btnConnect" class="primary">CONNECT (+pillar)</button>
-              <button id="btnCycle">Run Full Cycle</button>
-              <button id="btnToday" class="gold">Today’s 72 Name</button>
-            </div>
-            <div class="hint">“Pillars” = connection reps. “Cycles” = a full practice pass.</div>
+          <div class="hr"></div>
+
+          <h3>Quick Actions</h3>
+          <div class="btnrow">
+            <button class="primary" id="btnConnect">CONNECT (+pillar)</button>
+            <button id="btnCycle">Run Full Cycle</button>
+            <button class="gold" id="btnToday">Today’s 72 Name</button>
           </div>
+          <div class="hint">“Pillars” = connection reps. “Cycles” = a full practice pass.</div>
         </div>
 
         <div class="card">
           <h3>Profile</h3>
-          <<div class="row">
-  <div>
-    <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Birthday</div>
-    <input id="birthday" type="date"
-      style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);" />
-  </div>
-
-  <div>
-    <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Astrological Sign</div>
-    <input id="sign" placeholder="Auto from birthday (basic)" readonly
-      style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);opacity:.9;" />
-  </div>
-</div>
-          <div class="row" style="margin-top:12px">
+          <div class="row">
             <div>
-              <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Tikkun (enter for now)</div>
-              <input id="tikkun" placeholder="e.g., (enter Centre method later)"
-                style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);outline:none" />
+              <div class="label">Birthday</div>
+              <input id="birthday" class="input" type="date" />
             </div>
             <div>
-              <div style="color:var(--muted);font-size:13px;margin-bottom:6px">Notes</div>
-              <input id="notes" placeholder="Optional..."
-                style="width:100%;background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;color:var(--text);outline:none" />
+              <div class="label">Astrological Sign</div>
+              <input id="sign" class="input" readonly placeholder="Auto from birthday" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <div>
+              <div class="label">Tikkun (enter for now)</div>
+              <input id="tikkun" class="input" placeholder="e.g., (enter Centre method later)" />
+            </div>
+            <div>
+              <div class="label">Notes</div>
+              <input id="notes" class="input" placeholder="Optional..." />
             </div>
           </div>
 
@@ -315,38 +357,110 @@
     <section id="view-names72" class="view">
       <div class="card">
         <div class="detailHead">
-          <h2 id="n72Header">The 72 Names</h2>
-<div class="btnrow">
-  <button id="btnBack" class="ghost" style="display:none">Back to list</button>
-  <button id="btnRand" class="gold">Random</button>
-  <button id="btnHowTo">How to Use</button>
-  <button id="btnAssess">Self-Assessment</button>
-</div>          </div>
+          <div>
+            <h2 id="n72Header">The 72 Names</h2>
+            <div class="hint" id="n72Sub">Tap a Name to open details. Everything is stored safely.</div>
+          </div>
+          <div class="btnrow">
+            <button class="ghost" id="btnBackToList" style="display:none">Back to list</button>
+            <button class="gold" id="btnRandom72">Random</button>
+            <button id="btnCopy72">Copy</button>
+          </div>
         </div>
 
+        <div class="hr"></div>
+
         <div id="n72ListPane">
-          <div class="n72-top">
-            <input id="n72Search" placeholder="Search by title, subtitle, or # (e.g., 48 or #48)" />
-            <button id="btnAll">All</button>
+          <div class="row" style="margin-bottom:10px">
+            <div>
+              <div class="label">Search (optional)</div>
+              <input id="n72Search" class="input" placeholder="Type a word like ‘healing’ or ‘fear’..." />
+            </div>
+            <div>
+              <div class="label">Filter (optional)</div>
+              <select id="n72Filter" class="input">
+                <option value="all">All</option>
+                <option value="daily">Daily picks (light)</option>
+                <option value="atika">Atika focus (light)</option>
+              </select>
+            </div>
           </div>
-          <div id="n72List" class="n72-list"></div>
+
+          <div class="list" id="n72List"></div>
         </div>
 
         <div id="n72DetailPane" style="display:none">
-          <div class="hebrew" id="n72Heb">—</div>
-          <div class="meaning" id="n72Meaning"></div>
-          <div class="practice" id="n72Practice"></div>
-          <div class="btnrow" style="margin-top:14px">
-            <button id="btnMakeCard" class="gold">Make Share Card</button>
-            <button id="btnCopy" class="ghost">Copy Text</button>
+          <div class="row">
+            <div>
+              <div class="label">Name</div>
+              <div class="input" id="n72Title"></div>
+            </div>
+            <div>
+              <div class="label">Focus</div>
+              <div class="input" id="n72Subtitle"></div>
+            </div>
           </div>
-<div id="n72HowPane" style="display:none">
-  <div class="meaning" id="n72HowText"></div>
-</div>
 
-<div id="n72AssessPane" style="display:none">
-  <div class="meaning" id="n72AssessText"></div>
-</div>
+          <div style="margin-top:12px">
+            <div class="label">Practice</div>
+            <div class="textarea" id="n72Practice" contenteditable="true"></div>
+            <div class="hint">Edit this practice text freely. It saves automatically.</div>
+          </div>
+
+          <div style="margin-top:12px">
+            <div class="label">Your Notes</div>
+            <textarea class="textarea" id="n72Notes" placeholder="What did you notice? What did you restrict? What shifted?"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GEMATRIA -->
+    <section id="view-gematria" class="view">
+      <div class="card">
+        <h3>Gematria</h3>
+        <div class="row">
+          <div>
+            <div class="label">Enter text (Hebrew or English)</div>
+            <input id="gemInput" class="input" placeholder="e.g., אחדות / achdut" />
+          </div>
+          <div>
+            <div class="label">Result</div>
+            <input id="gemOut" class="input" readonly />
+          </div>
+        </div>
+        <div class="btnrow" style="margin-top:12px">
+          <button class="gold" id="btnGemCompute">Compute</button>
+          <button id="btnGemInsight">Generate Insight Prompt</button>
+        </div>
+        <div class="hint" id="gemHint" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <!-- ZOHAR -->
+    <section id="view-zohar" class="view">
+      <div class="card">
+        <h3>Zohar Library (Lightweight)</h3>
+        <div class="row">
+          <div>
+            <div class="label">Search</div>
+            <input id="zSearch" class="input" placeholder="Type: Atika, restriction, Light, etc." />
+          </div>
+          <div>
+            <div class="label">Focus</div>
+            <select id="zFilter" class="input">
+              <option value="all">All</option>
+              <option value="atika">Atika Kadisha (focus)</option>
+              <option value="practice">Practice lines</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+        <div id="zList"></div>
+
+        <div class="hint" style="margin-top:10px">
+          This is a placeholder library scaffold. We can expand it safely without breaking the app.
         </div>
       </div>
     </section>
@@ -355,20 +469,43 @@
     <section id="view-share" class="view">
       <div class="card">
         <h3>Share Card</h3>
-        <div class="shareWrap">
+        <div class="row">
           <div>
-            <div class="hint" style="margin-bottom:10px">Pick a Name from “72 Names,” then generate a card.</div>
-            <div class="btnrow">
-              <button id="btnRenderCard" class="gold">Render Current Card</button>
-              <button id="btnDownload" class="primary">Download PNG</button>
-              <button id="btnClearCard" class="ghost">Clear</button>
-            </div>
-            <div class="hint" style="margin-top:10px" id="cardHint">No selection yet.</div>
+            <div class="label">Title</div>
+            <input id="cardTitle" class="input" placeholder="e.g., Today’s Connection" />
           </div>
           <div>
-            <canvas id="cardCanvas" width="1080" height="1350"></canvas>
+            <div class="label">Subtitle</div>
+            <input id="cardSub" class="input" placeholder="e.g., One restriction, one upgrade" />
           </div>
         </div>
+        <div style="margin-top:12px">
+          <div class="label">Body</div>
+          <textarea id="cardBody" class="textarea" placeholder="Write the teaching or practice in 2–6 lines."></textarea>
+        </div>
+
+        <div class="btnrow" style="margin-top:12px">
+          <button class="gold" id="btnRenderCard">Render</button>
+          <button id="btnDownloadCard">Download PNG</button>
+          <button id="btnClearCard">Clear</button>
+        </div>
+
+        <div class="hr"></div>
+
+        <canvas id="cardCanvas" width="1080" height="1350"></canvas>
+        <div class="hint" style="margin-top:10px">
+          If Download is blocked on iOS, use Share Sheet: press and hold the image after download, or use Files.
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="view-history" class="view">
+      <div class="card">
+        <h3>History</h3>
+        <div class="hint">A simple log of your actions. (Pillars, Cycles, Today’s Name opens, notes saves.)</div>
+        <div class="hr"></div>
+        <div id="historyList"></div>
       </div>
     </section>
 
@@ -376,834 +513,830 @@
     <section id="view-settings" class="view">
       <div class="card">
         <h3>Settings</h3>
-        <div class="btnrow">
-          <button id="btnReset72" class="ghost">Reset 72 storage only</button>
-          <button id="btnResetAll" class="ghost">Reset ALL KAI storage</button>
+
+        <div class="row">
+          <div>
+            <div class="label">Front Gate</div>
+            <select id="gateMode" class="input">
+              <option value="on">On (Connect then Enter)</option>
+              <option value="off">Off (Skip gate)</option>
+            </select>
+            <div class="hint">If you want smoother daily usage, keep it On.</div>
+          </div>
+          <div>
+            <div class="label">Export (basic)</div>
+            <button id="btnExport" class="input" style="text-align:left">Tap to copy your data JSON to clipboard</button>
+            <div class="hint">Use this to share state with a developer without exposing everything else.</div>
+          </div>
         </div>
+
+        <div class="hr"></div>
+
+        <div class="btnrow">
+          <button class="danger" id="btnResetAll">Reset All Storage</button>
+          <button class="danger" id="btnReset72">Reset 72 Storage Only</button>
+          <button id="btnReopenGate">Show Gate Now</button>
+        </div>
+
         <div class="hint" style="margin-top:10px">
-          If anything ever goes weird: “Reset 72 storage only” is the safe move.
+          Reset is safe. This app will never “brick” itself from old/null values.
         </div>
       </div>
     </section>
-
   </div>
 
   <div id="toast" class="toast"></div>
 
-<script>
-/* ==========================
-   KAI CLEAN 72 (SAFE BOOT)
-   ========================== */
+  <script>
+  (function(){
+    "use strict";
 
-(() => {
-  // ---------- helpers ----------
-  function $(id){
-  const el = document.getElementById(id);
-  if(!el) throw new Error("Missing element id: " + id);
-  return el;
-}
-function zodiacFromYMD(ymd){
-  // expects "YYYY-MM-DD"
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((ymd||"").trim());
-  if(!m) return "";
-  const month = parseInt(m[2],10);
-  const day   = parseInt(m[3],10);
+    // =========================
+    // SAFE CORE
+    // =========================
 
-  // Western sun signs (tropical)
-  if ((month===3 && day>=21) || (month===4 && day<=19)) return "Aries";
-  if ((month===4 && day>=20) || (month===5 && day<=20)) return "Taurus";
-  if ((month===5 && day>=21) || (month===6 && day<=20)) return "Gemini";
-  if ((month===6 && day>=21) || (month===7 && day<=22)) return "Cancer";
-  if ((month===7 && day>=23) || (month===8 && day<=22)) return "Leo";
-  if ((month===8 && day>=23) || (month===9 && day<=22)) return "Virgo";
-  if ((month===9 && day>=23) || (month===10 && day<=22)) return "Libra";
-  if ((month===10 && day>=23) || (month===11 && day<=21)) return "Scorpio";
-  if ((month===11 && day>=22) || (month===12 && day<=21)) return "Sagittarius";
-  if ((month===12 && day>=22) || (month===1 && day<=19)) return "Capricorn";
-  if ((month===1 && day>=20) || (month===2 && day<=18)) return "Aquarius";
-  if ((month===2 && day>=19) || (month===3 && day<=20)) return "Pisces";
-
-  return "";
-}
-  function updateSignFromBirthday(){
-  // read birthday from input if present
-  let ymd = "";
-  try { ymd = $("birthday").value || ""; } catch(e){ return; }
-
-  // compute sign and store it
-  const sign = zodiacFromYMD(ymd) || "";
-  if (!state.profile) state.profile = { birthday:"", sign:"", tikkun:"", notes:"" };
-
-  state.profile.birthday = ymd;
-  state.profile.sign = sign;
-
-  // paint sign into UI if input exists
-  try { $("sign").value = sign || ""; } catch(e){}
-
-  // persist if saveState exists
-  try { if (typeof saveState === "function") saveState(); } catch(e){}
-}
-  const errBox = $("errBox");
-  const toastEl = $("toast");
-
-  function toast(msg){
-    toastEl.textContent = msg;
-    toastEl.style.display = "block";
-    clearTimeout(toastEl._t);
-    toastEl._t = setTimeout(()=> toastEl.style.display="none", 2200);
-  }
-
-  function showErr(msg){
-    errBox.style.display = "block";
-    errBox.textContent = msg;
-  }
-  function clearErr(){
-    errBox.style.display = "none";
-    errBox.textContent = "";
-  }
-
-  // ---------- storage (versioned + safe) ----------
-  const KEY = {<div id="gate" class="card" style="margin-bottom:14px;">
-  <h3>Welcome</h3>
-  <div class="hint" style="margin-bottom:10px;">
-    One tap = one connection rep. Then you enter Study.
-  </div>
-
-  <div class="btnrow">
-    <button id="btnGateConnect" class="primary">CONNECT ( +1 pillar )</button>
-    <button id="btnGateEnter" class="gold">Enter Study</button>
-  </div>
-
-  <div class="hint" id="gateStatus" style="margin-top:10px; opacity:.9;"></div>
-</div><div id="gate" class="card" style="margin-bottom:14px;">
-  <h3>Welcome</h3>
-  <div class="hint" style="margin-bottom:10px;">
-    One tap = one connection rep. Then you enter Study.
-  </div>
-
-  <div class="btnrow">
-    <button id="btnGateConnect" class="primary">CONNECT ( +1 pillar )</button>
-    <button id="btnGateEnter" class="gold">Enter Study</button>
-  </div>
-
-  <div class="hint" id="gateStatus" style="margin-top:10px; opacity:.9;"></div>
-</div><div id="gate" class="card" style="margin-bottom:14px;">
-  <h3>Welcome</h3>
-  <div class="hint" style="margin-bottom:10px;">
-    One tap = one connection rep. Then you enter Study.
-  </div>
-
-  <div class="btnrow">
-    <button id="btnGateConnect" class="primary">CONNECT ( +1 pillar )</button>
-    <button id="btnGateEnter" class="gold">Enter Study</button>
-  </div>
-
-  <div class="hint" id="gateStatus" style="margin-top:10px; opacity:.9;"></div>
-</div><div id="gate" class="card" style="margin-bottom:14px;">
-  <h3>Welcome</h3>
-  <div class="hint" style="margin-bottom:10px;">
-    One tap = one connection rep. Then you enter Study.
-  </div>
-
-  <div class="btnrow">
-    <button id="btnGateConnect" class="primary">CONNECT ( +1 pillar )</button>
-    <button id="btnGateEnter" class="gold">Enter Study</button>
-  </div>
-
-  <div class="hint" id="gateStatus" style="margin-top:10px; opacity:.9;"></div>
-</div>
-    state: "kai_state_v1",
-    n72_selected: "kai_72_selected_v1",
-    n72_notes: "kai_72_notes_v1"
-  };
-
-  const defaultState = {
-entry: {
-  lastGateAt: "",
-  gateCountToday: 0,
-  enteredToday: false
-},
-todayThread: {
-  name72Id: 1,
-  zoharId: "atika-001",
-  restrictPrompt: "",
-  sealLine: ""
-},
-zohar: {
-  favorites: []
-}
-    
-    pillars: 0,
-    cycles: 0,
-    certainty: 5,
-    energy: 5,
-    profile: { birthday:"", sign:"", tikkun:"", notes:"" }
-  };
-
-  function safeParse(s, fallback){
-    try{
-      const v = JSON.parse(s);
-      return (v === null || v === undefined) ? fallback : v;
-    } catch {
-      return fallback;
-    }
-  }
-  function loadState(){
-    return safeParse(localStorage.getItem(KEY.state), structuredClone(defaultState));
-  }
-  function saveState(){
-    localStorage.setItem(KEY.state, JSON.stringify(state));
-  }
-
-  // ---------- 72 data (titles/subtitles from your screenshots) ----------
-  // Hebrew triples + full meaning text can be added later safely.
-  const N72 = [
-    {id:1,  title:"Time Travel", subtitle:"How to fix the past"},
-    {id:2,  title:"Recapturing the Sparks", subtitle:"Recharging when you are depleted"},
-    {id:3,  title:"Miracle Making", subtitle:"A recipe"},
-    {id:4,  title:"Eliminating Negative Thoughts", subtitle:"When and how"},
-    {id:5,  title:"Healing", subtitle:"Meditation for yourself and others"},
-    {id:6,  title:"Dream State", subtitle:"Activating messages from the subconscious"},
-    {id:7,  title:"DNA of Soul", subtitle:"Restoring to their perfect state"},
-    {id:8,  title:"Defusing Negative Energy and Stress", subtitle:"Releasing the pressure"},
-    {id:9,  title:"Angelic Influences", subtitle:"Harnessing help from above"},
-    {id:10, title:"Looks Can Kill", subtitle:"Protecting yourself from the evil-eye"},
-    {id:11, title:"Banishing the Remnants of Evil", subtitle:"Purifying places and spaces"},
-    {id:12, title:"Unconditional Love", subtitle:"How to awaken love, especially when you don’t want to"},
-    {id:13, title:"Heaven on Earth", subtitle:"Creating harmony within and without"},
-    {id:14, title:"Farewell to Arms", subtitle:"Diffusing conflict"},
-    {id:15, title:"Long-Range Vision", subtitle:"Seeing the effect of decisions before you make them"},
-    {id:16, title:"Dumping Depression", subtitle:"How to pick yourself up when you fall"},
-    {id:17, title:"Great Escape", subtitle:"Breaking the limits of ego"},
-    {id:18, title:"Fertility", subtitle:"When conception is difficult"},
-    {id:19, title:"Dialing God", subtitle:"Receiving answers to your prayers"},
-    {id:20, title:"Victory Over Addictions", subtitle:"Overcoming your negative self"},
-    {id:21, title:"Eradicate Plague", subtitle:"Effecting change in the physical world"},
-    {id:22, title:"Stop Fatal Attraction", subtitle:"How to stop drawing the wrong people into your life"},
-    {id:23, title:"Sharing the Flame", subtitle:"Passing the wisdom along"},
-    {id:24, title:"Jealousy", subtitle:"Undoing chaos resulting from our jealousy before it is manifested"},
-    {id:25, title:"Speak Your Mind", subtitle:"For those times when you need help expressing the truth"},
-    {id:26, title:"Order from Chaos", subtitle:"Reversing Murphy’s Law"},
-    {id:27, title:"Silent Partner", subtitle:"Choosing positivity as your partner"},
-    {id:28, title:"Soul Mate", subtitle:"Attracting “The One”"},
-    {id:29, title:"Removing Hatred", subtitle:"Drawing out the poison"},
-    {id:30, title:"Building Bridges", subtitle:"Mending broken relationships"},
-    {id:31, title:"Finish What You Start", subtitle:"Finding the power to finish what you start"},
-    {id:32, title:"Memories", subtitle:"Breaking the cycle"},
-    {id:33, title:"Revealing the Dark Side", subtitle:"Removing the obstacles you create"},
-    {id:34, title:"Forget Thyself", subtitle:"Opening up to another view"},
-    {id:35, title:"Sexual Energy", subtitle:"How to get more from your sexual experience"},
-    {id:36, title:"Fear(less)", subtitle:"Overcoming the ties that bind"},
-    {id:37, title:"The Big Picture", subtitle:"Seeing the opportunity for good hidden in every challenge"},
-    {id:38, title:"Circuitry", subtitle:"Sharing so you can truly receive"},
-    {id:39, title:"Diamond in the Rough", subtitle:"Turning the coal in your life into diamonds"},
-    {id:40, title:"Speaking the Right Words", subtitle:"Using language to make good things happen"},
-    {id:41, title:"Self-Esteem", subtitle:"Finding the power to lift yourself up"},
-    {id:42, title:"Revealing the Concealed", subtitle:"Seeing the truth and handling it"},
-    {id:43, title:"Defying Gravity", subtitle:"Achieving mind over matter"},
-    {id:44, title:"Sweetening Judgment", subtitle:"Ducking the boomerang you send out there—stop the judgment that is happening against you"},
-    {id:45, title:"The Power of Prosperity", subtitle:"What to do when you need money"},
-    {id:46, title:"Absolute Certainty", subtitle:"What to do when doubts creep in"},
-    {id:47, title:"Global Transformation", subtitle:"Helping to bring about world peace"},
-    {id:48, title:"Unity", subtitle:"When there is conflict and only togetherness will do"},
-    {id:49, title:"Happiness", subtitle:"When you need the power to choose happiness"},
-    {id:50, title:"Enough Is Never Enough", subtitle:"When you need the passion to keep from settling for less"},
-    {id:51, title:"No Guilt", subtitle:"Removing negativity aspects of your nature while you repair the damage they cause"},
-    {id:52, title:"Passion", subtitle:"Awaken the earning in your heart"},
-    {id:53, title:"No Agenda", subtitle:"Giving with no strings attached"},
-    {id:54, title:"The Death of Death", subtitle:"When things are good and you want them to stay that way"},
-    {id:55, title:"Thought into Action", subtitle:"The power to make it happen"},
-    {id:56, title:"Dispelling Anger", subtitle:"Overcoming it before it overcomes you"},
-    {id:57, title:"Listen to Your Soul", subtitle:"Increasing the volume of the soft voice within"},
-    {id:58, title:"Letting Go", subtitle:"When you need the power to walk away"},
-    {id:59, title:"Umbilical Cord", subtitle:"Connecting to the Light Force"},
-    {id:60, title:"Freedom", subtitle:"Passing the test and going to the next level"},
-    {id:61, title:"Water", subtitle:"Removing negativity from the source of life"},
-    {id:62, title:"Parent–Teacher, Not Preacher", subtitle:"When you need to teach your children"},
-    {id:63, title:"Appreciation", subtitle:"How to keep what you have and get more"},
-    {id:64, title:"Casting Yourself in a Favorable Light", subtitle:"Revealing the best you"},
-    {id:65, title:"Fear of God", subtitle:"When you need to remember that there is a system, and how to work it"},
-    {id:66, title:"Accountability", subtitle:"The power to take accountability for your happiness and life"},
-    {id:67, title:"Great Expectations", subtitle:"How to stop getting disappointed"},
-    {id:68, title:"Contacting Departed Souls", subtitle:"Making positive connections with people that have passed on"},
-    {id:69, title:"Lost and Found", subtitle:"What to do when you are lost and confused"},
-    {id:70, title:"Recognizing Design Beneath Disorder", subtitle:"Finding the solution within the problem"},
-    {id:71, title:"Prophecy and Parallel Universes", subtitle:"Switching your universe for a better one"},
-    {id:72, title:"Spiritual Cleansing", subtitle:"Purging yourself of negativity"},
-  ];
-// ---------- 72 Names content layers ----------
-
-const N72_HEB = {};
-const N72_MEANINGS = {};
-const N72_PRACTICE = {};
-
-const N72_HOWTO = [
-  "Pick a Name based on the challenge, not the mood.",
-  "Read the Hebrew slowly. Intention matters.",
-  "Visualize the letters as a channel for Light.",
-  "Pair the Name with one restriction that day.",
-  "Seal it with an action."
-];
-
-const N72_ASSESS = [
-  { id:"focus",   q:"When I choose a Name, I set a clear intention." },
-  { id:"letters", q:"I engage the Hebrew letters as a tool." },
-  { id:"restrict",q:"I pair the Name with restriction." },
-  { id:"action",  q:"I translate insight into action within 24 hours." }
-];
-
-const KEY72 = {
-  assess: "kai_72_assess_answers_v1"
-};
-
-function loadAssess(){
-  const a = safeParse(localStorage.getItem(KEY72.assess), {}) || {};
-  return (a && typeof a === "object") ? a : {};
-}
-function saveAssess(obj){
-  localStorage.setItem(KEY72.assess, JSON.stringify(obj || {}));
-}function n72_showHow(){
-  $("n72Header").textContent = "How to Use the 72 Names";
-  $("n72ListPane").style.display = "none";
-  $("n72DetailPane").style.display = "none";
-  $("n72AssessPane").style.display = "none";
-  $("n72HowPane").style.display = "block";
-  $("btnBack").style.display = "inline-block";
-  $("n72HowText").textContent = "Using the 72 Names:\n\n• " + N72_HOWTO.join("\n• ");
-}
-
-function n72_showAssess(){
-  $("n72Header").textContent = "Self-Assessment";
-  $("n72ListPane").style.display = "none";
-  $("n72DetailPane").style.display = "none";
-  $("n72HowPane").style.display = "none";
-  $("n72AssessPane").style.display = "block";
-  $("btnBack").style.display = "inline-block";
-
-  const ans = loadAssess();
-
-  let out = "Rate 0–3 (tap to cycle):\n\n";
-  N72_ASSESS.forEach((s, i)=>{
-    const v = (ans[s.id] ?? 0);
-    out += `${i+1}. ${s.q}\n   Current: ${v}\n\n`;
-  });
-  $("n72AssessText").textContent = out;
-
-  $("n72AssessPane").onclick = ()=>{
-    const idx = Math.floor(Math.random() * N72_ASSESS.length);
-    const item = N72_ASSESS[idx];
-    ans[item.id] = ((ans[item.id] ?? 0) + 1) % 4;
-    saveAssess(ans);
-    n72_showAssess();
-  };
-}
-
-$("btnHowTo").addEventListener("click", n72_showHow);
-$("btnAssess").addEventListener("click", n72_showAssess);
-  // Optional: small Hebrew placeholders (you can replace later with true triples)
-  function hebrewFor(id){
-    // minimal placeholder so layout works
-    return "—";
-  }
-
-  function meaningFor(n){
-    // Keep it neutral. You can paste Centre meanings later.
-    return `Name #${n.id} — ${n.title}\n\nFocus: ${n.subtitle}\n\nMeaning text can be added next (Centre-authentic).`;
-  }
-
-  function practiceFor(n){
-    // Clean "practice" line (no over-the-top)
-    return `Practice: Choose one small restriction today aligned to "${n.title}".`;
-  }
-
-  // ---------- runtime ----------
-  let state = loadState();
-  state.profile = Object.assign({ birthday:"", sign:"", tikkun:"", notes:"" }, state.profile || {});
-  let current72 = null;
-
-  function updateChips(){
-    $("pillarsChip").textContent = String(state.pillars);
-    $("cyclesChip").textContent = String(state.cycles);
-    $("certaintyChip").textContent = String(state.certainty);
-    $("energyChip").textContent = String(state.energy);
-    $("certaintyVal").textContent = String(state.certainty);
-    $("energyVal").textContent = String(state.energy);
-  }
-
-  function setTab(name){
-    document.querySelectorAll(".tabbtn").forEach(b => {
-      b.classList.toggle("active", b.dataset.tab === name);
+    const KEY = Object.freeze({
+      state: "kai_state_v2",
+      history: "kai_history_v2",
+      n72_selected: "kai_72_selected_v2",
+      n72_notes: "kai_72_notes_v2",
+      gate_mode: "kai_gate_mode_v1"
     });
-    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-    $("view-" + name).classList.add("active");
-    if (name === "names72") n72_init();
-    if (name === "share") renderCardPreview();
-  }
 
-  // ---------- 72 rendering ----------
-  function n72_init(){
-    // list view by default unless current72 is set
-    $("btnBack").style.display = current72 ? "inline-block" : "none";
-    if (!current72) n72_showList();
-    else n72_showDetail(current72);
+    const defaultState = {
+      pillars: 0,
+      cycles: 0,
+      certainty: 5,
+      energy: 5,
+      profile: { birthday:"", sign:"", tikkun:"", notes:"" }
+    };
 
-    // ensure list is populated if it isn't
-    if ($("n72List").children.length === 0) n72_renderList(N72);
-  }
-
-  function n72_filter(q){
-    q = (q || "").trim().toLowerCase();
-    if (!q) return N72;
-
-    // allow "#48" or "48"
-    let num = q.startsWith("#") ? parseInt(q.slice(1),10) : parseInt(q,10);
-    if (!Number.isNaN(num)) return N72.filter(x => x.id === num);
-
-    return N72.filter(x =>
-      (x.title || "").toLowerCase().includes(q) ||
-      (x.subtitle || "").toLowerCase().includes(q)
-    );
-  }
-
-  function n72_renderList(list){
-    const host = $("n72List");
-    host.innerHTML = "";
-    list.forEach(n => {
-      const row = document.createElement("div");
-      row.className = "n72-item";
-      row.innerHTML = `
-        <div class="n72-id">${n.id}</div>
-        <div class="n72-meta">
-          <div class="n72-title">${escapeHtml(n.title)}</div>
-          <div class="n72-sub">${escapeHtml(n.subtitle)}</div>
-        </div>
-      `;
-      row.addEventListener("click", () => n72_showDetail(n));
-      host.appendChild(row);
-    });
-  }
-
-  function n72_showList(){
-    $("n72Header").textContent = "The 72 Names";
-    $("n72ListPane").style.display = "block";
-    $("n72DetailPane").style.display = "none";
-    $("btnBack").style.display = "none";
-  }
-
-  function n72_showDetail(n){
-    current72 = n;
-    localStorage.setItem(KEY.n72_selected, JSON.stringify({id:n.id}));
-    $("n72Header").textContent = `#${n.id} — ${n.title}`;
-    $("n72ListPane").style.display = "none";
-    $("n72DetailPane").style.display = "block";
-    $("btnBack").style.display = "inline-block";
-
-    $("n72Heb").textContent = hebrewFor(n.id);
-    $("n72Meaning").textContent = meaningFor(n);
-    $("n72Practice").textContent = practiceFor(n);
-
-    $("cardHint").textContent = `Selected: #${n.id} — ${n.title}`;
-  }
-
-  function pickRandom72(){
-    return N72[Math.floor(Math.random()*N72.length)];
-  }
-
-  function todayIndex(){
-    // stable day-based selection 1..72
-    const d = new Date();
-    const key = Number(String(d.getFullYear()) + String(d.getMonth()+1).padStart(2,"0") + String(d.getDate()).padStart(2,"0"));
-    return (key % 72) + 1;
-  }
-
-  function get72ById(id){
-    return N72.find(x => x.id === id) || N72[0];
-  }
-
-  // ---------- share card ----------
-  function renderCardPreview(){
-    const canvas = $("cardCanvas");
-    const ctx = canvas.getContext("2d");
-    const n = current72 || restoreSelected72();
-
-    // clear
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    if (!n){
-      // draw blank
-      ctx.fillStyle = "#000";
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      $("cardHint").textContent = "No selection yet.";
-      return;
+    function $(id){
+      const el = document.getElementById(id);
+      if(!el) throw new Error("Missing element id: " + id);
+      return el;
     }
 
-    drawCard(ctx, canvas.width, canvas.height, n);
-    $("cardHint").textContent = `Selected: #${n.id} — ${n.title}`;
-  }
+    const errBox = $("errBox");
+    const toastEl = $("toast");
 
-  function drawCard(ctx, W, H, n){
-    // background
-    ctx.fillStyle = "#0a0a0b";
-    ctx.fillRect(0,0,W,H);
-
-    // top gold bar
-    ctx.fillStyle = "rgba(216,178,75,.95)";
-    ctx.fillRect(0,0,W,22);
-
-    // title
-    ctx.fillStyle = "#f2f2f2";
-    ctx.font = "800 72px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-    ctx.textBaseline = "top";
-    ctx.fillText(`72 Name #${n.id} — ${n.title}`, 70, 110);
-
-    // Hebrew
-    ctx.fillStyle = "rgba(216,178,75,.95)";
-    ctx.font = "700 56px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-    ctx.fillText(hebrewFor(n.id), 70, 230);
-
-    // body
-    ctx.fillStyle = "rgba(242,242,242,.92)";
-    ctx.font = "500 40px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-    const body = `${n.subtitle}\n\n${practiceFor(n)}`;
-    wrapText(ctx, body, 70, 320, W-140, 56);
-
-    // footer
-    ctx.fillStyle = "rgba(166,166,169,.8)";
-    ctx.font = "600 28px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-    const d = new Date();
-    const stamp = `KAI • ${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-    ctx.fillText(stamp, 70, H-70);
-  }
-
-  function wrapText(ctx, text, x, y, maxWidth, lineHeight){
-    const paragraphs = String(text).split("\n");
-    let yy = y;
-    paragraphs.forEach(p => {
-      const words = p.split(" ");
-      let line = "";
-      words.forEach((w, i) => {
-        const test = line ? line + " " + w : w;
-        const m = ctx.measureText(test).width;
-        if (m > maxWidth && line){
-          ctx.fillText(line, x, yy);
-          yy += lineHeight;
-          line = w;
-        } else {
-          line = test;
-        }
-      });
-      if (line){
-        ctx.fillText(line, x, yy);
-        yy += lineHeight;
-      }
-      yy += Math.floor(lineHeight/2);
-    });
-  }
-
-  function downloadCard(){
-    const a = document.createElement("a");
-    a.download = "kai-share-card.png";
-    a.href = $("cardCanvas").toDataURL("image/png");
-    a.click();
-  }
-
-  // ---------- restore selection ----------
-  function restoreSelected72(){
-    const obj = safeParse(localStorage.getItem(KEY.n72_selected), null);
-    if (obj && obj.id) {
-      current72 = get72ById(obj.id);
-      return current72;
+    function showErr(msg){
+      errBox.style.display = "block";
+      errBox.textContent = String(msg || "Unknown error");
     }
-    return null;
-  }
-
-  // ---------- zodiac (basic) ----------
-  function zodiacFromBirthday(str){
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(str || "");
-    if (!m) return "";
-    const month = parseInt(m[2],10);
-    const day = parseInt(m[3],10);
-    const z = [
-      ["Capricorn", 1, 19],
-      ["Aquarius",  2, 18],
-      ["Pisces",    3, 20],
-      ["Aries",     4, 19],
-      ["Taurus",    5, 20],
-      ["Gemini",    6, 20],
-      ["Cancer",    7, 22],
-      ["Leo",       8, 22],
-      ["Virgo",     9, 22],
-      ["Libra",     10,22],
-      ["Scorpio",   11,21],
-      ["Sagittarius",12,21],
-      ["Capricorn", 12,31],
-    ];
-    for (const [name, mo, endDay] of z){
-      if (month === mo && day <= endDay) return name;
+    function clearErr(){
+      errBox.style.display = "none";
+      errBox.textContent = "";
     }
-    return "";
-  }
-
-  function escapeHtml(s){
-    return String(s)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
-
-  // ---------- wiring ----------
-  function wire(){
-    // tabs
-    document.querySelectorAll(".tabbtn").forEach(b => {
-      b.addEventListener("click", () => setTab(b.dataset.tab));
-    });
-
-    // home sliders
-    $("certainty").addEventListener("input", (e)=>{
-      state.certainty = parseInt(e.target.value,10);
-      saveState(); updateChips();
-    });
-    $("energy").addEventListener("input", (e)=>{
-      state.energy = parseInt(e.target.value,10);
-      saveState(); updateChips();
-    });
-
-    // home buttons
-    $("btnConnect").addEventListener("click", ()=>{
-// --- Gate (front door) ---
-$("btnGateConnect").addEventListener("click", ()=>{
-  try{
-    const today = new Date().toISOString().slice(0,10);
-    state.entry = state.entry || {};
-    if(state.entry.lastGateAt !== today){
-      state.entry.lastGateAt = today;
-      state.entry.gateCountToday = 0;
-      state.entry.enteredToday = false;
+    function toast(msg){
+      toastEl.textContent = String(msg || "");
+      toastEl.style.display = "block";
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(()=>toastEl.style.display="none", 2200);
     }
-    state.entry.gateCountToday = (state.entry.gateCountToday || 0) + 1;
 
-    state.pillars = (state.pillars || 0) + 1;
-    saveState();
-    updateChips();
-    renderGateStatus();
-    toast("Connected (+1)");
-  }catch(e){
-    showErr("Gate error: " + (e?.message || String(e)));
-  }
-});
-
-$("btnGateEnter").addEventListener("click", ()=>{
-  try{
-    const today = new Date().toISOString().slice(0,10);
-    state.entry = state.entry || {};
-    state.entry.lastGateAt = today;
-    state.entry.enteredToday = true;
-    saveState();
-    renderGateStatus();
-    // go to Study (your tab name may differ)
-    setTab("names72"); // if your Study tab is "names72"
-  }catch(e){
-    showErr("Enter error: " + (e?.message || String(e)));
-  }
-});
-
-function renderGateStatus(){
-  try{
-    const today = new Date().toISOString().slice(0,10);
-    const ec = (state.entry && state.entry.lastGateAt === today) ? (state.entry.gateCountToday || 0) : 0;
-    $("gateStatus").textContent = `Today: ${ec} connection rep${ec===1?"":"s"} · Use Connect, then Enter Study.`;
-  }catch{}
-}
-      state.pillars = Math.min(100, (state.pillars||0) + 1);
-      saveState(); updateChips();
-      toast("Connection +1");
-    });
-    $("btnCycle").addEventListener("click", ()=>{
-      state.cycles = Math.min(10, (state.cycles||0) + 1);
-      saveState(); updateChips();
-      toast("Cycle +1");
-    });
-    $("btnToday").addEventListener("click", ()=>{
-      const id = todayIndex();
-      const n = get72ById(id);
-      setTab("names72");
-      n72_showDetail(n);
-    });
-
-    // profile fields
-    $("birthday").addEventListener("change", (e)=>{
-  if(!state.profile) state.profile = { birthday:"", sign:"", tikkun:"", notes:"" };
-  state.profile.birthday = e.target.value || "";
-  updateSignFromBirthday();
-  saveState(state);
-});
-    $("sign").addEventListener("input", (e)=>{
-      state.profile.sign = e.target.value.trim();
-      saveState();
-    });
-    $("tikkun").addEventListener("input", (e)=>{
-      state.profile.tikkun = e.target.value;
-      saveState();
-    });
-    $("notes").addEventListener("input", (e)=>{
-      state.profile.notes = e.target.value;
-      saveState();
-    });
-
-    // 72 events
-    $("n72Search").addEventListener("input", (e)=>{
-      n72_renderList(n72_filter(e.target.value));
-    });
-    $("btnAll").addEventListener("click", ()=>{
-      $("n72Search").value = "";
-      n72_renderList(N72);
-    });
-    $("btnRand").addEventListener("click", ()=>{
-      setTab("names72");
-      n72_showDetail(pickRandom72());
-    });
-    $("btnBack").addEventListener("click", ()=>{
-      current72 = null;
-      localStorage.removeItem(KEY.n72_selected);
-      n72_showList();
-    });
-    $("btnMakeCard").addEventListener("click", ()=>{
-      setTab("share");
-      renderCardPreview();
-      toast("Card ready");
-    });
-    $("btnCopy").addEventListener("click", async ()=>{
-      if (!current72) return;
-      const txt = `72 Name #${current72.id} — ${current72.title}\n${current72.subtitle}\n\n${practiceFor(current72)}`;
+    function safeParse(json, fallback){
       try{
-        await navigator.clipboard.writeText(txt);
-        toast("Copied");
-      } catch {
-        toast("Copy blocked");
+        const v = JSON.parse(json);
+        if(v === null || v === undefined) return fallback;
+        return v;
+      }catch(_e){
+        return fallback;
       }
-function n72_showHow(){
-  $("n72Header").textContent = "How to Use the 72 Names";
-  $("n72ListPane").style.display = "none";
-  $("n72DetailPane").style.display = "none";
-  $("n72AssessPane").style.display = "none";
-  $("n72HowPane").style.display = "block";
-  $("btnBack").style.display = "inline-block";
-  $("n72HowText").textContent = "Using the 72 Names:\n\n• " + N72_HOWTO.join("\n• ");
-}
+    }
 
-function n72_showAssess(){
-  $("n72Header").textContent = "Self-Assessment";
-  $("n72ListPane").style.display = "none";
-  $("n72DetailPane").style.display = "none";
-  $("n72HowPane").style.display = "none";
-  $("n72AssessPane").style.display = "block";
-  $("btnBack").style.display = "inline-block";
+    function deepMerge(base, incoming){
+      // Defensive merge so missing nested objects never crash.
+      const out = structuredClone(base);
+      if(!incoming || typeof incoming !== "object") return out;
 
-  const ans = loadAssess();
+      for(const k of Object.keys(incoming)){
+        const v = incoming[k];
+        if(v && typeof v === "object" && !Array.isArray(v)){
+          out[k] = deepMerge(out[k] || {}, v);
+        }else{
+          out[k] = v;
+        }
+      }
+      return out;
+    }
 
-  let out = "Rate 0–3 (tap to cycle):\n\n";
-  N72_ASSESS.forEach((s, i)=>{
-    const v = (ans[s.id] ?? 0);
-    out += `${i+1}. ${s.q}\n   Current: ${v}\n\n`;
-  });
-  $("n72AssessText").textContent = out;
+    function loadState(){
+      const raw = localStorage.getItem(KEY.state);
+      const parsed = safeParse(raw, null);
+      return deepMerge(defaultState, parsed);
+    }
+    function saveState(){
+      localStorage.setItem(KEY.state, JSON.stringify(state));
+    }
 
-  $("n72AssessPane").onclick = ()=>{
-    const idx = Math.floor(Math.random() * N72_ASSESS.length);
-    const item = N72_ASSESS[idx];
-    ans[item.id] = ((ans[item.id] ?? 0) + 1) % 4;
-    saveAssess(ans);
-    n72_showAssess();
-  };
-}
+    function loadHistory(){
+      return safeParse(localStorage.getItem(KEY.history), []);
+    }
+    function saveHistory(items){
+      localStorage.setItem(KEY.history, JSON.stringify(items));
+    }
 
-$("btnHowTo").addEventListener("click", n72_showHow);
-$("btnAssess").addEventListener("click", n72_showAssess);
-    
-    });
+    function logEvent(type, meta){
+      const items = loadHistory();
+      items.unshift({
+        t: new Date().toISOString(),
+        type: String(type || "event"),
+        meta: meta || {}
+      });
+      saveHistory(items.slice(0,200));
+      renderHistory();
+    }
 
-    // share
-    $("btnRenderCard").addEventListener("click", renderCardPreview);
-    $("btnDownload").addEventListener("click", ()=>{
-      renderCardPreview();
-      downloadCard();
-    });
-    $("btnClearCard").addEventListener("click", ()=>{
-      const ctx = $("cardCanvas").getContext("2d");
-      ctx.clearRect(0,0,$("cardCanvas").width,$("cardCanvas").height);
-      toast("Cleared");
-    });
+    // =========================
+    // DATA: 72 NAMES (safe scaffold)
+    // Replace/expand later without changing UI wiring.
+    // =========================
 
-    // settings
-    $("btnReset72").addEventListener("click", ()=>{
-      localStorage.removeItem(KEY.n72_selected);
-      localStorage.removeItem(KEY.n72_notes);
-      current72 = null;
-      toast("72 storage reset");
-    });
-    $("btnResetAll").addEventListener("click", ()=>{
-      localStorage.clear();
-      state = structuredClone(defaultState);
+    const N72 = [
+      {id:1,  title:"Time Travel", subtitle:"How to fix the past", tag:"daily"},
+      {id:2,  title:"Recapturing the Sparks", subtitle:"Recharging when you are depleted", tag:"daily"},
+      {id:3,  title:"Miracle Making", subtitle:"A recipe", tag:"daily"},
+      {id:4,  title:"Eliminating Negative Thoughts", subtitle:"When and how", tag:"daily"},
+      {id:5,  title:"Healing", subtitle:"Meditation for yourself and others", tag:"daily"},
+      {id:6,  title:"Dream State", subtitle:"Activating messages from the subconscious", tag:"daily"},
+      {id:7,  title:"DNA of Soul", subtitle:"Restoring to their perfect state", tag:"daily"},
+      {id:8,  title:"Defusing Negative Energy and Stress", subtitle:"Releasing the pressure", tag:"daily"},
+      {id:9,  title:"Angelic Influences", subtitle:"Harnessing help from above", tag:"daily"},
+      {id:10, title:"Looks Can Kill", subtitle:"Protecting from the evil-eye", tag:"daily"},
+      {id:11, title:"Banishing the Remnants of Evil", subtitle:"Purifying places and spaces", tag:"daily"},
+      {id:12, title:"Unconditional Love", subtitle:"How to awaken love, especially when you don’t want to", tag:"daily"},
+      {id:13, title:"Heaven on Earth", subtitle:"Creating harmony within and without", tag:"daily"},
+      {id:14, title:"Farewell to Arms", subtitle:"Diffusing conflict", tag:"daily"},
+      {id:15, title:"Long-Range Vision", subtitle:"Seeing the effect of decisions before you make them", tag:"daily"},
+      {id:16, title:"Defeat Addiction", subtitle:"Interrupting compulsive loops", tag:"daily"},
+      {id:17, title:"Removing Hatred", subtitle:"Neutralizing reactive judgment", tag:"daily"},
+      {id:18, title:"Fertility", subtitle:"Creating space for new life and new outcomes", tag:"daily"},
+      {id:19, title:"Shut the Mouth", subtitle:"Restriction as power", tag:"daily"},
+      {id:20, title:"Purge the Ego", subtitle:"Clean the lens", tag:"daily"},
+      {id:21, title:"Great Expectations", subtitle:"Receiving without pressure", tag:"daily"},
+      {id:22, title:"Sharing", subtitle:"Turning desire into Light", tag:"daily"},
+      {id:23, title:"Respect", subtitle:"Honor as protection", tag:"daily"},
+      {id:24, title:"Memory", subtitle:"Strengthening recall and meaning", tag:"daily"},
+      {id:25, title:"Courage", subtitle:"Move anyway", tag:"daily"},
+      {id:26, title:"Order from Chaos", subtitle:"Structure after disruption", tag:"daily"},
+      {id:27, title:"Atika Kadisha", subtitle:"Touching the Ancient Light (focus)", tag:"atika"},
+      {id:28, title:"Sweetening Judgment", subtitle:"Din into balance", tag:"atika"},
+      {id:29, title:"Central Column", subtitle:"Hold the middle line", tag:"atika"},
+      {id:30, title:"Restriction", subtitle:"Pause, choose, elevate", tag:"atika"},
+    ];
+
+    function defaultPracticeFor(n){
+      // keep it clean + non-preachy, tool-first
+      return "Practice:\n- Choose one small restriction today aligned to this Name.\n- One breath. One pause. One upgrade.\n- Note what shifted.";
+    }
+
+    // Zohar placeholder library (expand safely later)
+    const ZOHAR = [
+      {id:"atika-1", tag:"atika", title:"Atika Kadisha", text:"Focus: connection beyond intellect. Practice: breathe, restrict reactivity, choose the middle line."},
+      {id:"atika-2", tag:"atika", title:"Ancient of Days (Atika)", text:"Focus: soften harsh judgment. Practice: pause before speech, convert certainty into kindness."},
+      {id:"prac-1", tag:"practice", title:"Restriction", text:"Focus: the moment before reaction. Practice: count 3, then respond."},
+      {id:"prac-2", tag:"practice", title:"Witnessing", text:"Focus: observe without narrative. Practice: describe sensations in 10 words or less."}
+    ];
+
+    // =========================
+    // STATE + UI
+    // =========================
+
+    let state = loadState();
+
+    function clamp(n, a, b){
+      n = Number(n);
+      if(Number.isNaN(n)) return a;
+      return Math.min(b, Math.max(a, n));
+    }
+
+    function updateChips(){
+      $("pillarsChip").textContent   = String(state.pillars || 0);
+      $("cyclesChip").textContent    = String(state.cycles || 0);
+      $("certaintyChip").textContent = String(state.certainty ?? 5);
+      $("energyChip").textContent    = String(state.energy ?? 5);
+      $("certaintyVal").textContent  = String(state.certainty ?? 5);
+      $("energyVal").textContent     = String(state.energy ?? 5);
+    }
+
+    function zodiacFromYMD(ymd){
+      // expects "YYYY-MM-DD"
+      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((ymd||"").trim());
+      if(!m) return "";
+      const month = parseInt(m[2],10);
+      const day   = parseInt(m[3],10);
+
+      // Western sun signs (tropical)
+      if ((month===3 && day>=21) || (month===4 && day<=19)) return "Aries";
+      if ((month===4 && day>=20) || (month===5 && day<=20)) return "Taurus";
+      if ((month===5 && day>=21) || (month===6 && day<=20)) return "Gemini";
+      if ((month===6 && day>=21) || (month===7 && day<=22)) return "Cancer";
+      if ((month===7 && day>=23) || (month===8 && day<=22)) return "Leo";
+      if ((month===8 && day>=23) || (month===9 && day<=22)) return "Virgo";
+      if ((month===9 && day>=23) || (month===10 && day<=22)) return "Libra";
+      if ((month===10 && day>=23) || (month===11 && day<=21)) return "Scorpio";
+      if ((month===11 && day>=22) || (month===12 && day<=21)) return "Sagittarius";
+      if ((month===12 && day>=22) || (month===1 && day<=19)) return "Capricorn";
+      if ((month===1 && day>=20) || (month===2 && day<=18)) return "Aquarius";
+      if ((month===2 && day>=19) || (month===3 && day<=20)) return "Pisces";
+      return "";
+    }
+
+    function updateSignFromBirthday(){
+      const ymd = $("birthday").value || "";
+      const sign = zodiacFromYMD(ymd);
+      state.profile.birthday = ymd;
+      state.profile.sign = sign;
+      $("sign").value = sign || "";
       saveState();
       updateChips();
-      toast("All storage reset");
-      location.reload();
-    });
-  }
-
-  // ---------- boot ----------
-  function boot(){
-    clearErr();
-
-    // crash visibility
-    window.addEventListener("error", (e)=>{
-      showErr("JS ERROR: " + (e?.message || "unknown") + "\n" + (e?.error?.stack || ""));
-    });
-    window.addEventListener("unhandledrejection", (e)=>{
-      showErr("PROMISE ERROR: " + (e?.reason?.message || String(e?.reason || "unknown")));
-    });
-
-    // load + hydrate ui
-    state = loadState();
-    $("certainty").value = String(state.certainty ?? 5);
-    $("energy").value = String(state.energy ?? 5);
-    $("birthday").value = state.profile?.birthday || "";
-    $("sign").value = state.profile?.sign || "";
-    $("tikkun").value = state.profile?.tikkun || "";
-    $("notes").value = state.profile?.notes || "";
-    updateChips();
-updateChips();
-
-// safe: never let Gate UI break wiring
-try{
-  if (typeof renderGateStatus === "function") renderGateStatus();
-} catch(e){
-  console.error("renderGateStatus failed", e);
-  showErr("Gate UI error: " + (e?.message || String(e)));
-}
-    // initial list
-    n72_renderList(N72);
-    restoreSelected72();
-
-    // wire UI
-    // wire();
-
-    toast("KAI loaded");
-    console.log("KAI CLEAN 72 booted");
-  }
-
-  document.addEventListener("DOMContentLoaded", ()=>{
-    try{ boot(); }
-    catch(e){
-      console.error("BOOT ERROR", e);
-      showErr("BOOT ERROR: " + (e?.message || String(e)) + "\n" + (e?.stack || ""));
-      alert("KAI boot error (shown on-screen).");
+      logEvent("profile", {birthday: ymd, sign});
     }
-  });
 
-})();
-</script>
+    function setTab(name){
+      document.querySelectorAll(".tabbtn").forEach(b=>{
+        b.classList.toggle("active", b.dataset.tab === name);
+      });
+      document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+      const target = document.getElementById("view-"+name);
+      if(target) target.classList.add("active");
+
+      if(name === "names72") render72List();
+      if(name === "zohar") renderZohar();
+      if(name === "history") renderHistory();
+      if(name === "share") renderCardPreview();
+    }
+
+    // =========================
+    // 72 NAMES UI
+    // =========================
+
+    function get72Selected(){
+      const id = parseInt(localStorage.getItem(KEY.n72_selected) || "0", 10);
+      return Number.isFinite(id) ? id : 0;
+    }
+    function set72Selected(id){
+      localStorage.setItem(KEY.n72_selected, String(id));
+    }
+
+    function load72NotesMap(){
+      return safeParse(localStorage.getItem(KEY.n72_notes), {});
+    }
+    function save72NotesMap(map){
+      localStorage.setItem(KEY.n72_notes, JSON.stringify(map));
+    }
+
+    function filtered72(){
+      const q = ($("n72Search").value || "").trim().toLowerCase();
+      const f = $("n72Filter").value || "all";
+      return N72.filter(n=>{
+        const okFilter = (f==="all") || (f==="daily" && n.tag==="daily") || (f==="atika" && n.tag==="atika");
+        if(!okFilter) return false;
+        if(!q) return true;
+        return (n.title+" "+n.subtitle).toLowerCase().includes(q);
+      });
+    }
+
+    function render72List(){
+      $("btnBackToList").style.display = "none";
+      $("n72ListPane").style.display = "block";
+      $("n72DetailPane").style.display = "none";
+      $("n72Header").textContent = "The 72 Names";
+      $("n72Sub").textContent = "Tap a Name to open details. Everything is stored safely.";
+
+      const list = $("n72List");
+      list.innerHTML = "";
+      const items = filtered72();
+      if(items.length === 0){
+        list.innerHTML = `<div class="hint">No results. Try a different word.</div>`;
+        return;
+      }
+
+      for(const n of items){
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `<div class="k">#${n.id} • ${n.tag || "name"}</div>
+                         <div class="t">${escapeHtml(n.title)}</div>
+                         <div class="s">${escapeHtml(n.subtitle)}</div>`;
+        div.addEventListener("click", ()=>open72(n.id));
+        list.appendChild(div);
+      }
+    }
+
+    function open72(id){
+      const n = N72.find(x=>x.id===id);
+      if(!n){ toast("Name not found"); return; }
+
+      set72Selected(id);
+
+      $("btnBackToList").style.display = "inline-block";
+      $("n72ListPane").style.display = "none";
+      $("n72DetailPane").style.display = "block";
+      $("n72Header").textContent = `#${n.id} • ${n.title}`;
+      $("n72Sub").textContent = n.subtitle;
+
+      $("n72Title").textContent = n.title;
+      $("n72Subtitle").textContent = n.subtitle;
+
+      const notesMap = load72NotesMap();
+      const item = notesMap[String(id)] || {practice:"", notes:""};
+      const practice = item.practice || defaultPracticeFor(n);
+      $("n72Practice").textContent = practice;
+      $("n72Notes").value = item.notes || "";
+
+      logEvent("72_open", {id:n.id, title:n.title});
+    }
+
+    function persist72Detail(){
+      const id = get72Selected();
+      if(!id) return;
+      const notesMap = load72NotesMap();
+      notesMap[String(id)] = {
+        practice: $("n72Practice").textContent || "",
+        notes: $("n72Notes").value || ""
+      };
+      save72NotesMap(notesMap);
+      logEvent("72_save", {id});
+    }
+
+    function random72(){
+      const n = N72[Math.floor(Math.random()*N72.length)];
+      open72(n.id);
+    }
+
+    function today72(){
+      // deterministic pick: day-of-year mod length
+      const d = new Date();
+      const start = new Date(d.getFullYear(),0,0);
+      const diff = d - start;
+      const day = Math.floor(diff / 86400000);
+      const idx = day % N72.length;
+      open72(N72[idx].id);
+      toast("Today’s Name opened");
+    }
+
+    function copyCurrent72(){
+      const id = get72Selected();
+      const n = N72.find(x=>x.id===id);
+      if(!n){ toast("Open a Name first"); return; }
+      const txt =
+`72 Name #${n.id}: ${n.title}
+${n.subtitle}
+
+${$("n72Practice").textContent || ""}
+
+Notes:
+${$("n72Notes").value || ""}`.trim();
+
+      navigator.clipboard?.writeText(txt).then(
+        ()=>toast("Copied"),
+        ()=>toast("Copy blocked (iOS).")
+      );
+    }
+
+    // =========================
+    // GEMATRIA (simple, safe)
+    // =========================
+    const HEB = {
+      "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
+      "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,
+      "ע":70,"פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,"ש":300,"ת":400
+    };
+    function gematria(str){
+      let sum = 0;
+      const s = String(str||"");
+      for(const ch of s){
+        if(HEB[ch]) sum += HEB[ch];
+      }
+      return sum;
+    }
+
+    function gemCompute(){
+      const input = $("gemInput").value || "";
+      const val = gematria(input);
+      $("gemOut").value = String(val);
+      $("gemHint").textContent = val
+        ? `Gematria computed (Hebrew letters). If input is English, add Hebrew for meaning.`
+        : `No Hebrew letters detected. Try adding Hebrew text.`;
+      logEvent("gematria", {input: input.slice(0,40), val});
+    }
+
+    function gemInsight(){
+      const input = $("gemInput").value || "";
+      const val = $("gemOut").value || "";
+      const prompt =
+`Gematria Insight Prompt:
+Text: "${input}"
+Value: ${val}
+
+Give:
+1) What this value suggests spiritually (Centre-style, practical)
+2) A 1-minute restriction practice
+3) A one-sentence “today’s alignment”`;
+      navigator.clipboard?.writeText(prompt).then(
+        ()=>toast("Insight prompt copied"),
+        ()=>toast("Copy blocked (iOS).")
+      );
+    }
+
+    // =========================
+    // ZOHAR
+    // =========================
+    function renderZohar(){
+      const q = ($("zSearch").value || "").trim().toLowerCase();
+      const f = $("zFilter").value || "all";
+      const list = document.getElementById("zList");
+      list.innerHTML = "";
+
+      const items = ZOHAR.filter(x=>{
+        const okF = (f==="all") || (f==="atika" && x.tag==="atika") || (f==="practice" && x.tag==="practice");
+        if(!okF) return false;
+        if(!q) return true;
+        return (x.title+" "+x.text).toLowerCase().includes(q);
+      });
+
+      if(items.length === 0){
+        list.innerHTML = `<div class="hint">No results.</div>`;
+        return;
+      }
+
+      for(const x of items){
+        const block = document.createElement("div");
+        block.className = "card";
+        block.style.marginBottom = "10px";
+        block.innerHTML = `<h3>${escapeHtml(x.title)}</h3>
+          <div class="hint">${escapeHtml(x.text)}</div>
+          <div class="btnrow" style="margin-top:10px">
+            <button class="gold">Copy</button>
+          </div>`;
+        block.querySelector("button").addEventListener("click", ()=>{
+          navigator.clipboard?.writeText(`${x.title}\n\n${x.text}`).then(
+            ()=>toast("Copied"),
+            ()=>toast("Copy blocked (iOS).")
+          );
+          logEvent("zohar_copy", {id:x.id});
+        });
+        list.appendChild(block);
+      }
+    }
+
+    // =========================
+    // SHARE CARD
+    // =========================
+    function renderCardPreview(){
+      const c = $("cardCanvas");
+      const ctx = c.getContext("2d");
+      const W = c.width, H = c.height;
+
+      // bg
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = "#0b0b0c";
+      ctx.fillRect(0,0,W,H);
+
+      // glow
+      const g1 = ctx.createRadialGradient(W*0.5,H*0.1,10, W*0.5,H*0.1, W*0.9);
+      g1.addColorStop(0, "rgba(255,255,255,0.10)");
+      g1.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = g1;
+      ctx.fillRect(0,0,W,H);
+
+      const g2 = ctx.createRadialGradient(W*0.15,H*0.2,10, W*0.15,H*0.2, W*0.8);
+      g2.addColorStop(0, "rgba(216,178,75,0.16)");
+      g2.addColorStop(1, "rgba(216,178,75,0)");
+      ctx.fillStyle = g2;
+      ctx.fillRect(0,0,W,H);
+
+      // card panel
+      const pad = 80;
+      roundRect(ctx, pad, 220, W-pad*2, H-300, 34);
+      ctx.fillStyle = "rgba(255,255,255,0.06)";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // title
+      ctx.fillStyle = "rgba(255,255,255,0.92)";
+      ctx.font = "900 64px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("KAI", W/2, 140);
+
+      const title = ($("cardTitle").value || "Today’s Connection").trim();
+      const sub = ($("cardSub").value || "One restriction, one upgrade").trim();
+      const body = ($("cardBody").value || "").trim();
+
+      // content
+      ctx.textAlign = "left";
+      ctx.fillStyle = "rgba(216,178,75,0.95)";
+      ctx.font = "900 52px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+      wrapText(ctx, title, pad+44, 320, W-pad*2-88, 64);
+
+      ctx.fillStyle = "rgba(255,255,255,0.80)";
+      ctx.font = "700 34px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+      wrapText(ctx, sub, pad+44, 410, W-pad*2-88, 44);
+
+      ctx.fillStyle = "rgba(255,255,255,0.78)";
+      ctx.font = "500 34px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+      wrapText(ctx, body || "Write the teaching or practice here.", pad+44, 500, W-pad*2-88, 44);
+
+      // footer chips
+      ctx.fillStyle = "rgba(255,255,255,0.12)";
+      ctx.fillRect(pad+44, H-170, W-pad*2-88, 2);
+
+      ctx.fillStyle = "rgba(255,255,255,0.70)";
+      ctx.font = "700 28px -apple-system,system-ui,Segoe UI,Roboto,Arial";
+      ctx.fillText(`Certainty ${state.certainty ?? 5}/10`, pad+44, H-120);
+      ctx.fillText(`Energy ${state.energy ?? 5}/10`, pad+44, H-80);
+
+      ctx.textAlign = "right";
+      ctx.fillStyle = "rgba(255,255,255,0.60)";
+      ctx.fillText(new Date().toLocaleDateString(), W-pad-44, H-80);
+    }
+
+    function downloadCard(){
+      const c = $("cardCanvas");
+      const a = document.createElement("a");
+      a.download = "kai-card.png";
+      a.href = c.toDataURL("image/png");
+      a.click();
+      logEvent("share_download", {});
+    }
+
+    function clearCard(){
+      $("cardTitle").value = "";
+      $("cardSub").value = "";
+      $("cardBody").value = "";
+      renderCardPreview();
+      toast("Cleared");
+    }
+
+    function roundRect(ctx, x, y, w, h, r){
+      ctx.beginPath();
+      ctx.moveTo(x+r, y);
+      ctx.arcTo(x+w, y, x+w, y+h, r);
+      ctx.arcTo(x+w, y+h, x, y+h, r);
+      ctx.arcTo(x, y+h, x, y, r);
+      ctx.arcTo(x, y, x+w, y, r);
+      ctx.closePath();
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+      const words = String(text||"").split(/\s+/);
+      let line = "";
+      for(let i=0;i<words.length;i++){
+        const test = line ? line + " " + words[i] : words[i];
+        if(ctx.measureText(test).width > maxWidth && line){
+          ctx.fillText(line, x, y);
+          line = words[i];
+          y += lineHeight;
+        }else{
+          line = test;
+        }
+      }
+      if(line) ctx.fillText(line, x, y);
+    }
+
+    // =========================
+    // HISTORY
+    // =========================
+    function renderHistory(){
+      const list = document.getElementById("historyList");
+      list.innerHTML = "";
+      const items = loadHistory();
+      if(!items.length){
+        list.innerHTML = `<div class="hint">No history yet.</div>`;
+        return;
+      }
+      for(const it of items.slice(0,80)){
+        const d = new Date(it.t);
+        const div = document.createElement("div");
+        div.className = "card";
+        div.style.marginBottom = "10px";
+        div.innerHTML = `<h3>${escapeHtml(it.type)}</h3>
+          <div class="hint">${escapeHtml(d.toLocaleString())}</div>
+          <div class="hint mono" style="margin-top:6px">${escapeHtml(JSON.stringify(it.meta || {}))}</div>`;
+        list.appendChild(div);
+      }
+    }
+
+    // =========================
+    // MISC HELPERS
+    // =========================
+    function escapeHtml(s){
+      return String(s||"")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // =========================
+    // WIRING
+    // =========================
+    function wire(){
+      // Tabs
+      document.querySelectorAll(".tabbtn").forEach(btn=>{
+        btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+      });
+
+      // Gate
+      $("gateConnect").addEventListener("click", ()=>{
+        state.pillars = clamp((state.pillars||0)+1, 0, 100);
+        saveState(); updateChips();
+        logEvent("connect", {via:"gate"});
+        $("gate").classList.remove("active");
+        toast("Connected (+1 pillar)");
+      });
+      $("gateEnter").addEventListener("click", ()=>{
+        $("gate").classList.remove("active");
+      });
+
+      // Home actions
+      $("btnConnect").addEventListener("click", ()=>{
+        state.pillars = clamp((state.pillars||0)+1, 0, 100);
+        saveState(); updateChips();
+        logEvent("connect", {via:"home"});
+        toast("Connected (+1 pillar)");
+      });
+
+      $("btnCycle").addEventListener("click", ()=>{
+        state.cycles = clamp((state.cycles||0)+1, 0, 10);
+        saveState(); updateChips();
+        logEvent("cycle", {});
+        toast("Cycle logged");
+      });
+
+      $("btnToday").addEventListener("click", ()=>{
+        setTab("names72");
+        today72();
+      });
+
+      // Sliders
+      $("certainty").addEventListener("input", (e)=>{
+        state.certainty = clamp(e.target.value, 0, 10);
+        saveState(); updateChips();
+      });
+      $("energy").addEventListener("input", (e)=>{
+        state.energy = clamp(e.target.value, 0, 10);
+        saveState(); updateChips();
+      });
+
+      // Profile
+      $("birthday").addEventListener("change", updateSignFromBirthday);
+      $("tikkun").addEventListener("input", (e)=>{
+        state.profile.tikkun = String(e.target.value || "");
+        saveState();
+      });
+      $("notes").addEventListener("input", (e)=>{
+        state.profile.notes = String(e.target.value || "");
+        saveState();
+      });
+
+      // 72 UI
+      $("n72Search").addEventListener("input", render72List);
+      $("n72Filter").addEventListener("change", render72List);
+      $("btnBackToList").addEventListener("click", render72List);
+      $("btnRandom72").addEventListener("click", random72);
+      $("btnCopy72").addEventListener("click", copyCurrent72);
+
+      // Save 72 notes safely
+      $("n72Notes").addEventListener("input", ()=>{
+        // low-friction autosave
+        persist72Detail();
+      });
+      $("n72Practice").addEventListener("input", ()=>{
+        persist72Detail();
+      });
+
+      // Gematria
+      $("btnGemCompute").addEventListener("click", gemCompute);
+      $("btnGemInsight").addEventListener("click", gemInsight);
+
+      // Zohar
+      $("zSearch").addEventListener("input", renderZohar);
+      $("zFilter").addEventListener("change", renderZohar);
+
+      // Share
+      $("btnRenderCard").addEventListener("click", ()=>{
+        renderCardPreview();
+        logEvent("share_render", {});
+      });
+      $("btnDownloadCard").addEventListener("click", downloadCard);
+      $("btnClearCard").addEventListener("click", clearCard);
+      $("cardTitle").addEventListener("input", renderCardPreview);
+      $("cardSub").addEventListener("input", renderCardPreview);
+      $("cardBody").addEventListener("input", renderCardPreview);
+
+      // Settings
+      $("btnReset72").addEventListener("click", ()=>{
+        localStorage.removeItem(KEY.n72_selected);
+        localStorage.removeItem(KEY.n72_notes);
+        toast("72 storage reset");
+        logEvent("reset_72", {});
+        render72List();
+      });
+
+      $("btnResetAll").addEventListener("click", ()=>{
+        localStorage.clear();
+        state = structuredClone(defaultState);
+        saveState();
+        toast("All storage reset");
+        logEvent("reset_all", {});
+        location.reload();
+      });
+
+      $("btnReopenGate").addEventListener("click", ()=>{
+        $("gate").classList.add("active");
+      });
+
+      $("gateMode").addEventListener("change", (e)=>{
+        localStorage.setItem(KEY.gate_mode, e.target.value);
+        toast("Saved");
+      });
+
+      $("btnExport").addEventListener("click", async ()=>{
+        const payload = {
+          state,
+          history: loadHistory(),
+          n72_notes: load72NotesMap(),
+          n72_selected: get72Selected()
+        };
+        const txt = JSON.stringify(payload, null, 2);
+        try{
+          await navigator.clipboard.writeText(txt);
+          toast("Export copied");
+        }catch(_e){
+          toast("Copy blocked (iOS).");
+        }
+      });
+    }
+
+    function applyGateMode(){
+      const mode = localStorage.getItem(KEY.gate_mode) || "on";
+      $("gateMode").value = mode;
+      if(mode === "off"){
+        $("gate").classList.remove("active");
+      }else{
+        $("gate").classList.add("active");
+      }
+    }
+
+    // =========================
+    // BOOT (never crash silently)
+    // =========================
+    function boot(){
+      clearErr();
+
+      // Crash visibility
+      window.addEventListener("error", (e)=>{
+        showErr("JS ERROR: " + (e?.message || "unknown") + "\n" + (e?.error?.stack || ""));
+      });
+      window.addEventListener("unhandledrejection", (e)=>{
+        showErr("PROMISE ERROR: " + (e?.reason?.message || String(e?.reason || "unknown")));
+      });
+
+      // Hydrate UI
+      state = loadState();
+
+      $("certainty").value = String(state.certainty ?? 5);
+      $("energy").value = String(state.energy ?? 5);
+
+      $("birthday").value = state.profile?.birthday || "";
+      $("tikkun").value = state.profile?.tikkun || "";
+      $("notes").value = state.profile?.notes || "";
+
+      // Ensure sign is always consistent
+      const computed = zodiacFromYMD($("birthday").value || "");
+      state.profile.sign = computed || (state.profile?.sign || "");
+      $("sign").value = state.profile.sign || "";
+      saveState();
+
+      updateChips();
+      applyGateMode();
+      wire();
+
+      // Initial renders
+      render72List();
+      renderZohar();
+      renderHistory();
+      renderCardPreview();
+
+      toast("KAI loaded");
+      console.log("KAI SAFE BOOT ok");
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+      try{ boot(); }
+      catch(e){
+        console.error("BOOT ERROR", e);
+        showErr("BOOT ERROR:\n" + (e?.message || String(e)) + "\n" + (e?.stack || ""));
+        alert("KAI boot error (shown on-screen).");
+      }
+    });
+
+  })();
+  </script>
 </body>
 </html>
