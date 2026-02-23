@@ -1,1603 +1,1585 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <meta name="theme-color" content="#0b0b0c"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
   <title>KAI</title>
 
   <style>
     :root{
-      --bg:#070709;
-      --panel:rgba(255,255,255,.06);
-      --panel2:rgba(255,255,255,.08);
-      --line:rgba(255,255,255,.12);
-      --text:rgba(255,255,255,.86);
-      --muted:rgba(255,255,255,.62);
-      --gold:#d8b24b;
-      --gold2:#f1d27b;
-      --danger:#ff5b5b;
-      --ok:#3ce28f;
-      --shadow: 0 18px 40px rgba(0,0,0,.55);
+      --bg:#070707;
+      --panel:#0e0e0e;
+      --panel2:#121212;
+      --text:#f3f1ea;
+      --muted:#bdb8ab;
+      --gold:#d7b45a;
+      --gold2:#f0d28a;
+      --line:rgba(215,180,90,.22);
+      --shadow:0 20px 50px rgba(0,0,0,.55);
       --radius:18px;
       --radius2:26px;
-      --pad:16px;
-      --max:980px;
-      --font: -apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
       font-family:var(--font);
+      background: radial-gradient(1200px 900px at 50% -10%, rgba(215,180,90,.08), transparent 55%),
+                  radial-gradient(900px 800px at 90% 20%, rgba(215,180,90,.06), transparent 55%),
+                  radial-gradient(900px 800px at 10% 35%, rgba(215,180,90,.05), transparent 55%),
+                  var(--bg);
       color:var(--text);
-      background:
-        radial-gradient(1200px 700px at 20% 12%, rgba(216,178,75,.18), rgba(0,0,0,0)),
-        radial-gradient(900px 600px at 60% 8%, rgba(255,255,255,.10), rgba(0,0,0,0)),
-        radial-gradient(900px 700px at 70% 70%, rgba(0,0,0,.35), rgba(0,0,0,0)),
-        linear-gradient(180deg, #060607, #0b0b0c 40%, #060607);
-      overflow-x:hidden;
-    }
-    .wrap{ max-width:var(--max); margin:0 auto; padding:18px 14px 40px; }
-
-    /* Top bar */
-    .top{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; padding:8px 2px 14px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      user-select:none;
-    }
-    .logo{
-      width:44px;height:44px;border-radius:14px;
-      background:
-        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.35), rgba(255,255,255,0)),
-        radial-gradient(28px 28px at 70% 30%, rgba(216,178,75,.32), rgba(216,178,75,0)),
-        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,0));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow: var(--shadow);
-      display:flex; align-items:center; justify-content:center;
-      letter-spacing:.12em;
-      font-weight:900;
-      color:rgba(255,255,255,.86);
-    }
-    .brand h1{
-      margin:0; font-size:18px; letter-spacing:.12em;
-    }
-    .brand small{
-      display:block; color:var(--muted); margin-top:2px; letter-spacing:.02em;
-    }
-    .counter{
-      display:flex; gap:10px; align-items:center;
-      padding:10px 12px;
-      border-radius:16px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: 0 10px 24px rgba(0,0,0,.35);
-      user-select:none;
-    }
-    .pillars{
-      display:flex; flex-direction:column; line-height:1.05;
-    }
-    .pillars b{ color:var(--gold2); font-size:16px; }
-    .pillars span{ color:var(--muted); font-size:12px; }
-    .btnSmall{
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      padding:10px 10px;
-      border-radius:14px;
-      font-weight:800;
-      cursor:pointer;
-    }
-    .btnSmall:active{ transform: translateY(1px); }
-
-    /* Nav */
-    .nav{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin:8px 0 14px;
-    }
-    .tab{
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.05);
-      color:var(--muted);
-      padding:10px 12px;
-      border-radius:14px;
-      font-weight:850;
-      cursor:pointer;
-      letter-spacing:.02em;
-    }
-    .tab.on{
-      color:rgba(0,0,0,.88);
-      background: linear-gradient(180deg, rgba(241,210,123,.92), rgba(216,178,75,.92));
-      border-color: rgba(216,178,75,.55);
-    }
-
-    /* Cards / panels */
-    .card{
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:var(--radius2);
-      box-shadow: var(--shadow);
-      padding:16px;
-      margin: 12px 0;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
       overflow:hidden;
     }
-    .card h2{
-      margin:0 0 10px;
-      font-size:18px;
-      letter-spacing:.02em;
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
+
+    /* Top bar */
+    .topbar{
+      position:fixed; left:0; right:0; top:0;
+      padding: env(safe-area-inset-top) 16px 12px 16px;
+      background: linear-gradient(to bottom, rgba(0,0,0,.82), rgba(0,0,0,.55), transparent);
+      z-index:20;
+      pointer-events:none;
     }
-    .sub{
-      color:var(--muted);
-      margin:0 0 12px;
+    .topbar .row{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; pointer-events:auto;
+    }
+    .brand{
+      display:flex; align-items:baseline; gap:10px;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+      font-weight:800;
+      user-select:none;
+    }
+    .brand .kai{
+      font-size:18px;
+      color:var(--gold2);
+    }
+    .brand .tag{
+      font-size:11px;
+      color:rgba(243,241,234,.72);
+      letter-spacing:.32em;
+      font-weight:700;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      background:rgba(16,16,16,.7);
+      padding:8px 10px;
+      border-radius:999px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      font-size:12px;
+      color:rgba(243,241,234,.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .dot{
+      width:8px; height:8px; border-radius:999px;
+      background:rgba(215,180,90,.95);
+      box-shadow: 0 0 0 3px rgba(215,180,90,.18);
+    }
+
+    /* App shell */
+    .app{
+      position:absolute; inset:0;
+      padding-top: calc(env(safe-area-inset-top) + 62px);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 78px);
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .container{
+      width:min(980px, 100%);
+      margin:0 auto;
+      padding:14px 14px 22px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(18,18,18,.9), rgba(12,12,12,.85));
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:16px 16px 12px;
+      border-bottom:1px solid rgba(215,180,90,.14);
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    }
+    .hgroup .h1{
+      font-weight:900;
+      letter-spacing:.02em;
+      font-size:18px;
+      margin:0;
+    }
+    .hgroup .sub{
+      margin-top:6px;
+      font-size:13px;
+      color:rgba(243,241,234,.72);
+      line-height:1.35;
+    }
+    .card .bd{ padding:14px 16px 16px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns:1fr; }
+    }
+
+    /* Buttons + inputs */
+    button, input, textarea, select{ font:inherit; }
+    .btn{
+      appearance:none; -webkit-appearance:none;
+      border:1px solid rgba(215,180,90,.35);
+      color:rgba(0,0,0,.92);
+      background: linear-gradient(180deg, rgba(240,210,138,.98), rgba(215,180,90,.95));
+      border-radius: 14px;
+      padding:10px 12px;
+      font-weight:900;
+      letter-spacing:.02em;
+      cursor:pointer;
+      box-shadow: 0 18px 45px rgba(215,180,90,.18);
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.secondary{
+      color:rgba(243,241,234,.92);
+      background: rgba(20,20,20,.75);
+      border:1px solid rgba(215,180,90,.22);
+      box-shadow:none;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .btn.ghost{
+      color:rgba(243,241,234,.85);
+      background: transparent;
+      border:1px solid rgba(215,180,90,.18);
+      box-shadow:none;
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .spacer{ flex:1; }
+
+    .field{
+      display:flex; flex-direction:column; gap:8px;
+      margin:12px 0;
+    }
+    .label{
+      font-size:12px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:rgba(243,241,234,.65);
+      font-weight:800;
+    }
+    .input, .textarea, .select{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(215,180,90,.18);
+      background: rgba(8,8,8,.65);
+      color:rgba(243,241,234,.92);
+      outline:none;
+    }
+    .textarea{ min-height:110px; resize:vertical; }
+    .help{
+      font-size:12px;
+      color:rgba(243,241,234,.62);
       line-height:1.35;
     }
 
-    .row{ display:flex; gap:12px; flex-wrap:wrap; }
-    .col{ flex:1 1 280px; min-width:260px; }
-
-    label{
-      display:block;
-      color:rgba(255,255,255,.72);
-      font-size:12px;
-      margin:10px 0 6px;
-      letter-spacing:.02em;
-      font-weight:800;
+    /* List */
+    .listWrap{
+      border:1px solid rgba(215,180,90,.16);
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(10,10,10,.55);
     }
-    input, textarea, select{
-      width:100%;
+    .listTop{
       padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.25);
-      color:var(--text);
-      outline:none;
-      font-size:15px;
+      border-bottom:1px solid rgba(215,180,90,.14);
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      background: rgba(0,0,0,.25);
     }
-    textarea{ min-height:92px; resize:vertical; }
-    input::placeholder, textarea::placeholder{ color:rgba(255,255,255,.35); }
-
-    .btnrow{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
-    button{
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      padding:12px 14px;
-      border-radius:16px;
-      font-weight:900;
-      letter-spacing:.02em;
-      cursor:pointer;
-    }
-    button:active{ transform: translateY(1px); }
-    .gold{
-      color:rgba(0,0,0,.88);
-      background: linear-gradient(180deg, rgba(241,210,123,.95), rgba(216,178,75,.95));
-      border-color: rgba(216,178,75,.6);
-    }
-    .primary{
-      border-color: rgba(241,210,123,.55);
-      background: rgba(216,178,75,.14);
-      color: rgba(241,210,123,.95);
-    }
-    .danger{
-      border-color: rgba(255,91,91,.45);
-      background: rgba(255,91,91,.12);
-      color: rgba(255,91,91,.95);
-    }
-    .mini{
-      padding:10px 12px;
-      font-size:13px;
-      border-radius:14px;
-    }
-
-    /* Meter */
-    .meter{
-      padding:12px 12px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-    }
-    .meter .head{
-      display:flex; justify-content:space-between; align-items:center;
-      margin-bottom:8px;
-    }
-    .meter b{ color:var(--gold2); }
-    .meter span{ color:var(--muted); font-weight:800; }
-    .meter input[type="range"]{
-      width:100%;
-      accent-color: var(--gold);
-    }
-
-    /* Gate */
-    .gate{
-      display:flex; flex-direction:column; gap:12px;
-      text-align:left;
-      padding:18px;
-      border-radius:26px;
-      background:
-        radial-gradient(900px 450px at 20% 20%, rgba(216,178,75,.18), rgba(216,178,75,0)),
-        radial-gradient(700px 450px at 60% 10%, rgba(255,255,255,.10), rgba(0,0,0,0)),
-        rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: var(--shadow);
-    }
-    .gate h2{ margin:0; font-size:20px; }
-    .gate .mantra{
-      font-weight:900;
-      letter-spacing:.02em;
-      line-height:1.25;
-      color:rgba(255,255,255,.90);
-    }
-    .chips{ display:flex; flex-wrap:wrap; gap:8px; }
-    .chip{
-      padding:10px 12px;
-      border-radius:999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      color: rgba(255,255,255,.80);
-      font-weight:900;
-      font-size:13px;
-    }
-    .chip.gold{
-      color:rgba(0,0,0,.88);
-      background: linear-gradient(180deg, rgba(241,210,123,.92), rgba(216,178,75,.92));
-      border-color: rgba(216,178,75,.6);
-    }
-
-    /* Lists */
     .list{
-      display:flex; flex-direction:column; gap:10px;
-      margin-top:10px;
+      max-height: 56vh;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
     }
     .item{
+      display:grid;
+      grid-template-columns: 56px 1fr;
+      gap:12px;
       padding:12px 12px;
-      border-radius:18px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.12);
+      border-bottom:1px solid rgba(215,180,90,.10);
+      cursor:pointer;
+      user-select:none;
     }
-    .item h3{ margin:0 0 6px; font-size:15px; }
-    .item p{ margin:0; color:var(--muted); line-height:1.35; }
-    .item .meta{ margin-top:8px; display:flex; flex-wrap:wrap; gap:8px; }
-    .tag{
-      padding:7px 10px;
-      border-radius:999px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      color: rgba(255,255,255,.72);
+    .item:last-child{ border-bottom:none; }
+    .item:hover{ background: rgba(215,180,90,.06); }
+    .nbox{
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      border:1px solid rgba(215,180,90,.18);
+      border-radius:14px;
+      background: rgba(12,12,12,.8);
+      padding:8px 6px;
+      gap:6px;
+    }
+    .nbox .num{
       font-weight:900;
+      color:rgba(243,241,234,.95);
+      font-size:13px;
+    }
+    .nbox .tri{
+      font-family: "Times New Roman", Georgia, serif;
+      direction: rtl;
+      color: var(--gold2);
+      font-weight:800;
+      font-size:15px;
+      letter-spacing:.06em;
+      line-height:1;
+    }
+    .itTitle{
+      font-weight:900;
+      font-size:15px;
+      margin:0;
+    }
+    .itSub{
+      margin-top:4px;
       font-size:12px;
+      color:rgba(243,241,234,.70);
+      line-height:1.3;
     }
 
-    /* Share card */
-    canvas{
-      width:100%;
-      height:auto;
-      border-radius:20px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.25);
-      display:block;
+    /* Detail */
+    .detail{
+      border:1px solid rgba(215,180,90,.16);
+      border-radius: 18px;
+      background: rgba(10,10,10,.55);
+      overflow:hidden;
+    }
+    .detail .top{
+      padding:14px 14px 12px;
+      border-bottom:1px solid rgba(215,180,90,.14);
+      display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap;
+    }
+    .bigTri{
+      font-family: "Times New Roman", Georgia, serif;
+      direction: rtl;
+      font-size:42px;
+      letter-spacing:.08em;
+      line-height:1.1;
+      color: var(--gold2);
+      text-shadow: 0 18px 65px rgba(215,180,90,.18);
+      font-weight:900;
+    }
+    .kTitle{ font-size:18px; font-weight:950; margin:0; }
+    .kSub{ margin-top:6px; color:rgba(243,241,234,.72); font-size:13px; line-height:1.35; }
+
+    .steps{
+      padding:12px 14px 14px;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    .step{
+      border:1px solid rgba(215,180,90,.14);
+      border-radius: 16px;
+      padding:12px;
+      background: rgba(8,8,8,.55);
+    }
+    .step .st{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      color:rgba(243,241,234,.62);
+      font-weight:900;
+      margin-bottom:8px;
+    }
+    .step .tx{
+      font-size:13px;
+      color:rgba(243,241,234,.84);
+      line-height:1.45;
+    }
+
+    /* Bottom nav */
+    .nav{
+      position:fixed; left:0; right:0; bottom:0;
+      padding: 10px 12px calc(env(safe-area-inset-bottom) + 10px);
+      z-index:30;
+      background: linear-gradient(to top, rgba(0,0,0,.92), rgba(0,0,0,.65), transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top:1px solid rgba(215,180,90,.12);
+    }
+    .tabs{
+      width:min(980px,100%);
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+    }
+    .tab{
+      border:1px solid rgba(215,180,90,.14);
+      background: rgba(12,12,12,.65);
+      color:rgba(243,241,234,.72);
+      border-radius: 16px;
+      padding:10px 10px;
+      text-align:center;
+      font-weight:900;
+      font-size:12px;
+      letter-spacing:.06em;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tab.active{
+      background: rgba(215,180,90,.12);
+      border-color: rgba(215,180,90,.28);
+      color: rgba(243,241,234,.92);
+      box-shadow: 0 12px 40px rgba(215,180,90,.10);
+    }
+
+    /* Splash / Connect gate */
+    .gate{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(1200px 900px at 50% -10%, rgba(215,180,90,.16), transparent 55%),
+        radial-gradient(900px 800px at 70% 30%, rgba(215,180,90,.10), transparent 55%),
+        radial-gradient(700px 700px at 30% 40%, rgba(215,180,90,.08), transparent 55%),
+        #000;
+      z-index:999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:22px;
+    }
+    .gateCard{
+      width:min(820px, 100%);
+      border:1px solid rgba(215,180,90,.22);
+      border-radius: 28px;
+      background: rgba(8,8,8,.72);
+      box-shadow: 0 30px 90px rgba(0,0,0,.72);
+      overflow:hidden;
+    }
+    .gateCard .gTop{
+      padding:18px 18px 14px;
+      border-bottom:1px solid rgba(215,180,90,.14);
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .seal{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .seal .big{
+      font-weight:1000;
+      letter-spacing:.32em;
+      text-transform:uppercase;
+      color: var(--gold2);
+      font-size:18px;
+    }
+    .seal .small{
+      font-size:12px;
+      color:rgba(243,241,234,.68);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-weight:900;
+    }
+    .gateCard .gBody{
+      padding:18px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+    @media (max-width: 900px){
+      .gateCard .gBody{ grid-template-columns:1fr; }
+    }
+    .kavanah{
+      border:1px solid rgba(215,180,90,.14);
+      border-radius: 22px;
+      padding:14px;
+      background: rgba(0,0,0,.25);
+    }
+    .kavanah .line{
+      font-size:15px;
+      line-height:1.45;
+      color:rgba(243,241,234,.88);
+    }
+    .kavanah .mut{
+      margin-top:10px;
+      font-size:12px;
+      color:rgba(243,241,234,.62);
+      line-height:1.4;
+    }
+    .breath{
+      border:1px solid rgba(215,180,90,.14);
+      border-radius: 22px;
+      padding:14px;
+      background: rgba(0,0,0,.25);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .breath .meter{
+      height:10px;
+      border-radius:999px;
+      background: rgba(215,180,90,.10);
+      overflow:hidden;
+      border:1px solid rgba(215,180,90,.16);
+    }
+    .breath .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(240,210,138,.95), rgba(215,180,90,.95));
+      border-radius:999px;
+      transition: width .25s ease;
+    }
+    .breath .hint{
+      font-size:12px;
+      color:rgba(243,241,234,.68);
+      line-height:1.35;
     }
 
     /* Toast */
     .toast{
       position:fixed;
       left:50%;
-      bottom:18px;
-      transform: translateX(-50%);
-      padding:12px 14px;
-      border-radius:16px;
-      background: rgba(0,0,0,.72);
-      border:1px solid rgba(255,255,255,.14);
-      color: rgba(255,255,255,.88);
-      font-weight:900;
-      letter-spacing:.02em;
-      box-shadow: var(--shadow);
-      z-index: 9999;
+      transform:translateX(-50%);
+      bottom: calc(env(safe-area-inset-bottom) + 92px);
+      z-index:9999;
+      padding:10px 12px;
+      border-radius: 999px;
+      border:1px solid rgba(215,180,90,.22);
+      background: rgba(0,0,0,.78);
+      color: rgba(243,241,234,.92);
+      font-size:12px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.6);
       opacity:0;
       pointer-events:none;
-      transition: opacity .18s ease, transform .18s ease;
-      max-width:min(92vw, 720px);
-      text-align:center;
+      transition: opacity .18s ease;
+      max-width:min(680px, 92vw);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
-    .toast.on{
-      opacity:1;
-      transform: translateX(-50%) translateY(-4px);
+    .toast.show{ opacity:1; }
+
+    /* Error overlay */
+    .err{
+      position:fixed;
+      left:12px; right:12px;
+      top: calc(env(safe-area-inset-top) + 68px);
+      z-index:9998;
+      display:none;
+      border:1px solid rgba(255,120,120,.35);
+      background: rgba(30,0,0,.65);
+      color: rgba(255,235,235,.95);
+      border-radius: 18px;
+      padding:12px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-
-    /* Hidden */
-    .hide{ display:none !important; }
-
-    /* Footer */
-    .foot{
-      margin-top:16px;
-      color:rgba(255,255,255,.42);
-      font-weight:800;
+    .err pre{
+      margin:10px 0 0;
+      font-family: var(--mono);
       font-size:12px;
-      letter-spacing:.02em;
-      text-align:center;
+      white-space:pre-wrap;
+      word-break:break-word;
+      color: rgba(255,235,235,.9);
     }
+
+    /* Canvas preview */
+    .canvasWrap{
+      border:1px solid rgba(215,180,90,.16);
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(0,0,0,.35);
+    }
+    canvas{ display:block; width:100%; height:auto; }
+
+    /* Hide/Show sections */
+    .screen{ display:none; }
+    .screen.active{ display:block; }
   </style>
 </head>
 
 <body>
-<div class="wrap">
-
-  <div class="top">
-    <div class="brand">
-      <div class="logo">KAI</div>
-      <div>
-        <h1>KAI</h1>
-        <small>Structured daily work</small>
-      </div>
+  <!-- error overlay -->
+  <div id="err" class="err">
+    <div style="display:flex; gap:10px; align-items:center;">
+      <div style="font-weight:950;">KAI caught an error</div>
+      <div class="spacer"></div>
+      <button class="btn secondary" id="btnErrHide" type="button">Hide</button>
     </div>
+    <pre id="errTxt"></pre>
+  </div>
 
-    <div class="counter" title="100 Connections (Pillars) counter">
-      <div class="pillars">
-        <b><span id="pillarsNow">0</span>/100</b>
-        <span>Pillars today</span>
+  <!-- top bar -->
+  <div class="topbar">
+    <div class="row">
+      <div class="brand">
+        <div class="kai">KAI</div>
+        <div class="tag">Kabbalah Always Illuminates</div>
       </div>
-      <button class="btnSmall" id="btnPillarPlus">+1</button>
-      <button class="btnSmall" id="btnPillarReset" title="Reset pillars to 0">↺</button>
+      <div class="pill" title="Current selection">
+        <span class="dot"></span>
+        <span id="pillText">Ready</span>
+      </div>
     </div>
   </div>
 
+  <!-- connect gate -->
+  <div id="gate" class="gate" aria-hidden="false">
+    <div class="gateCard">
+      <div class="gTop">
+        <div class="seal">
+          <div class="big">KAI</div>
+          <div class="small">Connect, then study</div>
+        </div>
+        <div class="row">
+          <button class="btn ghost" id="btnGateSkip" type="button">Skip</button>
+          <button class="btn" id="btnGateEnter" type="button">Connect</button>
+        </div>
+      </div>
+
+      <div class="gBody">
+        <div class="kavanah">
+          <div class="line" style="font-weight:900; color:rgba(243,241,234,.94);">
+            One breath. One restriction. One choice.
+          </div>
+          <div class="line" style="margin-top:10px;">
+            I pause. I soften. I connect to the Light.
+          </div>
+          <div class="mut">
+            This is the door. The app is the study.  
+            You’re building a global Mishkan by making the work repeatable.
+          </div>
+        </div>
+
+        <div class="breath">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div style="font-weight:950; letter-spacing:.08em;">Breath cycle</div>
+            <div id="breathLabel" style="font-size:12px; color:rgba(243,241,234,.70);">Idle</div>
+          </div>
+          <div class="meter"><div id="breathBar" class="bar"></div></div>
+          <div class="hint" id="breathHint">
+            Tap <b>Connect</b>. We’ll do a short inhale, hold, exhale. Then you enter.
+          </div>
+          <div class="row">
+            <button class="btn secondary" id="btnGateRestart" type="button">Restart</button>
+            <div class="spacer"></div>
+            <div style="font-size:12px; color:rgba(243,241,234,.62);">
+              Target: <b>one clean connection</b> ✅
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- main app -->
+  <div class="app" id="app">
+    <div class="container">
+
+      <!-- STUDY -->
+      <div id="screenStudy" class="screen active">
+        <div class="card">
+          <div class="hd">
+            <div class="hgroup">
+              <h2 class="h1">Study</h2>
+              <div class="sub">Choose a Name. Scan right-to-left. Read. Practice. Repeat. 🔁</div>
+            </div>
+            <div class="row">
+              <button class="btn secondary" id="btnRandom" type="button">Random</button>
+              <button class="btn secondary" id="btnResume" type="button">Resume</button>
+            </div>
+          </div>
+
+          <div class="bd">
+            <div class="grid">
+              <div>
+                <div class="listWrap">
+                  <div class="listTop">
+                    <input id="q" class="input" placeholder="Search (e.g., Unity, Fear, Prosperity)..." />
+                    <select id="filter" class="select" style="max-width:220px;">
+                      <option value="all">All 72</option>
+                      <option value="saved">Only with notes</option>
+                    </select>
+                  </div>
+                  <div id="list" class="list"></div>
+                </div>
+                <div class="help" style="margin-top:10px;">
+                  Tip: your meeting mode is “clean demo.” Pick 3 Names quickly, generate 3 share cards, done. ✨
+                </div>
+              </div>
+
+              <div>
+                <div id="detail" class="detail">
+                  <div class="top">
+                    <div style="min-width:110px;">
+                      <div class="bigTri" id="dTri">והו</div>
+                    </div>
+                    <div style="flex:1; min-width:240px;">
+                      <div class="row" style="align-items:center;">
+                        <div style="font-weight:1000; color:rgba(243,241,234,.92);">#<span id="dNum">1</span></div>
+                        <div class="spacer"></div>
+                        <button class="btn secondary" id="btnToCard" type="button">To Share Card</button>
+                      </div>
+                      <p class="kTitle" id="dTitle">Time Travel</p>
+                      <div class="kSub" id="dSub">How to fix the past</div>
+                    </div>
+                  </div>
+
+                  <div class="steps">
+                    <div class="step">
+                      <div class="st">How to use (Centre-style)</div>
+                      <div class="tx">
+                        1) Set aside 10 minutes. <br/>
+                        2) Scan the letters right-to-left. <br/>
+                        3) Close your eyes and visualize the letters. <br/>
+                        4) Read the wisdom. Choose a physical action that matches it.
+                      </div>
+                    </div>
+
+                    <div class="step">
+                      <div class="st">Practice prompt</div>
+                      <div class="tx" id="dPrompt">
+                        What is one thing I can restrict today so the Light can pass through?
+                      </div>
+                    </div>
+
+                    <div class="step">
+                      <div class="st">Notes</div>
+                      <textarea id="dNotes" class="textarea" placeholder="Write what you witnessed. Keep it practical."></textarea>
+                      <div class="row">
+                        <button class="btn" id="btnSaveNotes" type="button">Save</button>
+                        <button class="btn secondary" id="btnClearNotes" type="button">Clear</button>
+                        <div class="spacer"></div>
+                        <button class="btn ghost" id="btnCopyTriplet" type="button">Copy letters</button>
+                      </div>
+                      <div class="help">Notes are saved on-device (localStorage). No account. No drama.</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- grid -->
+          </div><!-- bd -->
+        </div><!-- card -->
+      </div><!-- screenStudy -->
+
+      <!-- SHARE CARD -->
+      <div id="screenCard" class="screen">
+        <div class="card">
+          <div class="hd">
+            <div class="hgroup">
+              <h2 class="h1">Share Card</h2>
+              <div class="sub">Luxury black + gold. Export as JPEG. Share from iPhone/iPad. 🖤✨</div>
+            </div>
+            <div class="row">
+              <button class="btn secondary" id="btnCardLoadSelected" type="button">Use selected</button>
+              <button class="btn secondary" id="btnCardRandom" type="button">Random</button>
+            </div>
+          </div>
+
+          <div class="bd">
+            <div class="grid">
+              <div>
+                <div class="field">
+                  <div class="label">Name</div>
+                  <select id="cardPick" class="select"></select>
+                </div>
+
+                <div class="field">
+                  <div class="label">Five-word vibe</div>
+                  <input id="cardVibe" class="input" placeholder="e.g., Pause. Restrict. Listen. Choose. Light." />
+                  <div class="help">Five words. Clean. Commanding. No sermon.</div>
+                </div>
+
+                <div class="field">
+                  <div class="label">Reflection (optional)</div>
+                  <textarea id="cardNote" class="textarea" placeholder="One practical insight or action."></textarea>
+                </div>
+
+                <div class="row">
+                  <button class="btn" id="btnRender" type="button">Generate</button>
+                  <button class="btn secondary" id="btnShareJpg" type="button">Share JPEG</button>
+                  <button class="btn ghost" id="btnDownloadJpg" type="button">Save JPEG</button>
+                </div>
+
+                <div class="help" style="margin-top:10px;">
+                  If Share fails on iPad: use “Save JPEG” then share from Photos.
+                </div>
+              </div>
+
+              <div>
+                <div class="canvasWrap">
+                  <canvas id="cardCanvas" width="1200" height="1500"></canvas>
+                </div>
+                <div class="help" style="margin-top:10px;">
+                  Canvas is rendered locally. No uploads. No tracking.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- screenCard -->
+
+      <!-- LIBRARY -->
+      <div id="screenLibrary" class="screen">
+        <div class="card">
+          <div class="hd">
+            <div class="hgroup">
+              <h2 class="h1">Library</h2>
+              <div class="sub">Pre-meeting content: clear, Centre-neutral, Atika-forward. 📚</div>
+            </div>
+          </div>
+          <div class="bd">
+            <div class="card" style="background:rgba(10,10,10,.40); box-shadow:none;">
+              <div class="hd" style="border-bottom:1px solid rgba(215,180,90,.14);">
+                <div class="hgroup">
+                  <h3 class="h1" style="font-size:16px;">Atika Kadisha</h3>
+                  <div class="sub">A placeholder shelf (so the architecture is obvious in demo).</div>
+                </div>
+              </div>
+              <div class="bd">
+                <div class="help">
+                  This build keeps Library lightweight and stable.  
+                  Next step (post-Eitan): swap these placeholders with verified Zohar excerpts + your preferred translations.
+                </div>
+
+                <div class="field">
+                  <div class="label">Focus list</div>
+                  <div class="step">
+                    <div class="tx">
+                      • Atika Kadisha (Ancient of Days) as “source layer” concept<br/>
+                      • Alignment → Restriction → Witness → Illuminate → Seal<br/>
+                      • “Personally witness the power of the work” at scale (repeatable reps)
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div class="label">Add a note (saved locally)</div>
+                  <textarea id="libNote" class="textarea" placeholder="What do I want Eitan to react to?"></textarea>
+                  <div class="row">
+                    <button class="btn" id="btnLibSave" type="button">Save</button>
+                    <button class="btn secondary" id="btnLibClear" type="button">Clear</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- screenLibrary -->
+
+      <!-- SETTINGS -->
+      <div id="screenSettings" class="screen">
+        <div class="card">
+          <div class="hd">
+            <div class="hgroup">
+              <h2 class="h1">Settings</h2>
+              <div class="sub">Reset, export, and stability controls. ⚙️</div>
+            </div>
+          </div>
+
+          <div class="bd">
+            <div class="step">
+              <div class="st">Storage</div>
+              <div class="tx">
+                Notes + last selection are saved locally on this device.
+              </div>
+              <div class="row" style="margin-top:10px;">
+                <button class="btn secondary" id="btnResetNotes" type="button">Clear all notes</button>
+                <button class="btn secondary" id="btnResetAll" type="button">Factory reset</button>
+                <div class="spacer"></div>
+                <button class="btn ghost" id="btnExport" type="button">Export JSON</button>
+              </div>
+              <div class="help" style="margin-top:10px;">
+                Export gives you a single JSON file containing notes + last selections.
+              </div>
+            </div>
+
+            <div class="step" style="margin-top:14px;">
+              <div class="st">Connect gate</div>
+              <div class="tx">
+                If you want the Connect gate every time, enable it below.
+              </div>
+              <div class="row" style="margin-top:10px;">
+                <label class="pill" style="cursor:pointer;">
+                  <input id="alwaysGate" type="checkbox" style="accent-color: var(--gold);" />
+                  Always show Connect gate
+                </label>
+              </div>
+            </div>
+
+            <div class="step" style="margin-top:14px;">
+              <div class="st">About</div>
+              <div class="tx">
+                KAI is a ritual engine: not content-first, practice-first.  
+                Build reps. Create proof. Scale the witness.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- screenSettings -->
+
+    </div><!-- container -->
+  </div><!-- app -->
+
+  <!-- bottom nav -->
   <div class="nav">
-    <button class="tab on" data-view="gate">Gate</button>
-    <button class="tab" data-view="study">Study</button>
-    <button class="tab" data-view="names">72 Names</button>
-    <button class="tab" data-view="zohar">Zohar</button>
-    <button class="tab" data-view="gematria">Gematria</button>
-    <button class="tab" data-view="share">Share</button>
-    <button class="tab" data-view="history">History</button>
-    <button class="tab" data-view="profile">Profile</button>
+    <div class="tabs">
+      <div class="tab active" data-tab="Study">Study</div>
+      <div class="tab" data-tab="Card">Share</div>
+      <div class="tab" data-tab="Library">Library</div>
+      <div class="tab" data-tab="Settings">Settings</div>
+    </div>
   </div>
 
-  <!-- GATE -->
-  <section class="card" id="view_gate">
-    <div class="gate">
-      <h2>Enter with intention</h2>
-      <div class="mantra">
-        Pause. Breathe. Connect.  
-        Then study with purpose.
-      </div>
-
-      <div class="chips">
-        <div class="chip gold">Connect</div>
-        <div class="chip">Study</div>
-        <div class="chip">Restrict</div>
-        <div class="chip">Elevate</div>
-        <div class="chip">Seal</div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <label>Today’s intention</label>
-          <input id="gateIntention" placeholder="One sentence. Simple. Real."/>
-        </div>
-        <div class="col">
-          <label>One restriction</label>
-          <input id="gateRestriction" placeholder="What will you not react to today?"/>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col meter">
-          <div class="head"><span>Certainty</span><b><span id="certNow">5</span>/10</b></div>
-          <input id="certSlider" type="range" min="0" max="10" step="1" value="5"/>
-        </div>
-        <div class="col meter">
-          <div class="head"><span>Energy</span><b><span id="energyNow">5</span>/10</b></div>
-          <input id="energySlider" type="range" min="0" max="10" step="1" value="5"/>
-        </div>
-      </div>
-
-      <div class="btnrow">
-        <button class="gold" id="btnConnectNow">Connect (seal entry)</button>
-        <button class="primary" id="btnEnterStudy">Enter Study</button>
-        <button class="mini" id="btnQuickName">Today’s Name</button>
-        <button class="mini" id="btnQuickZohar">Today’s Zohar</button>
-      </div>
-
-      <p class="sub" style="margin:6px 0 0">
-        Gate is where you switch from “scroll mode” into “work mode”.
-        One honest intention + one restriction is enough.
-      </p>
-    </div>
-  </section>
-
-  <!-- STUDY (hub) -->
-  <section class="card hide" id="view_study">
-    <h2>Study</h2>
-    <p class="sub">Short. Disciplined. Applied. Then sealed.</p>
-
-    <div class="row">
-      <div class="col card" style="box-shadow:none">
-        <h2 style="margin:0 0 8px;">Today’s Focus</h2>
-        <div class="list">
-          <div class="item">
-            <h3 id="todayNameTitle">72 Name</h3>
-            <p id="todayNameDesc">Choose a Name, set an intention, and apply it once today.</p>
-            <div class="meta">
-              <span class="tag" id="todayNameTag">Focus</span>
-              <button class="mini gold" id="btnGoNames">Open 72 Names</button>
-            </div>
-          </div>
-
-          <div class="item">
-            <h3 id="todayZoharTitle">Zohar</h3>
-            <p id="todayZoharDesc">Read a short passage, then choose one restriction.</p>
-            <div class="meta">
-              <span class="tag" id="todayZoharTag">Study</span>
-              <button class="mini gold" id="btnGoZohar">Open Zohar</button>
-            </div>
-          </div>
-
-          <div class="item">
-            <h3>Seal</h3>
-            <p>Write one line: what you restricted, and what you elevated.</p>
-            <div class="meta">
-              <button class="mini gold" id="btnGoShare">Make Share Card</button>
-              <button class="mini" id="btnLogSeal">Log Seal</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <h2 style="margin:0 0 10px;">One-Line Seal</h2>
-        <p class="sub">Not a diary. One line of truth.</p>
-        <textarea id="sealLine" placeholder="Example: I restricted impatience and chose calm clarity."></textarea>
-        <div class="btnrow">
-          <button class="gold" id="btnSaveSeal">Save</button>
-          <button id="btnClearSeal">Clear</button>
-        </div>
-
-        <div class="card" style="box-shadow:none; margin-top:12px;">
-          <h2 style="margin:0 0 10px;">Quick metrics</h2>
-          <div class="chips">
-            <div class="chip">Certainty: <b id="chipCert">5</b></div>
-            <div class="chip">Energy: <b id="chipEnergy">5</b></div>
-            <div class="chip gold">Pillars: <b id="chipPillars">0</b></div>
-          </div>
-          <p class="sub" style="margin-top:10px;">These are for witnessing trends, not judging the day.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 72 NAMES -->
-  <section class="card hide" id="view_names">
-    <h2>72 Names <span class="tag">practice</span></h2>
-    <p class="sub">
-      Pick one. Keep it simple. Use it once today with a real restriction.
-    </p>
-
-    <div class="row">
-      <div class="col">
-        <label>Select a Name</label>
-        <select id="namesSelect"></select>
-
-        <div class="card" style="box-shadow:none; margin-top:12px;">
-          <h2 style="margin:0 0 8px;"><span id="nameHeb">—</span> <span class="tag" id="nameKey">—</span></h2>
-          <p class="sub" id="nameMeaning">Meaning</p>
-
-          <div class="item" style="margin-top:10px;">
-            <h3>Focus</h3>
-            <p id="nameFocus">—</p>
-          </div>
-
-          <div class="item" style="margin-top:10px;">
-            <h3>Practice</h3>
-            <p id="namePractice">—</p>
-          </div>
-
-          <div class="btnrow">
-            <button class="gold" id="btnSetTodayName">Set as Today’s Name</button>
-            <button id="btnToShareFromName">Make Share Card</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <h2 style="margin:0 0 10px;">Your application</h2>
-        <p class="sub">One restriction + one elevation connected to this Name.</p>
-        <textarea id="nameApplication" placeholder="Example: I restricted defensiveness and chose listening."></textarea>
-        <div class="btnrow">
-          <button class="gold" id="btnSaveNameApp">Save application</button>
-          <button id="btnClearNameApp">Clear</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ZOHAR -->
-  <section class="card hide" id="view_zohar">
-    <h2>Zohar Library <span class="tag">curated</span></h2>
-    <p class="sub">
-      Short passages only. Study is meant to land in behavior.
-    </p>
-
-    <div class="row">
-      <div class="col">
-        <label>Select a passage</label>
-        <select id="zoharSelect"></select>
-
-        <div class="card" style="box-shadow:none; margin-top:12px;">
-          <h2 style="margin:0 0 8px;" id="zoharTitle">—</h2>
-          <p class="sub" id="zoharMeta">—</p>
-          <div class="item">
-            <p id="zoharText" style="white-space:pre-wrap;">—</p>
-          </div>
-
-          <div class="btnrow">
-            <button class="gold" id="btnSetTodayZohar">Set as Today’s Zohar</button>
-            <button id="btnToShareFromZohar">Make Share Card</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <h2 style="margin:0 0 10px;">Restriction from study</h2>
-        <p class="sub">One simple restriction that follows from what you just read.</p>
-        <textarea id="zoharRestriction" placeholder="Example: I restrict rushing and choose deliberate presence."></textarea>
-        <div class="btnrow">
-          <button class="gold" id="btnSaveZoharRestrict">Save</button>
-          <button id="btnClearZoharRestrict">Clear</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- GEMATRIA -->
-  <section class="card hide" id="view_gematria">
-    <h2>Gematria <span class="tag">insight</span></h2>
-    <p class="sub">Calculation + a practical insight scaffold (not doctrine).</p>
-
-    <div class="row">
-      <div class="col">
-        <label>Hebrew text</label>
-        <input id="gemText" placeholder="Enter Hebrew letters (e.g., שלום)"/>
-        <div class="btnrow">
-          <button class="gold" id="btnGemCalc">Calculate</button>
-          <button id="btnGemClear">Clear</button>
-        </div>
-
-        <div class="card" style="box-shadow:none; margin-top:12px;">
-          <h2 style="margin:0 0 8px;">Result</h2>
-          <div class="chips">
-            <div class="chip gold">Value: <b id="gemValue">—</b></div>
-            <div class="chip">Method: <b id="gemMethod">Standard</b></div>
-          </div>
-          <div class="item" style="margin-top:10px;">
-            <h3>Practical insight (scaffold)</h3>
-            <p id="gemInsight">—</p>
-          </div>
-          <div class="btnrow">
-            <button id="btnGemToShare">Make Share Card</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="col">
-        <h2 style="margin:0 0 10px;">Notes</h2>
-        <p class="sub">Your interpretation belongs here, not in an algorithm.</p>
-        <textarea id="gemNotes" placeholder="What does this number evoke? What restriction does it demand?"></textarea>
-        <div class="btnrow">
-          <button class="gold" id="btnGemSaveNotes">Save notes</button>
-          <button id="btnGemClearNotes">Clear</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SHARE -->
-  <section class="card hide" id="view_share">
-    <h2>Share Card <span class="tag">artifact</span></h2>
-    <p class="sub">Make the day portable. One card. One truth. One practice.</p>
-
-    <div class="row">
-      <div class="col">
-        <label>Title</label>
-        <input id="cardTitle" placeholder="Example: 100 Pillars Today"/>
-        <label>Subtitle</label>
-        <input id="cardSub" placeholder="Example: Certainty is built by returns, not feelings."/>
-        <label>Body</label>
-        <textarea id="cardBody" placeholder="Write the teaching, the restriction, and the elevation. Short. Clean."></textarea>
-
-        <div class="btnrow">
-          <button class="gold" id="btnRenderCard">Render</button>
-          <button id="btnDownloadPng">Download PNG</button>
-          <button id="btnDownloadJpg">Download JPEG</button>
-          <button class="primary" id="btnShareJpg">Share JPEG</button>
-          <button class="danger" id="btnClearCard">Clear</button>
-        </div>
-      </div>
-
-      <div class="col">
-        <canvas id="cardCanvas" width="1440" height="1800"></canvas>
-        <p class="sub" style="margin-top:10px;">
-          Tip: If Share is blocked, Download JPEG will still work. On iOS, sharing works best from Safari (not inside some in-app browsers).
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- HISTORY -->
-  <section class="card hide" id="view_history">
-    <h2>History <span class="tag">witness</span></h2>
-    <p class="sub">
-      The point is not perfection. The point is witnessing your trend.
-    </p>
-    <div class="list" id="historyList"></div>
-
-    <div class="btnrow">
-      <button id="btnExportJson">Export JSON</button>
-      <button class="danger" id="btnClearHistory">Clear History</button>
-    </div>
-  </section>
-
-  <!-- PROFILE -->
-  <section class="card hide" id="view_profile">
-    <h2>Profile <span class="tag">setup</span></h2>
-    <p class="sub">Birthday enables sign + context. Keep it simple for now.</p>
-
-    <div class="row">
-      <div class="col">
-        <label>Birthday</label>
-        <input id="profBirthday" type="date"/>
-        <label>Astrological sign</label>
-        <input id="profSign" placeholder="Auto-calculated" readonly/>
-      </div>
-
-      <div class="col">
-        <label>Notes</label>
-        <textarea id="profNotes" placeholder="Optional: your focus, your tikkun notes, teacher guidance, etc."></textarea>
-      </div>
-    </div>
-
-    <div class="btnrow">
-      <button class="gold" id="btnSaveProfile">Save profile</button>
-      <button id="btnLoadProfile">Reload</button>
-    </div>
-  </section>
-
-  <div class="foot">KAI • build: final1 • discipline engine • witness over time</div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-/* ===========
-   KAI FINAL1
-   =========== */
-
-(function(){
-  "use strict";
-
-  // --- Utilities ---
-  function $(id){
-    const el = document.getElementById(id);
-    if(!el) throw new Error("Missing element id: " + id);
-    return el;
-  }
-  function todayKey(){
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,"0");
-    const day = String(d.getDate()).padStart(2,"0");
-    return `${y}-${m}-${day}`;
-  }
-  function nowIso(){
-    return new Date().toISOString();
-  }
-  let toastT = null;
-  function toast(msg){
-    const t = $("toast");
-    t.textContent = msg;
-    t.classList.add("on");
-    clearTimeout(toastT);
-    toastT = setTimeout(()=> t.classList.remove("on"), 1700);
-  }
-
-  // --- Storage keys (minimal, stable) ---
-  const K = {
-    day: (d)=> `kai_day_${d}_v1`,
-    profile: "kai_profile_v1",
-    history: "kai_history_v1",
-    todayName: "kai_today_name_v1",
-    todayZohar: "kai_today_zohar_v1"
-  };
-
-  // --- State ---
-  const state = {
-    date: todayKey(),
-    certainty: 5,
-    energy: 5,
-    pillars: 0,
-    gateIntention: "",
-    gateRestriction: "",
-    sealLine: "",
-    todayNameId: null,
-    todayZoharId: null
-  };
-
-  // --- Data (starter sets; expand freely) ---
-  // Note: Hebrew triplets are included for display; meanings/practices are short + practical.
-  const NAMES72 = [
-    { id:"vav-heh-vav", heb:"ו ה ו", key:"VHV", meaning:"Unconditional love / turning judgment into mercy", focus:"Shift from judgment to compassion.", practice:"Before speaking, restrict criticism. Choose one act of kindness with no credit." },
-    { id:"yod-lamed-yod", heb:"י ל י", key:"YLY", meaning:"Healing", focus:"Invite healing in body and consciousness.", practice:"Restrict despair. Choose one healing action: breath, movement, or a supportive call." },
-    { id:"samekh-aleph-lamed", heb:"ס א ל", key:"SAL", meaning:"Turning negative to positive", focus:"Transform a pressure point into purpose.", practice:"Restrict reactivity in one trigger. Choose curiosity over blame." },
-    { id:"mem-heh-shin", heb:"מ ה ש", key:"MHS", meaning:"Releasing fear", focus:"Move through fear without feeding it.", practice:"Restrict catastrophic thinking. Choose one courageous step within 24 hours." },
-    { id:"ayin-lamed-mem", heb:"ע ל מ", key:"ALM", meaning:"Banish negative thoughts", focus:"Clear mental noise.", practice:"Restrict rumination. Choose a single clear next action." },
-    { id:"lamed-aleph-vav", heb:"ל א ו", key:"LAW", meaning:"Draw down spiritual Light", focus:"Increase connection through repetition.", practice:"Set 10 minute reminders. Every time: pause, breathe, acknowledge Light, return." }
-  ];
-
-  const ZOHAR = [
-    {
-      id:"mishkan-vessel",
-      title:"Mishkan as a vessel",
-      meta:"Parasha theme • building a place for Light to dwell",
-      text:
-`The purpose of spiritual work is not “being spiritual” as an identity, but becoming a vessel.
-A vessel means the Light can rest in the day, in the body, in the home, and in relationships.
-The work becomes practical: restriction, elevation, and consistent return.`,
-      tags:["vessel","restriction","practice"]
-    },
-    {
-      id:"hundred-pillars",
-      title:"The hundred pillars (daily returns)",
-      meta:"Parasha theme • 100 connections / pillars",
-      text:
-`A complete day is built on repetition: returning to connection again and again.
-Think of “pillars” as small moments of recognition: a pause, a breath, a restriction, a choice.
-Not intensity. Frequency.
-Return. Return. Return.
-This is how the vessel becomes stable.`,
-      tags:["100","frequency","certainty"]
-    },
-    {
-      id:"sinai-clarity",
-      title:"Sinai as clarity",
-      meta:"Parasha theme • certainty / clarity",
-      text:
-`Sinai represents clarity: not guessing, not doubting, but knowing.
-Our work is to build a lived intimacy with Light where certainty becomes more available.
-The test is not what you know. It is how quickly you return after you fall into reactivity.`,
-      tags:["certainty","clarity","return"]
-    }
-  ];
-
-  // --- View routing ---
-  const views = ["gate","study","names","zohar","gematria","share","history","profile"];
-  function show(view){
-    for(const v of views){
-      $("view_"+v).classList.toggle("hide", v !== view);
-    }
-    for(const b of document.querySelectorAll(".tab")){
-      b.classList.toggle("on", b.dataset.view === view);
-    }
-  }
-
-  // --- Astrology ---
-  function zodiacFromDate(yyyy_mm_dd){
-    if(!yyyy_mm_dd) return "";
-    const parts = yyyy_mm_dd.split("-");
-    if(parts.length !== 3) return "";
-    const m = parseInt(parts[1],10);
-    const d = parseInt(parts[2],10);
-    if(!m || !d) return "";
-    // Western sun signs (simple)
-    if((m===3 && d>=21) || (m===4 && d<=19)) return "Aries";
-    if((m===4 && d>=20) || (m===5 && d<=20)) return "Taurus";
-    if((m===5 && d>=21) || (m===6 && d<=20)) return "Gemini";
-    if((m===6 && d>=21) || (m===7 && d<=22)) return "Cancer";
-    if((m===7 && d>=23) || (m===8 && d<=22)) return "Leo";
-    if((m===8 && d>=23) || (m===9 && d<=22)) return "Virgo";
-    if((m===9 && d>=23) || (m===10 && d<=22)) return "Libra";
-    if((m===10 && d>=23) || (m===11 && d<=21)) return "Scorpio";
-    if((m===11 && d>=22) || (m===12 && d<=21)) return "Sagittarius";
-    if((m===12 && d>=22) || (m===1 && d<=19)) return "Capricorn";
-    if((m===1 && d>=20) || (m===2 && d<=18)) return "Aquarius";
-    if((m===2 && d>=19) || (m===3 && d<=20)) return "Pisces";
-    return "";
-  }
-
-  // --- Day load/save ---
-  function loadDay(){
-    state.date = todayKey();
-    const raw = localStorage.getItem(K.day(state.date));
-    if(raw){
-      try{
-        const d = JSON.parse(raw);
-        state.certainty = clampInt(d.certainty,0,10,5);
-        state.energy = clampInt(d.energy,0,10,5);
-        state.pillars = clampInt(d.pillars,0,100,0);
-        state.gateIntention = String(d.gateIntention||"");
-        state.gateRestriction = String(d.gateRestriction||"");
-        state.sealLine = String(d.sealLine||"");
-        state.todayNameId = d.todayNameId || null;
-        state.todayZoharId = d.todayZoharId || null;
-      }catch{}
-    }
-    // also restore "today pick" if separately stored
-    state.todayNameId = state.todayNameId || localStorage.getItem(K.todayName) || null;
-    state.todayZoharId = state.todayZoharId || localStorage.getItem(K.todayZohar) || null;
-    syncUI();
-  }
-  function saveDay(){
-    const payload = {
-      certainty: state.certainty,
-      energy: state.energy,
-      pillars: state.pillars,
-      gateIntention: state.gateIntention,
-      gateRestriction: state.gateRestriction,
-      sealLine: state.sealLine,
-      todayNameId: state.todayNameId,
-      todayZoharId: state.todayZoharId,
-      updatedAt: nowIso()
-    };
-    localStorage.setItem(K.day(state.date), JSON.stringify(payload));
-  }
-
-  function clampInt(v, lo, hi, fallback){
-    const n = parseInt(v,10);
-    if(Number.isNaN(n)) return fallback;
-    return Math.min(hi, Math.max(lo, n));
-  }
-
-  // --- History ---
-  function historyLoad(){
-    const raw = localStorage.getItem(K.history);
-    if(!raw) return [];
-    try{
-      const arr = JSON.parse(raw);
-      return Array.isArray(arr) ? arr : [];
-    }catch{ return []; }
-  }
-  function historySave(arr){
-    localStorage.setItem(K.history, JSON.stringify(arr));
-  }
-  function addHistory(type, data){
-    const arr = historyLoad();
-    arr.unshift({
-      at: nowIso(),
-      date: state.date,
-      type,
-      data: data || {}
-    });
-    // keep last 200
-    while(arr.length > 200) arr.pop();
-    historySave(arr);
-    renderHistory();
-  }
-  function renderHistory(){
-    const list = $("historyList");
-    const arr = historyLoad();
-    if(arr.length === 0){
-      list.innerHTML = `<div class="item"><h3>Nothing logged yet</h3><p>Seal a day, save an application, or create a card.</p></div>`;
-      return;
-    }
-    list.innerHTML = arr.map(e=>{
-      const title = `${e.type} • ${e.date}`;
-      const body = JSON.stringify(e.data || {}, null, 2);
-      return `<div class="item">
-        <h3>${escapeHtml(title)}</h3>
-        <p style="white-space:pre-wrap">${escapeHtml(body)}</p>
-        <div class="meta"><span class="tag">${escapeHtml(new Date(e.at).toLocaleString())}</span></div>
-      </div>`;
-    }).join("");
-  }
-  function escapeHtml(s){
-    return String(s)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;");
-  }
-
-  // --- 72 Names UI ---
-  function namesInit(){
-    const sel = $("namesSelect");
-    sel.innerHTML = NAMES72.map(n=> `<option value="${n.id}">${n.heb} • ${n.meaning}</option>`).join("");
-    sel.addEventListener("change", ()=> renderName(sel.value));
-    renderName(sel.value || NAMES72[0].id);
-  }
-  function renderName(id){
-    const n = NAMES72.find(x=>x.id===id) || NAMES72[0];
-    $("nameHeb").textContent = n.heb;
-    $("nameKey").textContent = n.key;
-    $("nameMeaning").textContent = n.meaning;
-    $("nameFocus").textContent = n.focus;
-    $("namePractice").textContent = n.practice;
-
-    // update "application" box with last saved if exists in day
-    const raw = localStorage.getItem(`kai_name_app_${state.date}_${n.id}_v1`);
-    $("nameApplication").value = raw ? raw : "";
-  }
-
-  // --- Zohar UI ---
-  function zoharInit(){
-    const sel = $("zoharSelect");
-    sel.innerHTML = ZOHAR.map(z=> `<option value="${z.id}">${z.title}</option>`).join("");
-    sel.addEventListener("change", ()=> renderZohar(sel.value));
-    renderZohar(sel.value || ZOHAR[0].id);
-  }
-  function renderZohar(id){
-    const z = ZOHAR.find(x=>x.id===id) || ZOHAR[0];
-    $("zoharTitle").textContent = z.title;
-    $("zoharMeta").textContent = z.meta + (z.tags?.length ? (" • " + z.tags.join(" • ")) : "");
-    $("zoharText").textContent = z.text;
-
-    const raw = localStorage.getItem(`kai_zohar_restrict_${state.date}_${z.id}_v1`);
-    $("zoharRestriction").value = raw ? raw : "";
-  }
-
-  // --- Study hub: today picks ---
-  function pickTodayName(){
-    const idx = Math.floor((new Date(state.date).getTime()/86400000)) % NAMES72.length;
-    const n = NAMES72[(idx + NAMES72.length) % NAMES72.length];
-    setTodayName(n.id, true);
-  }
-  function pickTodayZohar(){
-    const idx = Math.floor((new Date(state.date).getTime()/86400000)) % ZOHAR.length;
-    const z = ZOHAR[(idx + ZOHAR.length) % ZOHAR.length];
-    setTodayZohar(z.id, true);
-  }
-  function setTodayName(id, quiet){
-    state.todayNameId = id;
-    localStorage.setItem(K.todayName, id);
-    saveDay();
-    renderTodayFocus();
-    if(!quiet) toast("Set Today’s Name");
-  }
-  function setTodayZohar(id, quiet){
-    state.todayZoharId = id;
-    localStorage.setItem(K.todayZohar, id);
-    saveDay();
-    renderTodayFocus();
-    if(!quiet) toast("Set Today’s Zohar");
-  }
-  function renderTodayFocus(){
-    const n = NAMES72.find(x=>x.id===state.todayNameId) || NAMES72[0];
-    const z = ZOHAR.find(x=>x.id===state.todayZoharId) || ZOHAR[0];
-
-    $("todayNameTitle").textContent = `72 Name: ${n.heb} • ${n.meaning}`;
-    $("todayNameDesc").textContent = n.practice;
-    $("todayNameTag").textContent = n.key;
-
-    $("todayZoharTitle").textContent = `Zohar: ${z.title}`;
-    $("todayZoharDesc").textContent = z.text.split("\n").slice(0,2).join(" ").slice(0,180) + "…";
-    $("todayZoharTag").textContent = "Study";
-
-    // chips
-    $("chipCert").textContent = String(state.certainty);
-    $("chipEnergy").textContent = String(state.energy);
-    $("chipPillars").textContent = String(state.pillars);
-  }
-
-  // --- Gematria (standard values) ---
-  const GEM = {
-    "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
-    "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,"ע":70,
-    "פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,"ש":300,"ת":400
-  };
-  function gematriaValue(str){
-    let sum = 0;
-    for(const ch of String(str||"").replace(/\s+/g,"")){
-      sum += (GEM[ch] || 0);
-    }
-    return sum;
-  }
-  function gematriaInsightScaffold(sum){
-    if(sum === 0) return "Enter Hebrew letters to calculate a value.";
-    // intentionally non-doctrinal: prompts + questions
-    if(sum % 18 === 0) return "This value is a multiple of 18 (chai). Ask: what action brings life today? What do you restrict to protect it?";
-    if(sum % 26 === 0) return "This value is a multiple of 26. Ask: where can you increase certainty through a small return?";
-    if(sum > 400) return "High value: simplify. Choose one restriction and one elevated action. Certainty is built through repetition, not complexity.";
-    return "Use this number as a mirror: what is one restriction it demands, and what is one elevated choice it invites?";
-  }
-
-  // --- Share Card Rendering (premium + stable) ---
-  function roundRect(ctx,x,y,w,h,r){
-    const rr = Math.min(r, w/2, h/2);
-    ctx.beginPath();
-    ctx.moveTo(x+rr,y);
-    ctx.arcTo(x+w,y,x+w,y+h,rr);
-    ctx.arcTo(x+w,y+h,x,y+h,rr);
-    ctx.arcTo(x,y+h,x,y,rr);
-    ctx.arcTo(x,y,x+w,y,rr);
-    ctx.closePath();
-  }
-  function addNoise(ctx,W,H,alpha){
-    const img = ctx.getImageData(0,0,W,H);
-    const d = img.data;
-    for(let i=0;i<d.length;i+=4){
-      const n = (Math.random()*255)|0;
-      d[i]   = Math.min(255, d[i]   + n*alpha);
-      d[i+1] = Math.min(255, d[i+1] + n*alpha);
-      d[i+2] = Math.min(255, d[i+2] + n*alpha);
-    }
-    ctx.putImageData(img,0,0);
-  }
-  function wrapTextReturnY(ctx, text, x, y, maxWidth, lineHeight){
-    const words = String(text||"").split(/\s+/);
-    let line = "";
-    for(let i=0;i<words.length;i++){
-      const test = line ? line + " " + words[i] : words[i];
-      if(ctx.measureText(test).width > maxWidth && line){
-        ctx.fillText(line, x, y);
-        line = words[i];
-        y += lineHeight;
-      }else{
-        line = test;
-      }
-    }
-    if(line){
-      ctx.fillText(line, x, y);
-      y += lineHeight;
-    }
-    return y;
-  }
-  function drawPill(ctx, x, y, w, h, r, fill, stroke){
-    ctx.save();
-    roundRect(ctx, x, y, w, h, r);
-    ctx.fillStyle = fill;
-    ctx.fill();
-    ctx.strokeStyle = stroke;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  function renderCardPreview(){
-    const c = $("cardCanvas");
-    const ctx = c.getContext("2d");
-    const W = c.width, H = c.height;
-
-    ctx.clearRect(0,0,W,H);
-
-    // background
-    const bg = ctx.createLinearGradient(0,0,W,H);
-    bg.addColorStop(0, "#070709");
-    bg.addColorStop(0.55, "#0b0b0c");
-    bg.addColorStop(1, "#060607");
-    ctx.fillStyle = bg;
-    ctx.fillRect(0,0,W,H);
-
-    const gGold = ctx.createRadialGradient(W*0.2,H*0.18, 10, W*0.2,H*0.18, W*0.95);
-    gGold.addColorStop(0, "rgba(216,178,75,0.22)");
-    gGold.addColorStop(1, "rgba(216,178,75,0)");
-    ctx.fillStyle = gGold;
-    ctx.fillRect(0,0,W,H);
-
-    const gWhite = ctx.createRadialGradient(W*0.55,H*0.08, 10, W*0.55,H*0.08, W*0.9);
-    gWhite.addColorStop(0, "rgba(255,255,255,0.12)");
-    gWhite.addColorStop(1, "rgba(255,255,255,0)");
-    ctx.fillStyle = gWhite;
-    ctx.fillRect(0,0,W,H);
-
-    const vign = ctx.createRadialGradient(W/2,H/2, H*0.15, W/2,H/2, H*0.72);
-    vign.addColorStop(0, "rgba(0,0,0,0)");
-    vign.addColorStop(1, "rgba(0,0,0,0.65)");
-    ctx.fillStyle = vign;
-    ctx.fillRect(0,0,W,H);
-
-    // grain
-    addNoise(ctx,W,H,0.05);
-
-    // header
-    ctx.textAlign = "center";
-    ctx.fillStyle = "rgba(255,255,255,0.90)";
-    ctx.font = "900 88px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-    ctx.fillText("KAI", W/2, 170);
-
-    // panel
-    const padX = 110;
-    const cardY = 285;
-    const cardW = W - padX*2;
-    const cardH = H - 420;
-
-    ctx.save();
-    ctx.shadowColor = "rgba(0,0,0,0.55)";
-    ctx.shadowBlur = 30;
-    ctx.shadowOffsetY = 18;
-    roundRect(ctx,padX,cardY,cardW,cardH,44);
-    ctx.fillStyle = "rgba(255,255,255,0.06)";
-    ctx.fill();
-    ctx.restore();
-
-    roundRect(ctx,padX,cardY,cardW,cardH,44);
-    ctx.strokeStyle = "rgba(255,255,255,0.14)";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-    roundRect(ctx, padX+10, cardY+10, cardW-20, cardH-20, 40);
-    ctx.strokeStyle = "rgba(216,178,75,0.22)";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    const title = ($("cardTitle").value || "Today’s Connection").trim();
-    const sub   = ($("cardSub").value || "Certainty is built by returns").trim();
-    const body  = ($("cardBody").value || "Write one restriction and one elevation. Short. True.").trim();
-
-    const left = padX + 64;
-    const right = padX + cardW - 64;
-    const maxW = right - left;
-
-    ctx.textAlign = "left";
-
-    // Title
-    ctx.fillStyle = "rgba(216,178,75,0.95)";
-    ctx.font = "900 68px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-    let y = cardY + 130;
-    y = wrapTextReturnY(ctx, title, left, y, maxW, 76);
-
-    // Sub
-    ctx.fillStyle = "rgba(255,255,255,0.82)";
-    ctx.font = "800 40px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-    y += 10;
-    y = wrapTextReturnY(ctx, sub, left, y, maxW, 56);
-
-    // Body
-    ctx.fillStyle = "rgba(255,255,255,0.74)";
-    ctx.font = "550 40px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-    y += 18;
-    y = wrapTextReturnY(ctx, body, left, y, maxW, 56);
-
-    // footer
-    const footerY = cardY + cardH - 180;
-    ctx.fillStyle = "rgba(255,255,255,0.12)";
-    ctx.fillRect(left, footerY-22, maxW, 2);
-
-    const chipText = [
-      `Certainty ${state.certainty}/10`,
-      `Energy ${state.energy}/10`,
-      `Pillars ${state.pillars}/100`,
-      `${state.date}`
-    ];
-
-    ctx.font = "800 32px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-    ctx.textAlign = "left";
-    let cx = left;
-    const cy = footerY + 30;
-
-    for(const t of chipText){
-      const w = ctx.measureText(t).width + 40;
-      drawPill(ctx, cx, cy-34, w, 52, 999, "rgba(255,255,255,0.06)", "rgba(255,255,255,0.12)");
-      ctx.fillStyle = "rgba(255,255,255,0.82)";
-      ctx.fillText(t, cx+20, cy+6);
-      cx += w + 14;
-      if(cx + 220 > right){
-        cx = left;
-      }
+  <div id="toast" class="toast"></div>
+
+  <script>
+    "use strict";
+
+    /* ---------------------------
+       Tiny helpers
+    ----------------------------*/
+    const $ = (id)=>document.getElementById(id);
+    const nowISO = ()=> new Date().toISOString();
+
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = String(msg || "");
+      t.classList.add("show");
+      clearTimeout(toast._tm);
+      toast._tm = setTimeout(()=>t.classList.remove("show"), 2200);
     }
 
-    // signature
-    ctx.textAlign = "left";
-    ctx.fillStyle = "rgba(255,255,255,0.55)";
-    ctx.font = "800 30px -apple-system,system-ui,Segoe UI,Roboto,Arial";
-    ctx.fillText("Connect → Study → Apply", left, cardY + cardH - 44);
-  }
-
-  function downloadCanvas(type){
-    const c = $("cardCanvas");
-    const a = document.createElement("a");
-    const ext = (type === "image/jpeg") ? "jpg" : "png";
-    a.download = `kai-card.${ext}`;
-    if(type === "image/jpeg"){
-      a.href = c.toDataURL(type, 0.92);
-    }else{
-      a.href = c.toDataURL(type);
+    function showErr(msg){
+      const box = $("err");
+      $("errTxt").textContent = String(msg || "");
+      box.style.display = "block";
     }
-    a.click();
-  }
+    function clearErr(){ $("err").style.display="none"; $("errTxt").textContent=""; }
 
-  async function shareJpg(){
-    const c = $("cardCanvas");
-    const blob = await new Promise((resolve)=> c.toBlob(resolve, "image/jpeg", 0.92));
-    if(!blob){ toast("Could not create JPEG."); return; }
-    const file = new File([blob], "kai-card.jpg", { type: "image/jpeg" });
-
-    const canShare = !!(navigator.share && navigator.canShare && navigator.canShare({ files:[file] }));
-    if(canShare){
-      try{
-        await navigator.share({ title:"KAI Card", text:"KAI share card", files:[file] });
-        toast("Shared");
-        addHistory("share_jpg", { title: $("cardTitle").value || "" });
-        return;
-      }catch(e){
-        toast("Share canceled or blocked.");
-        return;
-      }
-    }
-    downloadCanvas("image/jpeg");
-    toast("Downloaded JPEG (Share not available here).");
-  }
-
-  // --- UI Sync ---
-  function syncUI(){
-    $("pillarsNow").textContent = String(state.pillars);
-    $("certNow").textContent = String(state.certainty);
-    $("energyNow").textContent = String(state.energy);
-    $("certSlider").value = String(state.certainty);
-    $("energySlider").value = String(state.energy);
-
-    $("gateIntention").value = state.gateIntention;
-    $("gateRestriction").value = state.gateRestriction;
-
-    $("sealLine").value = state.sealLine;
-
-    $("chipCert").textContent = String(state.certainty);
-    $("chipEnergy").textContent = String(state.energy);
-    $("chipPillars").textContent = String(state.pillars);
-
-    renderTodayFocus();
-    renderHistory();
-  }
-
-  // --- Wiring ---
-  function wireNav(){
-    for(const b of document.querySelectorAll(".tab")){
-      b.addEventListener("click", ()=>{
-        const v = b.dataset.view;
-        show(v);
-        if(v === "share") renderCardPreview();
-      });
-    }
-  }
-
-  function wireTopCounter(){
-    $("btnPillarPlus").addEventListener("click", ()=>{
-      state.pillars = Math.min(100, state.pillars + 1);
-      saveDay();
-      $("pillarsNow").textContent = String(state.pillars);
-      $("chipPillars").textContent = String(state.pillars);
-    });
-    $("btnPillarReset").addEventListener("click", ()=>{
-      state.pillars = 0;
-      saveDay();
-      syncUI();
-      toast("Pillars reset");
-    });
-  }
-
-  function wireGate(){
-    $("gateIntention").addEventListener("input", (e)=>{
-      state.gateIntention = e.target.value;
-      saveDay();
-    });
-    $("gateRestriction").addEventListener("input", (e)=>{
-      state.gateRestriction = e.target.value;
-      saveDay();
-    });
-
-    $("certSlider").addEventListener("input", (e)=>{
-      state.certainty = clampInt(e.target.value,0,10,5);
-      saveDay();
-      $("certNow").textContent = String(state.certainty);
-      $("chipCert").textContent = String(state.certainty);
-    });
-    $("energySlider").addEventListener("input", (e)=>{
-      state.energy = clampInt(e.target.value,0,10,5);
-      saveDay();
-      $("energyNow").textContent = String(state.energy);
-      $("chipEnergy").textContent = String(state.energy);
-    });
-
-    $("btnConnectNow").addEventListener("click", ()=>{
-      // Seal entry (a small log event)
-      saveDay();
-      addHistory("gate_connect", {
-        intention: state.gateIntention.trim(),
-        restriction: state.gateRestriction.trim(),
-        certainty: state.certainty,
-        energy: state.energy,
-        pillars: state.pillars
-      });
-      toast("Connected");
-    });
-
-    $("btnEnterStudy").addEventListener("click", ()=>{
-      show("study");
-    });
-
-    $("btnQuickName").addEventListener("click", ()=>{
-      pickTodayName();
-      toast("Today’s Name set");
-      show("study");
-    });
-    $("btnQuickZohar").addEventListener("click", ()=>{
-      pickTodayZohar();
-      toast("Today’s Zohar set");
-      show("study");
-    });
-  }
-
-  function wireStudy(){
-    $("btnGoNames").addEventListener("click", ()=> show("names"));
-    $("btnGoZohar").addEventListener("click", ()=> show("zohar"));
-    $("btnGoShare").addEventListener("click", ()=>{
-      // prefill card from seal if present
-      if($("sealLine").value.trim()){
-        $("cardTitle").value = "Seal";
-        $("cardSub").value = "Restriction → Elevation";
-        $("cardBody").value = $("sealLine").value.trim();
-      }
-      show("share");
-      renderCardPreview();
-    });
-
-    $("btnLogSeal").addEventListener("click", ()=>{
-      const line = $("sealLine").value.trim();
-      if(!line){ toast("Write one line first."); return; }
-      addHistory("seal_log", { line });
-      toast("Logged");
-    });
-
-    $("btnSaveSeal").addEventListener("click", ()=>{
-      state.sealLine = $("sealLine").value;
-      saveDay();
-      addHistory("seal_save", { line: state.sealLine.trim() });
-      toast("Saved");
-    });
-    $("btnClearSeal").addEventListener("click", ()=>{
-      $("sealLine").value = "";
-      state.sealLine = "";
-      saveDay();
-      toast("Cleared");
-    });
-  }
-
-  function wireNames(){
-    $("btnSetTodayName").addEventListener("click", ()=>{
-      const id = $("namesSelect").value;
-      setTodayName(id, false);
-    });
-    $("btnToShareFromName").addEventListener("click", ()=>{
-      const id = $("namesSelect").value;
-      const n = NAMES72.find(x=>x.id===id) || NAMES72[0];
-      $("cardTitle").value = `72 Name: ${n.heb}`;
-      $("cardSub").value = n.meaning;
-      const app = $("nameApplication").value.trim();
-      $("cardBody").value = app || (`Focus: ${n.focus}\nPractice: ${n.practice}`);
-      show("share");
-      renderCardPreview();
-    });
-
-    $("btnSaveNameApp").addEventListener("click", ()=>{
-      const id = $("namesSelect").value;
-      const n = NAMES72.find(x=>x.id===id) || NAMES72[0];
-      const txt = $("nameApplication").value || "";
-      localStorage.setItem(`kai_name_app_${state.date}_${id}_v1`, txt);
-      addHistory("name_application", { name: n.heb, key: n.key, text: txt.trim() });
-      toast("Saved");
-    });
-    $("btnClearNameApp").addEventListener("click", ()=>{
-      $("nameApplication").value = "";
-      toast("Cleared");
-    });
-  }
-
-  function wireZohar(){
-    $("btnSetTodayZohar").addEventListener("click", ()=>{
-      const id = $("zoharSelect").value;
-      setTodayZohar(id, false);
-    });
-
-    $("btnToShareFromZohar").addEventListener("click", ()=>{
-      const id = $("zoharSelect").value;
-      const z = ZOHAR.find(x=>x.id===id) || ZOHAR[0];
-      $("cardTitle").value = `Zohar: ${z.title}`;
-      $("cardSub").value = "Study → Restriction";
-      const restr = $("zoharRestriction").value.trim();
-      $("cardBody").value = restr || z.text;
-      show("share");
-      renderCardPreview();
-    });
-
-    $("btnSaveZoharRestrict").addEventListener("click", ()=>{
-      const id = $("zoharSelect").value;
-      const z = ZOHAR.find(x=>x.id===id) || ZOHAR[0];
-      const txt = $("zoharRestriction").value || "";
-      localStorage.setItem(`kai_zohar_restrict_${state.date}_${id}_v1`, txt);
-      addHistory("zohar_restriction", { passage: z.title, text: txt.trim() });
-      toast("Saved");
-    });
-    $("btnClearZoharRestrict").addEventListener("click", ()=>{
-      $("zoharRestriction").value = "";
-      toast("Cleared");
-    });
-  }
-
-  function wireGematria(){
-    $("btnGemCalc").addEventListener("click", ()=>{
-      const t = $("gemText").value.trim();
-      const val = gematriaValue(t);
-      $("gemValue").textContent = String(val);
-      $("gemInsight").textContent = gematriaInsightScaffold(val);
-      addHistory("gematria_calc", { text: t, value: val });
-      toast("Calculated");
-    });
-    $("btnGemClear").addEventListener("click", ()=>{
-      $("gemText").value = "";
-      $("gemValue").textContent = "—";
-      $("gemInsight").textContent = "—";
-    });
-    $("btnGemSaveNotes").addEventListener("click", ()=>{
-      const notes = $("gemNotes").value || "";
-      localStorage.setItem(`kai_gem_notes_${state.date}_v1`, notes);
-      addHistory("gematria_notes", { notes: notes.trim() });
-      toast("Saved");
-    });
-    $("btnGemClearNotes").addEventListener("click", ()=>{
-      $("gemNotes").value = "";
-      toast("Cleared");
-    });
-    $("btnGemToShare").addEventListener("click", ()=>{
-      const t = $("gemText").value.trim();
-      const val = $("gemValue").textContent;
-      $("cardTitle").value = "Gematria";
-      $("cardSub").value = t ? `Value: ${val}` : "Value";
-      const insight = $("gemInsight").textContent;
-      const notes = $("gemNotes").value.trim();
-      $("cardBody").value = (notes ? notes : insight);
-      show("share");
-      renderCardPreview();
-    });
-
-    // restore notes
-    const raw = localStorage.getItem(`kai_gem_notes_${state.date}_v1`);
-    if(raw) $("gemNotes").value = raw;
-  }
-
-  function wireShare(){
-    $("btnRenderCard").addEventListener("click", ()=>{
-      renderCardPreview();
-      addHistory("card_render", { title: $("cardTitle").value || "" });
-      toast("Rendered");
-    });
-    $("btnDownloadPng").addEventListener("click", ()=>{
-      renderCardPreview();
-      downloadCanvas("image/png");
-      addHistory("card_download_png", { title: $("cardTitle").value || "" });
-    });
-    $("btnDownloadJpg").addEventListener("click", ()=>{
-      renderCardPreview();
-      downloadCanvas("image/jpeg");
-      addHistory("card_download_jpg", { title: $("cardTitle").value || "" });
-    });
-    $("btnShareJpg").addEventListener("click", async ()=>{
-      renderCardPreview();
-      await shareJpg();
-    });
-    $("btnClearCard").addEventListener("click", ()=>{
-      $("cardTitle").value = "";
-      $("cardSub").value = "";
-      $("cardBody").value = "";
-      renderCardPreview();
-      toast("Cleared");
-    });
-  }
-
-  function wireHistory(){
-    $("btnExportJson").addEventListener("click", ()=>{
-      const data = {
-        profile: safeJson(localStorage.getItem(K.profile)),
-        history: historyLoad(),
-        today: safeJson(localStorage.getItem(K.day(state.date)))
-      };
-      const blob = new Blob([JSON.stringify(data,null,2)], { type:"application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `kai-export-${state.date}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast("Exported");
-    });
-    $("btnClearHistory").addEventListener("click", ()=>{
-      if(!confirm("Clear history?")) return;
-      localStorage.removeItem(K.history);
-      renderHistory();
-      toast("Cleared");
-    });
-  }
-  function safeJson(raw){
-    if(!raw) return null;
-    try{ return JSON.parse(raw); }catch{ return raw; }
-  }
-
-  function wireProfile(){
-    $("profBirthday").addEventListener("change", ()=>{
-      const v = $("profBirthday").value;
-      $("profSign").value = zodiacFromDate(v);
-    });
-    $("btnSaveProfile").addEventListener("click", ()=>{
-      const bday = $("profBirthday").value || "";
-      const sign = zodiacFromDate(bday);
-      $("profSign").value = sign;
-      const notes = $("profNotes").value || "";
-      const p = { birthday:bday, sign, notes, updatedAt: nowIso() };
-      localStorage.setItem(K.profile, JSON.stringify(p));
-      addHistory("profile_save", { birthday:bday, sign });
-      toast("Saved");
-    });
-    $("btnLoadProfile").addEventListener("click", ()=>{
-      loadProfile();
-      toast("Reloaded");
-    });
-  }
-  function loadProfile(){
-    const raw = localStorage.getItem(K.profile);
-    if(!raw) return;
-    try{
-      const p = JSON.parse(raw);
-      $("profBirthday").value = p.birthday || "";
-      $("profSign").value = p.sign || zodiacFromDate(p.birthday || "");
-      $("profNotes").value = p.notes || "";
-    }catch{}
-  }
-
-  // --- Boot ---
-  function boot(){
-    // catch errors to toast for iPad debugging without console
+    // Crash visibility
     window.addEventListener("error", (e)=>{
-      try{ toast("JS error: " + (e?.message || "unknown")); }catch{}
+      try{
+        const m = "JS ERROR: " + (e?.message || "unknown") + "\n" + (e?.error?.stack || "");
+        showErr(m);
+      }catch{}
     });
     window.addEventListener("unhandledrejection", (e)=>{
-      try{ toast("Promise error: " + (e?.reason?.message || e?.reason || "unknown")); }catch{}
+      try{
+        const m = "PROMISE ERROR: " + (e?.reason?.message || String(e?.reason || "unknown"));
+        showErr(m);
+      }catch{}
     });
 
-    wireNav();
-    wireTopCounter();
-    wireGate();
-    wireStudy();
-    wireNames();
-    wireZohar();
-    wireGematria();
-    wireShare();
-    wireHistory();
-    wireProfile();
+    $("btnErrHide").addEventListener("click", clearErr);
 
-    namesInit();
-    zoharInit();
+    /* ---------------------------
+       Data (Interpretations)
+       Titles/subtitles are from your provided screenshots.
+       Hebrew triplets: standard ordering used broadly for the 72 Names.
+    ----------------------------*/
 
-    loadProfile();
-    loadDay();
+    // Standard 72 triplets (right-to-left scanning). If you already have a verified list, swap it here.
+    const TRIPLETS = [
+      "והו","ילי","סיט","עלם","מהש","ללה","אכא","כהת","הזי","אלד","לאו","ההע",
+      "יזל","מבה","הרי","הקם","לאו","כלי","לוו","פהל","נלך","ייי","מלה","חהו",
+      "נתה","האא","ירת","שאה","ריי","אום","לכב","ושיר","יחר","ליה","כוק","מנז",
+      "אני","חעים","רהע","ייז","ההה","מיכ","וול","ילה","סאל","ערי","עשל","מיה",
+      "והו","דני","החש","עמר","ננא","נית","מבה","פוי","נמש","ייל","הרח","מצר",
+      "ומב","יהה","ענוי","מחי","דמב","מנק","איעל","חבו","ראה","יבמ","היי","מום"
+    ];
 
-    // default today's picks if missing
-    if(!state.todayNameId) pickTodayName();
-    if(!state.todayZoharId) pickTodayZohar();
+    const NAMES = [
+      {n:1,  t:"Time Travel", s:"How to fix the past"},
+      {n:2,  t:"Recapturing the Sparks", s:"Recharging when you are depleted"},
+      {n:3,  t:"Miracle Making", s:"A recipe"},
+      {n:4,  t:"Eliminating Negative Thoughts", s:"When and how"},
+      {n:5,  t:"Healing", s:"Meditation for yourself and others"},
+      {n:6,  t:"Dream State", s:"Activating messages from the subconscious"},
+      {n:7,  t:"DNA of Soul", s:"Restoring to their perfect state"},
+      {n:8,  t:"Defusing Negative Energy and Stress", s:"Releasing the pressure"},
+      {n:9,  t:"Angelic Influences", s:"Harnessing help from above"},
+      {n:10, t:"Looks Can Kill", s:"Protecting yourself from the evil-eye"},
+      {n:11, t:"Banishing the Remnants of Evil", s:"Purifying places and spaces"},
+      {n:12, t:"Unconditional Love", s:"How to awaken love, especially when you don’t feel it"},
+      {n:13, t:"Heaven on Earth", s:"Creating harmony within and without"},
+      {n:14, t:"Farewell to Arms", s:"Diffusing conflict"},
+      {n:15, t:"Long-Range Vision", s:"Seeing the effect of decisions before you make them"},
+      {n:16, t:"Dumping Depression", s:"How to pick yourself up when you fall"},
+      {n:17, t:"Great Escape", s:"Breaking the limits of ego"},
+      {n:18, t:"Fertility", s:"When conception is difficult"},
+      {n:19, t:"Dialing God", s:"Receiving answers to your prayers"},
+      {n:20, t:"Victory Over Addictions", s:"Overcoming your negative self"},
+      {n:21, t:"Eradicate Plague", s:"Effecting change in the physical world"},
+      {n:22, t:"Stop Fatal Attraction", s:"How to stop drawing the wrong people into your life"},
+      {n:23, t:"Sharing the Flame", s:"Passing the wisdom along"},
+      {n:24, t:"Jealousy", s:"Undoing chaos resulting from our jealousy"},
+      {n:25, t:"Speak Your Mind", s:"For those times when you need help expressing yourself"},
+      {n:26, t:"Order from Chaos", s:"Reversing Murphy’s Law"},
+      {n:27, t:"Silent Partner", s:"Choosing positivity as your partner"},
+      {n:28, t:"Soul Mate", s:"Attracting “The One”"},
+      {n:29, t:"Removing Hatred", s:"Drawing out the poison"},
+      {n:30, t:"Building Bridges", s:"Mending broken relationships"},
+      {n:31, t:"Finish What You Start", s:"Finding the power to finish what you start"},
+      {n:32, t:"Memories", s:"Breaking the cycle"},
+      {n:33, t:"Revealing the Dark Side", s:"Removing the obstacles you create"},
+      {n:34, t:"Forget Thyself", s:"Opening up to another view"},
+      {n:35, t:"Sexual Energy", s:"How to get more from your sexual experience"},
+      {n:36, t:"Fear(less)", s:"Overcoming the ties that bind"},
+      {n:37, t:"The Big Picture", s:"Seeing the opportunity for good hidden in every challenge"},
+      {n:38, t:"Circuitry", s:"Sharing so you can truly receive"},
+      {n:39, t:"Diamond in the Rough", s:"Turning the coal in your life into diamonds"},
+      {n:40, t:"Speaking the Right Words", s:"Using language to make good things happen"},
+      {n:41, t:"Self-Esteem", s:"Finding the power to lift yourself up"},
+      {n:42, t:"Revealing the Concealed", s:"Seeing the truth and handling it"},
+      {n:43, t:"Defying Gravity", s:"Achieving mind over matter"},
+      {n:44, t:"Sweetening Judgment", s:"Ducking the boomerang you send out there"},
+      {n:45, t:"The Power of Prosperity", s:"What to do when you need money"},
+      {n:46, t:"Absolute Certainty", s:"What to do when doubts creep in"},
+      {n:47, t:"Global Transformation", s:"Helping to bring about world peace"},
+      {n:48, t:"Unity", s:"When there is conflict and only togetherness will do"},
+      {n:49, t:"Happiness", s:"When you need the power to choose happiness"},
+      {n:50, t:"Enough Is Never Enough", s:"When you need the passion to keep from settling for less"},
+      {n:51, t:"No Guilt", s:"Removing negativity aspects of your nature while you repair the damage they cause"},
+      {n:52, t:"Passion", s:"Awaken the yearning in your heart"},
+      {n:53, t:"No Agenda", s:"Giving with no strings attached"},
+      {n:54, t:"The Death of Death", s:"When things are good and you want them to stay that way"},
+      {n:55, t:"Thought into Action", s:"The power to make it happen"},
+      {n:56, t:"Dispelling Anger", s:"Overcoming it before it overcomes you"},
+      {n:57, t:"Listen to Your Soul", s:"Increasing the volume of the soft voice within"},
+      {n:58, t:"Letting Go", s:"When you need the power to walk away"},
+      {n:59, t:"Umbilical Cord", s:"Connecting to the Light Force"},
+      {n:60, t:"Freedom", s:"Passing the test and going to the next level"},
+      {n:61, t:"Water", s:"Removing negativity from the source of life"},
+      {n:62, t:"Parent–Teacher, Not Preacher", s:"When you need to teach your children"},
+      {n:63, t:"Appreciation", s:"How to keep what you have and get more"},
+      {n:64, t:"Casting Yourself in a Favorable Light", s:"Revealing the best you"},
+      {n:65, t:"Fear of God", s:"When you need to remember that there is a purpose"},
+      {n:66, t:"Accountability", s:"The power to take accountability for your life"},
+      {n:67, t:"Great Expectations", s:"How to stop getting disappointed"},
+      {n:68, t:"Contacting Departed Souls", s:"Making positive connections with people who have passed on"},
+      {n:69, t:"Lost and Found", s:"What to do when you are lost and confused"},
+      {n:70, t:"Recognizing Design Beneath the Surface", s:"Finding the solution within the problem"},
+      {n:71, t:"Prophecy and Parallel Universes", s:"Switching your universe for a better one"},
+      {n:72, t:"Spiritual Cleansing", s:"Purging yourself of negativity"},
+    ].map(x=>({ ...x, h: TRIPLETS[x.n-1] || "—" }));
 
-    renderCardPreview();
-    renderHistory();
+    /* ---------------------------
+       Storage
+    ----------------------------*/
+    const KEY = {
+      lastN: "kai_last_n_v1",
+      notes: (n)=>`kai_note_${n}_v1`,
+      lib: "kai_lib_note_v1",
+      alwaysGate: "kai_always_gate_v1"
+    };
 
-    show("gate");
-    toast("KAI loaded");
-  }
+    function saveLast(n){ localStorage.setItem(KEY.lastN, String(n)); }
+    function loadLast(){ return Number(localStorage.getItem(KEY.lastN) || "1") || 1; }
 
-  // init buttons that depend on data (after load)
-  function postInitWiring(){
-    $("btnGoNames").addEventListener("click", ()=> show("names"));
-    $("btnGoZohar").addEventListener("click", ()=> show("zohar"));
-    $("btnGoShare").addEventListener("click", ()=> show("share"));
-  }
+    function saveNote(n, txt){ localStorage.setItem(KEY.notes(n), txt ?? ""); }
+    function loadNote(n){ return localStorage.getItem(KEY.notes(n)) || ""; }
 
-  // additional wiring that needs to exist after DOM is ready
-  document.addEventListener("DOMContentLoaded", ()=>{
-    try{
-      boot();
-      postInitWiring();
-    }catch(e){
-      console.error(e);
-      try{ toast("BOOT error: " + (e?.message || "unknown")); }catch{}
+    function anyNote(n){
+      const v = (localStorage.getItem(KEY.notes(n)) || "").trim();
+      return v.length>0;
     }
-  });
 
-})();
-</script>
+    /* ---------------------------
+       State
+    ----------------------------*/
+    let currentN = loadLast();
+    let breathTimer = null;
+
+    /* ---------------------------
+       UI: Tabs
+    ----------------------------*/
+    function setTab(tab){
+      // tabs highlight
+      document.querySelectorAll(".tab").forEach(el=>{
+        el.classList.toggle("active", el.dataset.tab === tab);
+      });
+
+      // screens
+      const map = {
+        Study: $("screenStudy"),
+        Card: $("screenCard"),
+        Library: $("screenLibrary"),
+        Settings: $("screenSettings"),
+      };
+      Object.values(map).forEach(s=>s.classList.remove("active"));
+      map[tab].classList.add("active");
+
+      // scroll to top for clarity
+      $("app").scrollTo({top:0, behavior:"smooth"});
+    }
+
+    document.querySelectorAll(".tab").forEach(el=>{
+      el.addEventListener("click", ()=>setTab(el.dataset.tab));
+    });
+
+    /* ---------------------------
+       Study list render
+    ----------------------------*/
+    function renderList(){
+      const q = ($("q").value || "").trim().toLowerCase();
+      const mode = $("filter").value;
+
+      const rows = NAMES.filter(x=>{
+        const hit = !q || (String(x.n).includes(q) || x.t.toLowerCase().includes(q) || x.s.toLowerCase().includes(q));
+        const keep = mode === "all" ? true : anyNote(x.n);
+        return hit && keep;
+      });
+
+      const list = $("list");
+      list.innerHTML = "";
+
+      rows.forEach(x=>{
+        const div = document.createElement("div");
+        div.className = "item";
+        div.setAttribute("role","button");
+        div.setAttribute("tabindex","0");
+
+        div.innerHTML = `
+          <div class="nbox">
+            <div class="num">${x.n}</div>
+            <div class="tri">${escapeHtml(x.h)}</div>
+          </div>
+          <div>
+            <div class="itTitle">${escapeHtml(x.t)}</div>
+            <div class="itSub">${escapeHtml(x.s)}</div>
+          </div>
+        `;
+
+        div.addEventListener("click", ()=>selectName(x.n));
+        div.addEventListener("keydown", (e)=>{
+          if(e.key==="Enter"||e.key===" "){ e.preventDefault(); selectName(x.n); }
+        });
+
+        list.appendChild(div);
+      });
+
+      if(rows.length===0){
+        const empty = document.createElement("div");
+        empty.style.padding="14px";
+        empty.style.color="rgba(243,241,234,.70)";
+        empty.textContent="No matches.";
+        list.appendChild(empty);
+      }
+    }
+
+    $("q").addEventListener("input", renderList);
+    $("filter").addEventListener("change", renderList);
+
+    /* ---------------------------
+       Detail panel
+    ----------------------------*/
+    function promptFor(n){
+      // Simple, stable prompt that still feels intelligent without hallucinating content.
+      const name = NAMES[n-1];
+      const base = [
+        "What is one reaction I can restrict today?",
+        "What is one physical action that proves the change?",
+        "Where can I choose certainty over doubt?",
+        "What would love do right now?",
+        "What’s the smallest step with the highest Light?"
+      ];
+      // deterministic-ish variation
+      const idx = (n * 7) % base.length;
+      return `${name.t}: ${base[idx]}`;
+    }
+
+    function selectName(n){
+      n = Math.max(1, Math.min(72, Number(n)||1));
+      currentN = n;
+      saveLast(n);
+
+      const x = NAMES[n-1];
+      $("dNum").textContent = String(x.n);
+      $("dTri").textContent = x.h;
+      $("dTitle").textContent = x.t;
+      $("dSub").textContent = x.s;
+      $("dPrompt").textContent = promptFor(n);
+
+      $("dNotes").value = loadNote(n);
+
+      $("pillText").textContent = `#${x.n} • ${x.t}`;
+      // keep card pick synced
+      $("cardPick").value = String(n);
+      // load notes into card note lightly
+      const note = loadNote(n).trim();
+      if(note && ($("cardNote").value||"").trim().length===0){
+        $("cardNote").value = note;
+      }
+
+      toast(`Selected #${x.n}: ${x.t}`);
+    }
+
+    $("btnSaveNotes").addEventListener("click", ()=>{
+      saveNote(currentN, $("dNotes").value || "");
+      toast("Saved");
+      renderList();
+    });
+
+    $("btnClearNotes").addEventListener("click", ()=>{
+      $("dNotes").value = "";
+      saveNote(currentN, "");
+      toast("Cleared");
+      renderList();
+    });
+
+    $("btnCopyTriplet").addEventListener("click", async ()=>{
+      try{
+        const txt = (NAMES[currentN-1]?.h || "").trim();
+        await navigator.clipboard.writeText(txt);
+        toast("Copied letters");
+      }catch{
+        toast("Copy not available");
+      }
+    });
+
+    $("btnRandom").addEventListener("click", ()=>{
+      const n = 1 + Math.floor(Math.random()*72);
+      selectName(n);
+    });
+
+    $("btnResume").addEventListener("click", ()=>{
+      selectName(loadLast());
+    });
+
+    $("btnToCard").addEventListener("click", ()=>{
+      setTab("Card");
+      $("cardPick").value = String(currentN);
+      // default vibe if empty
+      if(!($("cardVibe").value||"").trim()){
+        $("cardVibe").value = "Pause. Restrict. Listen. Choose. Light.";
+      }
+      renderCard();
+      toast("Card ready");
+    });
+
+    /* ---------------------------
+       Share card
+    ----------------------------*/
+    function fillCardPick(){
+      const sel = $("cardPick");
+      sel.innerHTML = "";
+      NAMES.forEach(x=>{
+        const opt = document.createElement("option");
+        opt.value = String(x.n);
+        opt.textContent = `#${x.n} • ${x.t}`;
+        sel.appendChild(opt);
+      });
+      sel.value = String(currentN);
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+      const words = (text||"").split(/\s+/).filter(Boolean);
+      let line = "";
+      const lines = [];
+      for(const w of words){
+        const test = line ? (line + " " + w) : w;
+        const m = ctx.measureText(test).width;
+        if(m > maxWidth && line){
+          lines.push(line);
+          line = w;
+        }else{
+          line = test;
+        }
+      }
+      if(line) lines.push(line);
+      lines.forEach((ln,i)=>ctx.fillText(ln, x, y + i*lineHeight));
+      return lines.length;
+    }
+
+    function renderCard(){
+      const n = Number($("cardPick").value || currentN) || currentN;
+      const x = NAMES[n-1];
+
+      const vibe = ($("cardVibe").value || "").trim();
+      const note = ($("cardNote").value || "").trim();
+
+      const canvas = $("cardCanvas");
+      const ctx = canvas.getContext("2d");
+
+      // Background
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+      ctx.fillStyle = "#050505";
+      ctx.fillRect(0,0,canvas.width, canvas.height);
+
+      // Soft gold aura
+      const g1 = ctx.createRadialGradient(canvas.width*0.50, canvas.height*0.10, 10, canvas.width*0.50, canvas.height*0.10, canvas.width*0.75);
+      g1.addColorStop(0, "rgba(215,180,90,0.20)");
+      g1.addColorStop(1, "rgba(215,180,90,0.00)");
+      ctx.fillStyle = g1;
+      ctx.fillRect(0,0,canvas.width, canvas.height);
+
+      // Frame
+      ctx.strokeStyle = "rgba(215,180,90,0.55)";
+      ctx.lineWidth = 4;
+      const pad = 48;
+      roundRect(ctx, pad, pad, canvas.width-pad*2, canvas.height-pad*2, 36);
+      ctx.stroke();
+
+      ctx.strokeStyle = "rgba(215,180,90,0.18)";
+      ctx.lineWidth = 2;
+      roundRect(ctx, pad+18, pad+18, canvas.width-(pad+18)*2, canvas.height-(pad+18)*2, 30);
+      ctx.stroke();
+
+      // Header
+      ctx.fillStyle = "rgba(240,210,138,0.92)";
+      ctx.font = "900 30px " + cssFont();
+      ctx.textAlign = "left";
+      ctx.fillText("KAI", pad+28, pad+66);
+
+      ctx.fillStyle = "rgba(243,241,234,0.62)";
+      ctx.font = "800 18px " + cssFont();
+      ctx.fillText("Kabbalah Always Illuminates", pad+28, pad+96);
+
+      // Name number
+      ctx.textAlign = "right";
+      ctx.fillStyle = "rgba(243,241,234,0.75)";
+      ctx.font = "900 20px " + cssFont();
+      ctx.fillText(`#${x.n}`, canvas.width-pad-28, pad+76);
+
+      // Triplet big
+      ctx.textAlign = "center";
+      ctx.fillStyle = "rgba(240,210,138,0.98)";
+      ctx.font = "900 118px Times New Roman";
+      ctx.direction = "rtl";
+      ctx.fillText(x.h, canvas.width/2, pad+240);
+      ctx.direction = "ltr";
+
+      // Title + subtitle
+      ctx.textAlign = "center";
+      ctx.fillStyle = "rgba(243,241,234,0.95)";
+      ctx.font = "950 52px " + cssFont();
+      wrapText(ctx, x.t, canvas.width/2, pad+330, canvas.width-(pad*2)-60, 60);
+
+      ctx.fillStyle = "rgba(243,241,234,0.70)";
+      ctx.font = "800 26px " + cssFont();
+      wrapText(ctx, x.s, canvas.width/2, pad+420, canvas.width-(pad*2)-90, 34);
+
+      // Divider
+      ctx.strokeStyle = "rgba(215,180,90,0.18)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(pad+90, pad+510);
+      ctx.lineTo(canvas.width-pad-90, pad+510);
+      ctx.stroke();
+
+      // Vibe block
+      const vibeText = vibe || "Pause. Restrict. Witness. Choose. Light.";
+      ctx.fillStyle = "rgba(240,210,138,0.95)";
+      ctx.font = "900 34px " + cssFont();
+      wrapText(ctx, vibeText, canvas.width/2, pad+590, canvas.width-(pad*2)-120, 42);
+
+      // Note block
+      if(note){
+        ctx.fillStyle = "rgba(243,241,234,0.84)";
+        ctx.font = "700 26px " + cssFont();
+        ctx.textAlign = "center";
+        const used = wrapText(ctx, note, canvas.width/2, pad+700, canvas.width-(pad*2)-130, 34);
+
+        // If note is long, softly fade bottom
+        if(used > 9){
+          const fade = ctx.createLinearGradient(0, canvas.height-260, 0, canvas.height-120);
+          fade.addColorStop(0,"rgba(5,5,5,0)");
+          fade.addColorStop(1,"rgba(5,5,5,1)");
+          ctx.fillStyle = fade;
+          ctx.fillRect(pad, canvas.height-260, canvas.width-pad*2, 220);
+        }
+      }
+
+      // Footer
+      ctx.textAlign = "left";
+      ctx.fillStyle = "rgba(243,241,234,0.55)";
+      ctx.font = "800 18px " + cssFont();
+      ctx.fillText("Scan right-to-left • Restrict reactivity • Take one action", pad+28, canvas.height-pad-54);
+
+      ctx.textAlign = "right";
+      ctx.fillStyle = "rgba(243,241,234,0.45)";
+      ctx.font = "700 16px " + cssFont();
+      ctx.fillText(new Date().toLocaleDateString(), canvas.width-pad-28, canvas.height-pad-54);
+    }
+
+    function roundRect(ctx, x, y, w, h, r){
+      const rr = Math.min(r, w/2, h/2);
+      ctx.beginPath();
+      ctx.moveTo(x+rr, y);
+      ctx.arcTo(x+w, y, x+w, y+h, rr);
+      ctx.arcTo(x+w, y+h, x, y+h, rr);
+      ctx.arcTo(x, y+h, x, y, rr);
+      ctx.arcTo(x, y, x+w, y, rr);
+      ctx.closePath();
+    }
+
+    function cssFont(){
+      // ensures spaces are fine in canvas font string
+      return 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial';
+    }
+
+    $("btnRender").addEventListener("click", ()=>{
+      renderCard();
+      toast("Generated");
+    });
+
+    $("btnCardLoadSelected").addEventListener("click", ()=>{
+      $("cardPick").value = String(currentN);
+      const note = loadNote(currentN).trim();
+      if(note) $("cardNote").value = note;
+      if(!($("cardVibe").value||"").trim()){
+        $("cardVibe").value = "Pause. Restrict. Listen. Choose. Light.";
+      }
+      renderCard();
+      toast("Loaded selection");
+    });
+
+    $("btnCardRandom").addEventListener("click", ()=>{
+      const n = 1 + Math.floor(Math.random()*72);
+      $("cardPick").value = String(n);
+      $("cardNote").value = "";
+      $("cardVibe").value = "Pause. Restrict. Witness. Choose. Light.";
+      renderCard();
+      toast("Random card");
+    });
+
+    $("cardPick").addEventListener("change", ()=>{
+      renderCard();
+    });
+
+    async function canvasToJpegBlob(){
+      const canvas = $("cardCanvas");
+      return await new Promise((resolve)=>{
+        canvas.toBlob((blob)=>resolve(blob), "image/jpeg", 0.92);
+      });
+    }
+
+    $("btnDownloadJpg").addEventListener("click", async ()=>{
+      try{
+        const blob = await canvasToJpegBlob();
+        if(!blob){ toast("Could not create JPEG"); return; }
+        const n = Number($("cardPick").value||currentN);
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `KAI_${String(n).padStart(2,"0")}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+        toast("Saved JPEG");
+      }catch(e){
+        showErr(String(e?.stack || e));
+      }
+    });
+
+    $("btnShareJpg").addEventListener("click", async ()=>{
+      try{
+        const blob = await canvasToJpegBlob();
+        if(!blob){ toast("Could not create JPEG"); return; }
+
+        const n = Number($("cardPick").value||currentN);
+        const file = new File([blob], `KAI_${String(n).padStart(2,"0")}.jpg`, {type:"image/jpeg"});
+
+        // iOS supports navigator.share with files on modern versions
+        if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+          await navigator.share({
+            title: "KAI Share Card",
+            text: "KAI",
+            files: [file]
+          });
+          toast("Shared");
+        }else{
+          // fallback: save
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = `KAI_${String(n).padStart(2,"0")}.jpg`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+          toast("Share not supported here. Saved instead.");
+        }
+      }catch(e){
+        toast("Share cancelled or blocked");
+      }
+    });
+
+    /* ---------------------------
+       Library notes
+    ----------------------------*/
+    $("btnLibSave").addEventListener("click", ()=>{
+      localStorage.setItem(KEY.lib, $("libNote").value || "");
+      toast("Saved");
+    });
+    $("btnLibClear").addEventListener("click", ()=>{
+      $("libNote").value = "";
+      localStorage.setItem(KEY.lib, "");
+      toast("Cleared");
+    });
+
+    /* ---------------------------
+       Settings
+    ----------------------------*/
+    $("btnResetNotes").addEventListener("click", ()=>{
+      try{
+        for(let i=1;i<=72;i++) localStorage.removeItem(KEY.notes(i));
+        toast("All notes cleared");
+        renderList();
+      }catch(e){ showErr(String(e?.stack||e)); }
+    });
+
+    $("btnResetAll").addEventListener("click", ()=>{
+      try{
+        localStorage.clear();
+        toast("Factory reset");
+        location.reload();
+      }catch(e){ showErr(String(e?.stack||e)); }
+    });
+
+    $("btnExport").addEventListener("click", ()=>{
+      try{
+        const out = {
+          exported_at: nowISO(),
+          last_n: loadLast(),
+          always_gate: localStorage.getItem(KEY.alwaysGate) === "1",
+          library_note: localStorage.getItem(KEY.lib) || "",
+          notes: {}
+        };
+        for(let i=1;i<=72;i++){
+          const v = (localStorage.getItem(KEY.notes(i)) || "").trim();
+          if(v) out.notes[i] = v;
+        }
+        const blob = new Blob([JSON.stringify(out,null,2)], {type:"application/json"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "KAI_export.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+        toast("Exported");
+      }catch(e){ showErr(String(e?.stack||e)); }
+    });
+
+    $("alwaysGate").addEventListener("change", ()=>{
+      localStorage.setItem(KEY.alwaysGate, $("alwaysGate").checked ? "1" : "0");
+      toast($("alwaysGate").checked ? "Gate enabled" : "Gate disabled");
+    });
+
+    /* ---------------------------
+       Connect gate breath cycle
+    ----------------------------*/
+    function stopBreath(){
+      if(breathTimer){ clearInterval(breathTimer); breathTimer=null; }
+      $("breathBar").style.width = "0%";
+      $("breathLabel").textContent = "Idle";
+      $("breathHint").innerHTML = "Tap <b>Connect</b>. We’ll do a short inhale, hold, exhale. Then you enter.";
+    }
+
+    function runBreathThenEnter(){
+      stopBreath();
+      let t = 0;
+      const total = 12; // seconds
+      const phases = [
+        {name:"Inhale", from:0, to:4},
+        {name:"Hold",   from:4, to:6},
+        {name:"Exhale", from:6, to:12}
+      ];
+
+      $("breathHint").innerHTML = "Follow the cue. Keep it simple. When you finish, you enter. ✅";
+
+      breathTimer = setInterval(()=>{
+        t += 0.25;
+        const pct = Math.min(100, (t/total)*100);
+        $("breathBar").style.width = pct.toFixed(1) + "%";
+
+        const ph = phases.find(p=>t>=p.from && t<p.to) || phases[phases.length-1];
+        $("breathLabel").textContent = ph.name;
+
+        if(t >= total){
+          stopBreath();
+          hideGate();
+          toast("Connected");
+        }
+      }, 250);
+    }
+
+    function hideGate(){
+      $("gate").style.display = "none";
+      $("gate").setAttribute("aria-hidden","true");
+    }
+    function showGate(){
+      $("gate").style.display = "flex";
+      $("gate").setAttribute("aria-hidden","false");
+    }
+
+    $("btnGateEnter").addEventListener("click", runBreathThenEnter);
+    $("btnGateRestart").addEventListener("click", runBreathThenEnter);
+    $("btnGateSkip").addEventListener("click", ()=>{
+      stopBreath();
+      hideGate();
+      toast("Skipped");
+    });
+
+    /* ---------------------------
+       Utilities
+    ----------------------------*/
+    function escapeHtml(s){
+      return String(s||"")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    /* ---------------------------
+       Boot
+    ----------------------------*/
+    function boot(){
+      clearErr();
+
+      // Gate preference
+      const always = localStorage.getItem(KEY.alwaysGate) === "1";
+      $("alwaysGate").checked = always;
+
+      if(always){
+        showGate();
+      }else{
+        // show once per load, but user can skip quickly
+        showGate();
+      }
+
+      // load library note
+      $("libNote").value = localStorage.getItem(KEY.lib) || "";
+
+      // fill selects
+      fillCardPick();
+
+      // list + selection
+      renderList();
+      selectName(loadLast());
+
+      // initial card render
+      $("cardVibe").value = "Pause. Restrict. Listen. Choose. Light.";
+      renderCard();
+
+      toast("KAI online");
+    }
+
+    boot();
+  </script>
 </body>
 </html>
