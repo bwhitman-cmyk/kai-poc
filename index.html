@@ -1174,8 +1174,15 @@ $("btnAssess").addEventListener("click", n72_showAssess);
     $("tikkun").value = state.profile?.tikkun || "";
     $("notes").value = state.profile?.notes || "";
     updateChips();
-    renderGateStatus();
+updateChips();
 
+// safe: never let Gate UI break wiring
+try{
+  if (typeof renderGateStatus === "function") renderGateStatus();
+} catch(e){
+  console.error("renderGateStatus failed", e);
+  showErr("Gate UI error: " + (e?.message || String(e)));
+}
     // initial list
     n72_renderList(N72);
     restoreSelected72();
