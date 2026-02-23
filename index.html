@@ -413,6 +413,24 @@ function zodiacFromYMD(ymd){
 
   return "";
 }
+  function updateSignFromBirthday(){
+  // read birthday from input if present
+  let ymd = "";
+  try { ymd = $("birthday").value || ""; } catch(e){ return; }
+
+  // compute sign and store it
+  const sign = zodiacFromYMD(ymd) || "";
+  if (!state.profile) state.profile = { birthday:"", sign:"", tikkun:"", notes:"" };
+
+  state.profile.birthday = ymd;
+  state.profile.sign = sign;
+
+  // paint sign into UI if input exists
+  try { $("sign").value = sign || ""; } catch(e){}
+
+  // persist if saveState exists
+  try { if (typeof saveState === "function") saveState(); } catch(e){}
+}
   const errBox = $("errBox");
   const toastEl = $("toast");
 
