@@ -7,19 +7,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#000000" />
 
-  <!-- Cache nudges (not perfect on iOS, but helps) -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <!-- ICON LOCK (use the file that exists in your repo) -->
-  <!-- If you have apple-touch-icon-v4.png, keep it. If your actual filename differs, change it here. -->
-  <link rel="apple-touch-icon" href="/apple-touch-icon-v4.png?v=KAI-2026-02-23b">
-  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192-v4.png?v=KAI-2026-02-23b">
-  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512-v4.png?v=KAI-2026-02-23b">
-
-  <!-- If you have manifest.webmanifest already, keep it -->
-  <link rel="manifest" href="/manifest.webmanifest?v=KAI-2026-02-23b">
+  <!-- ICON LOCK (ensure these files exist in repo) -->
+  <link rel="apple-touch-icon" href="/apple-touch-icon-v4.png?v=KAI-2026-02-23c">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192-v4.png?v=KAI-2026-02-23c">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512-v4.png?v=KAI-2026-02-23c">
+  <link rel="manifest" href="/manifest.webmanifest?v=KAI-2026-02-23c">
 
   <title>KAI</title>
 
@@ -41,7 +37,6 @@
       --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
-
     *{ box-sizing:border-box; }
     html, body{ height:100%; }
     body{
@@ -55,399 +50,175 @@
         var(--bg);
       overflow-x:hidden;
     }
-
-    .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 18px 14px 110px;
-    }
-
+    .wrap{ max-width: 1020px; margin: 0 auto; padding: 18px 14px 120px; }
     .brand{
-      text-align:center;
-      letter-spacing:.35em;
-      font-weight:900;
-      font-size: 30px;
-      padding: 14px 0 8px;
-      opacity:.95;
-      user-select:none;
+      text-align:center; letter-spacing:.35em; font-weight:900; font-size: 30px;
+      padding: 14px 0 8px; opacity:.95; user-select:none;
     }
-
     .errorBanner{
-      display:none;
-      margin: 10px 0 12px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,90,106,.35);
-      background: rgba(255,90,106,.10);
-      color: #ffd0d5;
-      font-family: var(--mono);
-      white-space: pre-wrap;
+      display:none; margin: 10px 0 12px; padding: 12px 14px;
+      border-radius: 16px; border: 1px solid rgba(255,90,106,.35);
+      background: rgba(255,90,106,.10); color: #ffd0d5;
+      font-family: var(--mono); white-space: pre-wrap;
     }
-
     .chipRow{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
-      margin: 10px 0 14px;
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin: 10px 0 14px;
     }
     .chip{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 30px rgba(0,0,0,.22);
-      font-size: 14px;
+      display:flex; gap:8px; align-items:center; padding: 10px 12px;
+      border-radius: 999px; background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10); backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.22); font-size: 14px;
     }
     .chip b{ color: var(--gold2); }
-
-    .tabs{
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-      margin: 8px 0 18px;
-    }
+    .tabs{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin: 8px 0 18px; }
     .tabBtn{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
-      padding: 12px 16px;
-      border-radius: 999px;
-      font-weight: 700;
-      cursor:pointer;
+      appearance:none; border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22); color: var(--text);
+      padding: 12px 16px; border-radius: 999px; font-weight: 800; cursor:pointer;
       user-select:none;
     }
     .tabBtn.active{
-      border-color: rgba(215,180,90,.50);
-      background: rgba(215,180,90,.12);
-      color: var(--gold2);
-      box-shadow: 0 14px 40px rgba(215,180,90,.08);
+      border-color: rgba(215,180,90,.50); background: rgba(215,180,90,.12);
+      color: var(--gold2); box-shadow: 0 14px 40px rgba(215,180,90,.08);
     }
-
     .panel{
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: var(--radius);
-      padding: 16px 16px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      margin: 14px 0;
+      background: var(--panel); border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius); padding: 16px 16px;
+      box-shadow: var(--shadow); backdrop-filter: blur(12px); margin: 14px 0;
     }
     .panelTitle{
-      font-size: 14px;
-      font-weight: 900;
-      letter-spacing: .14em;
-      color: rgba(243,242,238,.78);
-      margin-bottom: 10px;
+      font-size: 14px; font-weight: 1000; letter-spacing: .14em;
+      color: rgba(243,242,238,.78); margin-bottom: 10px;
     }
-    .panelSub{
-      color: var(--muted);
-      font-size: 14px;
-      margin-top: -2px;
-      line-height: 1.3;
-    }
-
-    .row{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-    }
-
+    .panelSub{ color: var(--muted); font-size: 14px; margin-top: -2px; line-height: 1.3; }
     .btnRow{ display:flex; gap:12px; flex-wrap:wrap; margin-top: 12px; }
-
-    button{
-      font-family: var(--font);
-    }
     .btn{
-      appearance:none;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding: 12px 14px;
-      border-radius: 18px;
-      font-weight: 800;
-      cursor:pointer;
+      appearance:none; border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06); color: var(--text);
+      padding: 12px 14px; border-radius: 18px; font-weight: 900; cursor:pointer;
       user-select:none;
     }
-    .btn.primary{
-      border: 0;
-      color: #0a0a0a;
-      background: linear-gradient(135deg, rgba(215,180,90,.98), rgba(215,180,90,.55));
-    }
-    .btn.good{
-      border: 1px solid rgba(45,212,191,.35);
-      background: rgba(45,212,191,.10);
-      color: #b8fff4;
-    }
-    .btn.danger{
-      border: 1px solid rgba(255,90,106,.35);
-      background: rgba(255,90,106,.10);
-      color: #ffd0d5;
-    }
+    .btn.primary{ border: 0; color: #0a0a0a; background: linear-gradient(135deg, rgba(215,180,90,.98), rgba(215,180,90,.55)); }
+    .btn.good{ border: 1px solid rgba(45,212,191,.35); background: rgba(45,212,191,.10); color: #b8fff4; }
+    .btn.danger{ border: 1px solid rgba(255,90,106,.35); background: rgba(255,90,106,.10); color: #ffd0d5; }
 
     .metricRow{
-      margin: 14px 0 10px;
-      padding: 12px 12px;
-      border-radius: var(--radius2);
-      border: 1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.03);
+      margin: 14px 0 10px; padding: 12px 12px; border-radius: var(--radius2);
+      border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);
     }
     .metricRow label{
-      display:flex;
-      justify-content:space-between;
-      align-items:baseline;
-      color: rgba(243,242,238,.86);
-      font-weight: 800;
-      margin-bottom: 10px;
+      display:flex; justify-content:space-between; align-items:baseline;
+      color: rgba(243,242,238,.86); font-weight: 900; margin-bottom: 10px;
     }
     .metricRow label b{ color: var(--gold2); }
     input[type="range"]{ width:100%; }
 
-    .fieldRow{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      margin-top: 12px;
-    }
+    .fieldRow{ display:flex; flex-direction:column; gap:8px; margin-top: 12px; }
     .fieldRow label{
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: .05em;
-      color: rgba(243,242,238,.86);
+      font-size: 13px; font-weight: 900; letter-spacing: .05em; color: rgba(243,242,238,.86);
     }
     input[type="text"], input[type="date"], textarea, select{
-      width: 100%;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.28);
-      color: var(--text);
-      outline:none;
-      font-size: 16px;
+      width: 100%; padding: 12px 12px; border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.28);
+      color: var(--text); outline:none; font-size: 16px;
     }
     textarea{ min-height: 120px; font-family: var(--mono); font-size: 13px; }
+    .screen{ display:none; } .screen.active{ display:block; }
 
-    .screen{ display:none; }
-    .screen.active{ display:block; }
-
-    /* GATE */
+    /* Gate overlay */
     .gate{
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-      background:
-        radial-gradient(900px 650px at 50% 15%, rgba(215,180,90,.22), transparent 58%),
-        rgba(0,0,0,.78);
+      position: fixed; inset: 0; z-index: 99999; display:none;
+      align-items:center; justify-content:center; padding: 18px;
+      background: radial-gradient(900px 650px at 50% 15%, rgba(215,180,90,.22), transparent 58%), rgba(0,0,0,.78);
       backdrop-filter: blur(12px);
     }
     .gateCard{
-      width: min(560px, 96vw);
-      border-radius: 26px;
-      border: 1px solid rgba(215,180,90,.28);
-      background: rgba(10,10,10,.72);
-      box-shadow: 0 30px 120px rgba(0,0,0,.7);
-      padding: 18px 18px;
+      width: min(560px, 96vw); border-radius: 26px;
+      border: 1px solid rgba(215,180,90,.28); background: rgba(10,10,10,.72);
+      box-shadow: 0 30px 120px rgba(0,0,0,.7); padding: 18px 18px;
     }
-    .gateTitle{
-      text-align:center;
-      font-weight: 1000;
-      letter-spacing: .35em;
-      font-size: 30px;
-      margin: 10px 0 6px;
-    }
-    .gateSub{
-      text-align:center;
-      color: rgba(243,242,238,.74);
-      margin-bottom: 14px;
-    }
+    .gateTitle{ text-align:center; font-weight: 1000; letter-spacing: .35em; font-size: 30px; margin: 10px 0 6px; }
+    .gateSub{ text-align:center; color: rgba(243,242,238,.74); margin-bottom: 14px; }
     .breathBox{
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.04);
-      padding: 16px 14px;
-      text-align:center;
-      margin: 12px 0 14px;
+      border-radius: 18px; border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04); padding: 16px 14px; text-align:center; margin: 12px 0 14px;
     }
-    .breathText{
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing:.03em;
-    }
-    .breathHint{
-      margin-top: 6px;
-      font-size: 13px;
-      color: rgba(243,242,238,.65);
-    }
+    .breathText{ font-size: 20px; font-weight: 1000; letter-spacing:.03em; }
+    .breathHint{ margin-top: 6px; font-size: 13px; color: rgba(243,242,238,.65); }
 
-    /* 72 names */
-    .n72Head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
+    /* Lists */
     .badge{
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
+      padding: 8px 10px; border-radius: 999px; font-size: 12px;
+      border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04);
       color: rgba(243,242,238,.76);
     }
-    .badge.warn{
-      border-color: rgba(255,90,106,.35);
-      background: rgba(255,90,106,.08);
-      color: #ffd0d5;
-    }
-    .searchRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top: 12px;
-    }
-    .list{
-      margin-top: 12px;
-      border-radius: 18px;
-      overflow:hidden;
-      border: 1px solid rgba(255,255,255,.08);
-    }
+    .badge.warn{ border-color: rgba(255,90,106,.35); background: rgba(255,90,106,.08); color: #ffd0d5; }
+
+    .searchRow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top: 12px; }
+    .list{ margin-top: 12px; border-radius: 18px; overflow:hidden; border: 1px solid rgba(255,255,255,.08); }
     .item{
-      display:flex;
-      gap:12px;
-      padding: 12px 12px;
-      background: rgba(255,255,255,.03);
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      cursor:pointer;
+      display:flex; gap:12px; padding: 12px 12px; background: rgba(255,255,255,.03);
+      border-bottom: 1px solid rgba(255,255,255,.06); cursor:pointer;
     }
     .item:hover{ background: rgba(255,255,255,.05); }
     .item:last-child{ border-bottom: 0; }
     .hebrew{
-      min-width: 78px;
-      font-size: 22px;
-      font-weight: 900;
-      color: var(--gold2);
-      letter-spacing:.08em;
-      text-align:left;
-      font-family: "Times New Roman", Georgia, serif;
+      min-width: 78px; font-size: 22px; font-weight: 1000; color: var(--gold2);
+      letter-spacing:.08em; text-align:left; font-family: "Times New Roman", Georgia, serif;
     }
     .itemMain{ flex:1; }
-    .itemTitle{
-      font-weight: 900;
-      font-size: 16px;
-    }
-    .itemSub{
-      margin-top: 3px;
-      color: rgba(243,242,238,.68);
-      font-size: 13px;
-      line-height: 1.25;
-    }
+    .itemTitle{ font-weight: 1000; font-size: 16px; }
+    .itemSub{ margin-top: 3px; color: rgba(243,242,238,.68); font-size: 13px; line-height: 1.25; }
 
     .detail{
-      margin-top: 12px;
-      padding: 14px 14px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.03);
+      margin-top: 12px; padding: 14px 14px; border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);
     }
     .detailTop{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:baseline;
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:baseline;
     }
     .detailTop .big{
-      font-size: 22px;
-      font-weight: 1000;
-      color: var(--gold2);
-      letter-spacing:.1em;
+      font-size: 22px; font-weight: 1000; color: var(--gold2); letter-spacing:.1em;
       font-family: "Times New Roman", Georgia, serif;
     }
-    .detailTop .meta{
-      color: rgba(243,242,238,.7);
-      font-weight: 800;
-      font-size: 13px;
-    }
-    .detailTitle{
-      margin-top: 8px;
-      font-size: 20px;
-      font-weight: 1000;
-    }
-    .detailDesc{
-      margin-top: 8px;
-      color: rgba(243,242,238,.78);
-      line-height: 1.35;
-      font-size: 15px;
-    }
+    .detailTop .meta{ color: rgba(243,242,238,.7); font-weight: 900; font-size: 13px; }
+    .detailTitle{ margin-top: 8px; font-size: 20px; font-weight: 1000; }
+    .detailDesc{ margin-top: 8px; color: rgba(243,242,238,.78); line-height: 1.35; font-size: 15px; }
 
     /* Share card */
-    .cardWrap{
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
-      align-items:flex-start;
-    }
+    .cardWrap{ display:flex; gap:14px; flex-wrap:wrap; align-items:flex-start; }
     canvas{
-      width: min(720px, 100%);
-      max-width: 720px;
-      height: auto;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 24px 120px rgba(0,0,0,.6);
+      width: min(720px, 100%); max-width: 720px; height: auto; border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.10); box-shadow: 0 24px 120px rgba(0,0,0,.6);
       background: rgba(0,0,0,.3);
     }
     .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 22px;
-      transform: translateX(-50%);
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.58);
-      color: rgba(243,242,238,.86);
-      box-shadow: 0 10px 40px rgba(0,0,0,.4);
-      display:none;
-      z-index: 999999;
-      max-width: 92vw;
-      text-align:center;
+      position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+      padding: 10px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.58); color: rgba(243,242,238,.86);
+      box-shadow: 0 10px 40px rgba(0,0,0,.4); display:none; z-index: 999999;
+      max-width: 92vw; text-align:center;
     }
+    .footHint{ margin-top: 10px; color: rgba(243,242,238,.62); font-size: 13px; line-height: 1.35; }
+    .tiny{ font-size: 12px; color: rgba(243,242,238,.65); }
 
-    .footHint{
-      margin-top: 10px;
-      color: rgba(243,242,238,.62);
-      font-size: 13px;
-      line-height: 1.35;
+    /* Gematria */
+    .gmRow{ display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; }
+    .gmBox{
+      padding: 12px; border-radius: 18px; border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
     }
-
-    .tiny{
-      font-size: 12px;
-      color: rgba(243,242,238,.65);
-    }
+    .gmNum{ font-family: var(--mono); font-weight: 1000; font-size: 22px; color: var(--gold2); }
   </style>
 </head>
 
 <body>
   <div class="wrap">
     <div class="brand">KAI</div>
-
     <div id="err" class="errorBanner"></div>
 
-    <div class="chipRow" aria-label="Top counters">
+    <div class="chipRow">
       <div class="chip"><span>Pillars</span> <b id="pillarsChip">0</b><span>/100</span></div>
       <div class="chip"><span>Cycles</span> <b id="cyclesChip">0</b><span>/10</span></div>
       <div class="chip"><span>Certainty</span> <b id="certaintyChip">5</b><span>/10</span></div>
@@ -457,6 +228,8 @@
     <div class="tabs">
       <button class="tabBtn active" data-screen="home">Home</button>
       <button class="tabBtn" data-screen="names">72 Names</button>
+      <button class="tabBtn" data-screen="zohar">Zohar</button>
+      <button class="tabBtn" data-screen="gematria">Gematria</button>
       <button class="tabBtn" data-screen="card">Share Card</button>
       <button class="tabBtn" data-screen="settings">Settings</button>
     </div>
@@ -489,7 +262,7 @@
 
       <div class="panel">
         <div class="panelTitle">TODAY’S 72 NAME</div>
-        <div class="panelSub">Pick a Name, or let KAI suggest one once your canonical set is loaded.</div>
+        <div class="panelSub">Pick a Name, or browse. Titles appear once canonical set is loaded.</div>
         <div class="btnRow">
           <button id="btnPickToday" class="btn primary">Pick Today’s Name</button>
           <button id="btnGoNames" class="btn">Browse 72</button>
@@ -520,10 +293,10 @@
     <!-- 72 NAMES -->
     <section id="screen-names" class="screen">
       <div class="panel">
-        <div class="n72Head">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
           <div>
             <div class="panelTitle">72 NAMES</div>
-            <div class="panelSub">Hebrew triplets are built-in. Titles + descriptions must be loaded from your canonical source.</div>
+            <div class="panelSub">Hebrew triplets are built-in. Titles + descriptions load from your canonical paste.</div>
           </div>
           <div id="canonBadge" class="badge warn">Canonical titles/descriptions: NOT LOADED</div>
         </div>
@@ -534,8 +307,84 @@
         </div>
 
         <div class="list" id="n72List"></div>
-
         <div class="detail" id="n72Detail" style="display:none;"></div>
+
+        <div class="footHint">
+          If you see “(Title not loaded)”, go to <b>Settings → Canonical 72</b> and paste your canonical data as JSON or CSV/TSV.
+        </div>
+      </div>
+    </section>
+
+    <!-- ZOHAR -->
+    <section id="screen-zohar" class="screen">
+      <div class="panel">
+        <div class="panelTitle">ZOHAR LIBRARY</div>
+        <div class="panelSub">
+          This is a curated reference library (topics + citations + your notes). Not full text.
+          Focus seed: <b>Atika Kadisha</b>.
+        </div>
+
+        <div class="searchRow">
+          <input id="zSearch" type="text" placeholder="Search topics, parsha, keywords…">
+          <button id="btnZClear" class="btn">Clear</button>
+          <button id="btnZAdd" class="btn primary">Add Entry</button>
+        </div>
+
+        <div id="zAddBox" class="detail" style="display:none;">
+          <div class="fieldRow">
+            <label>Title</label>
+            <input id="zTitle" type="text" placeholder="Atika Kadisha: concealed root…">
+          </div>
+          <div class="fieldRow">
+            <label>Citation</label>
+            <input id="zCite" type="text" placeholder="Zohar Terumah 165b (example) | Vol/folio…">
+          </div>
+          <div class="fieldRow">
+            <label>Notes</label>
+            <textarea id="zNotes" placeholder="Your distilled takeaway, action, or meditation cue."></textarea>
+          </div>
+          <div class="btnRow">
+            <button id="btnZSave" class="btn good">Save Entry</button>
+            <button id="btnZCancel" class="btn">Cancel</button>
+          </div>
+        </div>
+
+        <div class="list" id="zList"></div>
+        <div class="detail" id="zDetail" style="display:none;"></div>
+      </div>
+    </section>
+
+    <!-- GEMATRIA -->
+    <section id="screen-gematria" class="screen">
+      <div class="panel">
+        <div class="panelTitle">GEMATRIA</div>
+        <div class="panelSub">Type Hebrew. Get value. Save history. (Supports final letters and Mispar Katan.)</div>
+
+        <div class="gmRow">
+          <div style="flex:1; min-width: 240px;">
+            <div class="fieldRow">
+              <label>Hebrew Text</label>
+              <input id="gInput" type="text" placeholder="e.g., אֲתִּיקָא קַדִּישָׁא">
+            </div>
+          </div>
+
+          <div class="gmBox">
+            <div class="tiny">Value</div>
+            <div id="gValue" class="gmNum">0</div>
+          </div>
+
+          <div class="gmBox">
+            <div class="tiny">Mispar Katan</div>
+            <div id="gKatan" class="gmNum">0</div>
+          </div>
+        </div>
+
+        <div class="btnRow">
+          <button id="btnGSave" class="btn good">Save to History</button>
+          <button id="btnGClear" class="btn danger">Clear History</button>
+        </div>
+
+        <div class="list" id="gHist"></div>
       </div>
     </section>
 
@@ -543,18 +392,18 @@
     <section id="screen-card" class="screen">
       <div class="panel">
         <div class="panelTitle">SHARE CARD</div>
-        <div class="panelSub">Export as JPEG. Share with one tap (when your browser supports it).</div>
+        <div class="panelSub">Export as JPEG. Share with one tap (when supported).</div>
 
         <div class="cardWrap">
           <canvas id="cardCanvas" width="1200" height="630"></canvas>
           <div style="flex:1; min-width: 260px;">
             <div class="fieldRow">
-              <label>Card Title (5-word vibe)</label>
-              <input id="cardTitle" type="text" placeholder="e.g., Witness Power. Choose Light. Repeat.">
+              <label>Card Title</label>
+              <input id="cardTitle" type="text" placeholder="Witness. Choose. Repeat. Illuminate.">
             </div>
             <div class="fieldRow">
               <label>Card Subtitle</label>
-              <input id="cardSubtitle" type="text" placeholder="e.g., Global Mishkan. Daily connection rep.">
+              <input id="cardSubtitle" type="text" placeholder="Global Mishkan. Daily connection rep.">
             </div>
             <div class="btnRow">
               <button id="btnRenderCard" class="btn primary">Render</button>
@@ -571,7 +420,7 @@
     <section id="screen-settings" class="screen">
       <div class="panel">
         <div class="panelTitle">GATE</div>
-        <div class="panelSub">If on, KAI opens with breath + rating before you enter study.</div>
+        <div class="panelSub">If on, KAI opens with breath + rating before you enter.</div>
         <div class="btnRow">
           <button id="btnToggleGate" class="btn"></button>
           <button id="btnShowGateNow" class="btn">Show Gate Now</button>
@@ -579,15 +428,19 @@
       </div>
 
       <div class="panel">
-        <div class="panelTitle">CANONICAL 72 DATA</div>
+        <div class="panelTitle">CANONICAL 72</div>
         <div class="panelSub">
-          Paste your canonical KC titles + descriptions here once.
-          KAI will use them exactly, with no reinterpretation.
+          Paste canonical KC titles + descriptions here once. JSON OR CSV/TSV accepted.
+          <br><span class="tiny">CSV columns: n, he, title, desc (header row ok).</span>
         </div>
 
         <div class="fieldRow">
-          <label>Paste JSON</label>
-          <textarea id="canonInput" placeholder='Expected format: [{"n":1,"he":"והו","title":"Time Travel","desc":"How to fix the past"}, ...]'></textarea>
+          <label>Paste JSON or CSV/TSV</label>
+          <textarea id="canonInput" placeholder='JSON: [{"n":1,"he":"והו","title":"Time Travel","desc":"How to fix the past"}, ...]
+CSV:
+n,he,title,desc
+1,והו,Time Travel,How to fix the past
+...'></textarea>
         </div>
 
         <div class="btnRow">
@@ -596,14 +449,13 @@
         </div>
 
         <div class="footHint">
-          If your source is not JSON, tell me what it is (CSV, screenshot export, etc.) and we’ll convert once.
-          After import, you never touch it again.
+          After import, go back to <b>72 Names</b>. The badge should flip to <b>LOADED</b>.
         </div>
       </div>
 
       <div class="panel">
         <div class="panelTitle">RESET</div>
-        <div class="panelSub">Hard reset clears local storage for this app (not GitHub/Vercel).</div>
+        <div class="panelSub">Hard reset clears local app data on this device.</div>
         <div class="btnRow">
           <button id="btnResetDaily" class="btn">Reset Today’s Counters</button>
           <button id="btnResetAll" class="btn danger">Reset Everything</button>
@@ -613,12 +465,12 @@
       <div class="panel">
         <div class="panelTitle">BUILD</div>
         <div class="tiny">Version: <span id="buildVersion"></span></div>
-        <div class="tiny">Tip: open with ?v=KAI-2026-02-23b to force refresh.</div>
+        <div class="tiny">Tip: open with ?v=KAI-2026-02-23c to force refresh.</div>
       </div>
     </section>
   </div>
 
-  <!-- GATE OVERLAY -->
+  <!-- GATE -->
   <div id="gate" class="gate" aria-modal="true" role="dialog">
     <div class="gateCard">
       <div class="gateTitle">KAI</div>
@@ -644,880 +496,1016 @@
         <button id="btnGateSkip" class="btn">Skip</button>
       </div>
 
-      <div class="footHint">This is the ritual doorway. Not a login. Not a wall. A threshold.</div>
+      <div class="footHint">A threshold, not a wall.</div>
     </div>
   </div>
 
   <div id="toast" class="toast"></div>
 
-  <script>
-  (() => {
-    "use strict";
+<script>
+(() => {
+  "use strict";
+  const BUILD = "KAI-2026-02-23c";
 
-    /* ================================
-       KAI CLEAN 72 (FINAL PRE-MTG BUILD)
-       Versioned, defensive, no surprises.
-    =================================== */
+  window.addEventListener("error", (e)=>{
+    try { showErr("JS ERROR: " + (e?.message || "unknown") + "\\n" + (e?.error?.stack || "")); } catch {}
+  });
+  window.addEventListener("unhandledrejection", (e)=>{
+    try { showErr("PROMISE ERROR: " + (e?.reason?.message || String(e?.reason || "unknown"))); } catch {}
+  });
 
-    const BUILD = "KAI-2026-02-23b";
+  const KEY = {
+    state: "KAI_STATE_V3",
+    canon72: "KAI_CANON_72_V2",
+    zohar: "KAI_ZOHAR_LIB_V1",
+    gemHist: "KAI_GEM_HIST_V1"
+  };
 
-    // Crash visibility
-    window.addEventListener("error", (e)=>{
-      try { showErr("JS ERROR: " + (e?.message || "unknown") + "\\n" + (e?.error?.stack || "")); } catch {}
-    });
-    window.addEventListener("unhandledrejection", (e)=>{
-      try { showErr("PROMISE ERROR: " + (e?.reason?.message || String(e?.reason || "unknown"))); } catch {}
-    });
+  const defaultState = {
+    ui:{ gateEnabled:true },
+    dayKey:"",
+    pillars:0,
+    cycles:0,
+    certainty:5,
+    energy:5,
+    profile:{ birthday:"", sign:"", notes:"" },
+    todayN:null,
+    card:{ title:"", subtitle:"" }
+  };
 
-    const KEY = {
-      state: "KAI_STATE_V2",
-      canon72: "KAI_CANON_72_V1"
-    };
+  let state = structuredClone(defaultState);
 
-    const defaultState = {
-      ui: {
-        gateEnabled: true
-      },
-      // daily
-      dayKey: "",            // YYYY-MM-DD
-      pillars: 0,
-      cycles: 0,
-      certainty: 5,
-      energy: 5,
-      // profile
-      profile: {
-        birthday: "",
-        sign: "",
-        notes: ""
-      },
-      // 72 selection
-      todayN: null,
-      // share card copy
-      card: {
-        title: "",
-        subtitle: ""
+  // Hebrew triplets only (no interpretations in code)
+  const N72_BASE = [
+    {n:1, he:"והו"},{n:2, he:"ילי"},{n:3, he:"סיט"},{n:4, he:"עלם"},{n:5, he:"מהש"},{n:6, he:"ללה"},
+    {n:7, he:"אכא"},{n:8, he:"כהת"},{n:9, he:"הזי"},{n:10, he:"אלד"},{n:11, he:"לאו"},{n:12, he:"ההע"},
+    {n:13, he:"יזל"},{n:14, he:"מבה"},{n:15, he:"הרי"},{n:16, he:"הקם"},{n:17, he:"לאו"},{n:18, he:"כלא"},
+    {n:19, he:"ליו"},{n:20, he:"פהל"},{n:21, he:"נלך"},{n:22, he:"ייי"},{n:23, he:"מלה"},{n:24, he:"והה"},
+    {n:25, he:"נתה"},{n:26, he:"האא"},{n:27, he:"ירת"},{n:28, he:"שאה"},{n:29, he:"ריי"},{n:30, he:"אום"},
+    {n:31, he:"לכב"},{n:32, he:"ושרי"},{n:33, he:"יהו"},{n:34, he:"להח"},{n:35, he:"כוק"},{n:36, he:"מנד"},
+    {n:37, he:"אני"},{n:38, he:"חעים"},{n:39, he:"רהע"},{n:40, he:"ייי"},{n:41, he:"ההה"},{n:42, he:"מיכ"},
+    {n:43, he:"וול"},{n:44, he:"ילה"},{n:45, he:"סאל"},{n:46, he:"ערי"},{n:47, he:"עשל"},{n:48, he:"מיה"},
+    {n:49, he:"והו"},{n:50, he:"דני"},{n:51, he:"החש"},{n:52, he:"עמם"},{n:53, he:"ננא"},{n:54, he:"נית"},
+    {n:55, he:"מבה"},{n:56, he:"פוי"},{n:57, he:"נמב"},{n:58, he:"ייל"},{n:59, he:"הרח"},{n:60, he:"מצר"},
+    {n:61, he:"ומב"},{n:62, he:"יהה"},{n:63, he:"ענו"},{n:64, he:"מחי"},{n:65, he:"דמב"},{n:66, he:"מנק"},
+    {n:67, he:"אייע"},{n:68, he:"וחו"},{n:69, he:"ראה"},{n:70, he:"יבמ"},{n:71, he:"היי"},{n:72, he:"מום"},
+  ];
+
+  // Seed Zohar library (metadata only)
+  const Z_SEED = [
+    { id: uid(), title: "Atika Kadisha (General)", cite: "Zohar (Atika/Arich Anpin thematic index)", notes: "Use this entry as the anchor folder for Atika. Add precise citations you trust." },
+    { id: uid(), title: "Terumah: Mishkan as living architecture", cite: "Zohar Terumah (add folio once verified)", notes: "Mishkan is not history: it is the present-tense construction of self." },
+    { id: uid(), title: "Concealed of the concealed", cite: "Atika Kadisha motif (verify volume/folio)", notes: "Work: humility + restriction. The root is hidden but its effects are concrete." }
+  ];
+
+  function $(id){ return document.getElementById(id); }
+
+  function toast(msg){
+    const t = $("toast"); if(!t) return;
+    t.textContent = msg; t.style.display = "block";
+    clearTimeout(toast._tm);
+    toast._tm = setTimeout(()=>{ t.style.display = "none"; }, 2200);
+  }
+  function showErr(msg){
+    const el = $("err"); if(!el) return;
+    el.style.display = "block"; el.textContent = msg;
+  }
+  function clearErr(){
+    const el = $("err"); if(!el) return;
+    el.style.display = "none"; el.textContent = "";
+  }
+
+  function todayKey(){
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const dd = String(d.getDate()).padStart(2,"0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  function mergeDefaults(obj, defs){
+    const out = structuredClone(defs);
+    const assign = (src, dst) => {
+      for(const k of Object.keys(src||{})){
+        if(src[k] && typeof src[k] === "object" && !Array.isArray(src[k])){
+          dst[k] = dst[k] && typeof dst[k] === "object" ? dst[k] : {};
+          assign(src[k], dst[k]);
+        } else dst[k] = src[k];
       }
     };
-
-    let state = structuredClone(defaultState);
-
-    // Minimal built-in 72: Hebrew triplets only, no interpretations.
-    // Titles/descriptions come ONLY from canonical import.
-    const N72_BASE = [
-      {n:1, he:"והו"}, {n:2, he:"ילי"}, {n:3, he:"סיט"}, {n:4, he:"עלם"}, {n:5, he:"מהש"}, {n:6, he:"ללה"},
-      {n:7, he:"אכא"}, {n:8, he:"כהת"}, {n:9, he:"הזי"}, {n:10, he:"אלד"}, {n:11, he:"לאו"}, {n:12, he:"ההע"},
-      {n:13, he:"יזל"}, {n:14, he:"מבה"}, {n:15, he:"הרי"}, {n:16, he:"הקם"}, {n:17, he:"לאו"}, {n:18, he:"כלא"},
-      {n:19, he:"ליו"}, {n:20, he:"פהל"}, {n:21, he:"נלך"}, {n:22, he:"ייי"}, {n:23, he:"מלה"}, {n:24, he:"והה"},
-      {n:25, he:"נתה"}, {n:26, he:"האא"}, {n:27, he:"ירת"}, {n:28, he:"שאה"}, {n:29, he:"ריי"}, {n:30, he:"אום"},
-      {n:31, he:"לכב"}, {n:32, he:"ושרי"}, {n:33, he:"יהו"}, {n:34, he:"להח"}, {n:35, he:"כוק"}, {n:36, he:"מנד"},
-      {n:37, he:"אני"}, {n:38, he:"חעים"}, {n:39, he:"רהע"}, {n:40, he:"ייי"}, {n:41, he:"ההה"}, {n:42, he:"מיכ"},
-      {n:43, he:"וול"}, {n:44, he:"ילה"}, {n:45, he:"סאל"}, {n:46, he:"ערי"}, {n:47, he:"עשל"}, {n:48, he:"מיה"},
-      {n:49, he:"והו"}, {n:50, he:"דני"}, {n:51, he:"החש"}, {n:52, he:"עמם"}, {n:53, he:"ננא"}, {n:54, he:"נית"},
-      {n:55, he:"מבה"}, {n:56, he:"פוי"}, {n:57, he:"נמב"}, {n:58, he:"ייל"}, {n:59, he:"הרח"}, {n:60, he:"מצר"},
-      {n:61, he:"ומב"}, {n:62, he:"יהה"}, {n:63, he:"ענו"}, {n:64, he:"מחי"}, {n:65, he:"דמב"}, {n:66, he:"מנק"},
-      {n:67, he:"אייע"}, {n:68, he:"וחו"}, {n:69, he:"ראה"}, {n:70, he:"יבמ"}, {n:71, he:"היי"}, {n:72, he:"מום"},
-    ];
-
-    function $(id){ return document.getElementById(id); }
-
-    function toast(msg){
-      const t = $("toast");
-      if(!t) return;
-      t.textContent = msg;
-      t.style.display = "block";
-      clearTimeout(toast._tm);
-      toast._tm = setTimeout(()=>{ t.style.display = "none"; }, 2200);
-    }
-
-    function showErr(msg){
-      const el = $("err");
-      if(!el) return;
-      el.style.display = "block";
-      el.textContent = msg;
-    }
-    function clearErr(){
-      const el = $("err");
-      if(!el) return;
-      el.style.display = "none";
-      el.textContent = "";
-    }
-
-    function todayKey(){
-      const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth()+1).padStart(2,"0");
-      const dd = String(d.getDate()).padStart(2,"0");
-      return `${yyyy}-${mm}-${dd}`;
-    }
-
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(KEY.state);
-        if(!raw) return structuredClone(defaultState);
-        const parsed = JSON.parse(raw);
-        return mergeDefaults(parsed, defaultState);
-      }catch(e){
-        return structuredClone(defaultState);
-      }
-    }
-
-    function saveState(){
-      try{ localStorage.setItem(KEY.state, JSON.stringify(state)); } catch {}
-    }
-
-    function mergeDefaults(obj, defs){
-      // deep-ish merge (safe for our shape)
-      const out = structuredClone(defs);
-      const assign = (src, dst) => {
-        for(const k of Object.keys(src||{})){
-          if(src[k] && typeof src[k] === "object" && !Array.isArray(src[k])){
-            dst[k] = dst[k] && typeof dst[k] === "object" ? dst[k] : {};
-            assign(src[k], dst[k]);
-          } else {
-            dst[k] = src[k];
-          }
-        }
-      };
-      assign(obj, out);
-      return out;
-    }
-
-    function ensureDailyReset(){
-      const tk = todayKey();
-      if(state.dayKey !== tk){
-        state.dayKey = tk;
-        state.pillars = 0;
-        state.cycles = 0;
-        // keep certainty/energy as last known unless you want daily reset; keep.
-        state.todayN = null;
-        saveState();
-      }
-    }
-
-    function zodiacFromYMD(ymd){
-      // expects "YYYY-MM-DD"
-      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((ymd||"").trim());
-      if(!m) return "";
-      const month = parseInt(m[2],10);
-      const day   = parseInt(m[3],10);
-
-      if ((month===3 && day>=21) || (month===4 && day<=19)) return "Aries";
-      if ((month===4 && day>=20) || (month===5 && day<=20)) return "Taurus";
-      if ((month===5 && day>=21) || (month===6 && day<=20)) return "Gemini";
-      if ((month===6 && day>=21) || (month===7 && day<=22)) return "Cancer";
-      if ((month===7 && day>=23) || (month===8 && day<=22)) return "Leo";
-      if ((month===8 && day>=23) || (month===9 && day<=22)) return "Virgo";
-      if ((month===9 && day>=23) || (month===10 && day<=22)) return "Libra";
-      if ((month===10 && day>=23) || (month===11 && day<=21)) return "Scorpio";
-      if ((month===11 && day>=22) || (month===12 && day<=21)) return "Sagittarius";
-      if ((month===12 && day>=22) || (month===1 && day<=19)) return "Capricorn";
-      if ((month===1 && day>=20) || (month===2 && day<=18)) return "Aquarius";
-      if ((month===2 && day>=19) || (month===3 && day<=20)) return "Pisces";
-      return "";
-    }
-
-    /* ===== Canonical 72 loader ===== */
-    function loadCanon72(){
-      try{
-        const raw = localStorage.getItem(KEY.canon72);
-        if(!raw) return null;
-        const arr = JSON.parse(raw);
-        if(!Array.isArray(arr)) return null;
-
-        // normalize map by n
-        const map = new Map();
-        for(const it of arr){
-          const n = Number(it?.n);
-          if(!n || n<1 || n>72) continue;
-          const title = (it?.title ?? "").toString().trim();
-          const desc  = (it?.desc ?? "").toString().trim();
-          const he    = (it?.he ?? "").toString().trim(); // optional
-          map.set(n, { n, he, title, desc });
-        }
-        if(map.size < 60){
-          // too small: likely wrong paste
-          return null;
-        }
-        return map;
-      }catch(e){
-        return null;
-      }
-    }
-
-    function importCanon72FromTextarea(){
-      const txt = ($("canonInput")?.value ?? "").trim();
-      if(!txt){
-        toast("Paste JSON first.");
-        return;
-      }
-      try{
-        const parsed = JSON.parse(txt);
-        if(!Array.isArray(parsed)) throw new Error("Not an array");
-        // quick sanity
-        const ok = parsed.filter(x => Number(x?.n) >= 1 && Number(x?.n) <= 72).length;
-        if(ok < 60) throw new Error("Too few valid entries (need ~72)");
-        localStorage.setItem(KEY.canon72, JSON.stringify(parsed));
-        toast("Canonical 72 imported.");
-        render72();
-        updateCanonBadge();
-      }catch(e){
-        showErr("CANON IMPORT ERROR: " + (e?.message || String(e)));
-      }
-    }
-
-    function clearCanon72(){
-      localStorage.removeItem(KEY.canon72);
-      toast("Canonical data cleared.");
-      render72();
-      updateCanonBadge();
-    }
-
-    function updateCanonBadge(){
-      const badge = $("canonBadge");
-      if(!badge) return;
-      const canon = loadCanon72();
-      if(canon){
-        badge.classList.remove("warn");
-        badge.textContent = "Canonical titles/descriptions: LOADED";
-      }else{
-        badge.classList.add("warn");
-        badge.textContent = "Canonical titles/descriptions: NOT LOADED";
-      }
-    }
-
-    function get72Merged(){
-      const canon = loadCanon72();
-      const out = [];
-      for(const base of N72_BASE){
-        const c = canon?.get(base.n);
-        out.push({
-          n: base.n,
-          he: (c?.he && c.he.length) ? c.he : base.he,
-          title: c?.title || "(Title not loaded)",
-          desc: c?.desc || "Load canonical titles + descriptions in Settings."
-        });
-      }
-      return out;
-    }
-
-    /* ===== UI: counters + hydrate ===== */
-    function updateChips(){
-      const set = (id,val)=>{ const e=$(id); if(e) e.textContent = String(val); };
-      set("pillarsChip", state.pillars ?? 0);
-      set("cyclesChip", state.cycles ?? 0);
-      set("certaintyChip", state.certainty ?? 5);
-      set("energyChip", state.energy ?? 5);
-      const cv = $("certaintyVal"); if(cv) cv.textContent = String(state.certainty ?? 5);
-      const ev = $("energyVal"); if(ev) ev.textContent = String(state.energy ?? 5);
-    }
-
-    function hydrateUI(){
-      // Home sliders
-      const c = $("certainty"); if(c) c.value = String(state.certainty ?? 5);
-      const e = $("energy"); if(e) e.value = String(state.energy ?? 5);
-      updateChips();
-
-      // Profile
-      const b = $("birthday"); if(b) b.value = state.profile?.birthday || "";
-      const s = $("sign"); if(s) s.value = state.profile?.sign || "";
-      const pn = $("profileNotes"); if(pn) pn.value = state.profile?.notes || "";
-
-      // Share copy
-      const ct = $("cardTitle"); if(ct) ct.value = state.card?.title || "";
-      const cs = $("cardSubtitle"); if(cs) cs.value = state.card?.subtitle || "";
-
-      // Gate toggle label
-      setGateToggleLabel();
-      updateCanonBadge();
-
-      // Build version
-      const bv = $("buildVersion"); if(bv) bv.textContent = BUILD;
-
-      // Render initial share card
-      renderCard();
-    }
-
-    /* ===== Navigation ===== */
-    function setActiveScreen(name){
-      const screens = ["home","names","card","settings"];
-      for(const s of screens){
-        const el = $("screen-" + s);
-        if(el) el.classList.toggle("active", s === name);
-      }
-      for(const b of document.querySelectorAll(".tabBtn")){
-        b.classList.toggle("active", b.getAttribute("data-screen") === name);
-      }
-      // redraw card when entering card screen
-      if(name === "card") renderCard();
-    }
-
-    /* ===== Gate ===== */
-    let breathTimer = null;
-    function startBreath(){
-      const text = $("breathText");
-      const hint = $("breathHint");
-      if(!text || !hint) return;
-
-      let phase = "Inhale";
-      let t = 4;
-      text.textContent = phase;
-      hint.textContent = "4…3…2…1";
-      clearInterval(breathTimer);
-
-      breathTimer = setInterval(()=>{
-        t -= 1;
-        if(t <= 0){
-          phase = (phase === "Inhale") ? "Exhale" : "Inhale";
-          t = 4;
-          text.textContent = phase;
-        }
-        hint.textContent = `${t}…${Math.max(t-1,1)}…${Math.max(t-2,1)}…1`;
-      }, 1000);
-    }
-
-    function showGate(){
-      const g = $("gate");
-      if(!g) return;
-      g.style.display = "flex";
-      // seed sliders from state
-      const gc = $("gateCert"); if(gc) gc.value = String(state.certainty ?? 5);
-      const ge = $("gateEnergy"); if(ge) ge.value = String(state.energy ?? 5);
-      const gcv = $("gateCertVal"); if(gcv) gcv.textContent = String(state.certainty ?? 5);
-      const gev = $("gateEnergyVal"); if(gev) gev.textContent = String(state.energy ?? 5);
-      startBreath();
-    }
-
-    function hideGate(){
-      const g = $("gate");
-      if(!g) return;
-      g.style.display = "none";
-      clearInterval(breathTimer);
-      breathTimer = null;
-    }
-
-    function maybeShowGateOnBoot(){
-      if(state?.ui?.gateEnabled) showGate();
-    }
-
-    function setGateToggleLabel(){
-      const b = $("btnToggleGate");
-      if(!b) return;
-      b.textContent = state?.ui?.gateEnabled ? "Gate: ON" : "Gate: OFF";
-    }
-
-    /* ===== 72 Names rendering ===== */
-    function render72(){
-      const list = $("n72List");
-      const detail = $("n72Detail");
-      const search = $("n72Search");
-      if(!list || !detail) return;
-
-      const q = (search?.value || "").trim().toLowerCase();
-      const data = get72Merged();
-
-      const filtered = data.filter(it => {
-        if(!q) return true;
-        if(String(it.n).includes(q)) return true;
-        if((it.he || "").toLowerCase().includes(q)) return true;
-        if((it.title || "").toLowerCase().includes(q)) return true;
-        if((it.desc || "").toLowerCase().includes(q)) return true;
-        return false;
-      });
-
-      list.innerHTML = "";
-      for(const it of filtered){
-        const row = document.createElement("div");
-        row.className = "item";
-        row.innerHTML = `
-          <div class="hebrew">${escapeHtml(it.he || "")}</div>
-          <div class="itemMain">
-            <div class="itemTitle">${it.n}. ${escapeHtml(it.title || "")}</div>
-            <div class="itemSub">${escapeHtml(shorten(it.desc || "", 92))}</div>
-          </div>
-        `;
-        row.addEventListener("click", ()=>{
-          show72Detail(it.n);
-        });
-        list.appendChild(row);
-      }
-
-      // if current detail is hidden, keep it hidden.
-      // (we show detail only when user clicks)
-    }
-
-    function show72Detail(n){
-      const detail = $("n72Detail");
-      if(!detail) return;
-      const data = get72Merged();
-      const it = data.find(x => x.n === Number(n));
-      if(!it) return;
-
-      detail.style.display = "block";
-      detail.innerHTML = `
-        <div class="detailTop">
-          <div class="big">${escapeHtml(it.he || "")}</div>
-          <div class="meta">Name #${it.n}</div>
-        </div>
-        <div class="detailTitle">${escapeHtml(it.title || "")}</div>
-        <div class="detailDesc">${escapeHtml(it.desc || "")}</div>
-        <div class="btnRow" style="margin-top:12px;">
-          <button class="btn good" id="btnSetToday">Set as Today’s Name</button>
-        </div>
-      `;
-      const btn = $("btnSetToday");
-      if(btn){
-        btn.addEventListener("click", ()=>{
-          state.todayN = it.n;
-          saveState();
-          toast("Set for today.");
-          renderTodayBox();
-          setActiveScreen("home");
-        });
-      }
-    }
-
-    function renderTodayBox(){
-      const box = $("todayBox");
-      if(!box) return;
-
-      if(!state.todayN){
-        box.style.display = "none";
-        box.innerHTML = "";
-        return;
-      }
-
-      const data = get72Merged();
-      const it = data.find(x => x.n === Number(state.todayN));
-      if(!it){
-        box.style.display = "none";
-        box.innerHTML = "";
-        return;
-      }
-
-      box.style.display = "block";
-      box.innerHTML = `
-        <div class="detailTop">
-          <div class="big">${escapeHtml(it.he || "")}</div>
-          <div class="meta">Today • #${it.n}</div>
-        </div>
-        <div class="detailTitle">${escapeHtml(it.title || "")}</div>
-        <div class="detailDesc">${escapeHtml(it.desc || "")}</div>
-      `;
-    }
-
-    /* ===== Share Card ===== */
-    function renderCard(){
-      const canvas = $("cardCanvas");
-      if(!canvas) return;
-      const ctx = canvas.getContext("2d");
-      if(!ctx) return;
-
-      // pull copy
-      const title = ($("cardTitle")?.value ?? state.card?.title ?? "").trim() || "Witness. Choose. Repeat. Illuminate.";
-      const subtitle = ($("cardSubtitle")?.value ?? state.card?.subtitle ?? "").trim() || "A daily connection rep toward unity.";
-      const tk = todayKey();
-
-      // determine featured Name
-      const data = get72Merged();
-      const featured = data.find(x => x.n === Number(state.todayN)) || data[0];
-      const he = featured?.he || " ";
-      const n  = featured?.n || 1;
-      const nTitle = featured?.title || "";
-
-      // background
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-
-      // base fill
-      ctx.fillStyle = "#050505";
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-
-      // subtle glow gradients
-      const g1 = ctx.createRadialGradient(canvas.width*0.35, canvas.height*0.15, 10, canvas.width*0.35, canvas.height*0.15, canvas.width*0.75);
-      g1.addColorStop(0, "rgba(215,180,90,0.22)");
-      g1.addColorStop(1, "rgba(215,180,90,0)");
-      ctx.fillStyle = g1;
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-
-      const g2 = ctx.createRadialGradient(canvas.width*0.82, canvas.height*0.65, 10, canvas.width*0.82, canvas.height*0.65, canvas.width*0.70);
-      g2.addColorStop(0, "rgba(240,211,138,0.12)");
-      g2.addColorStop(1, "rgba(240,211,138,0)");
-      ctx.fillStyle = g2;
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-
-      // card border
-      roundRect(ctx, 26, 26, canvas.width-52, canvas.height-52, 30);
-      ctx.strokeStyle = "rgba(255,255,255,0.10)";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // inner gold line
-      roundRect(ctx, 44, 44, canvas.width-88, canvas.height-88, 26);
-      ctx.strokeStyle = "rgba(215,180,90,0.22)";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // KAI header
-      ctx.fillStyle = "rgba(243,242,238,0.90)";
-      ctx.font = "900 26px " + cssFontSafe();
-      ctx.textAlign = "left";
-      ctx.fillText("KAI", 70, 92);
-
-      ctx.fillStyle = "rgba(243,242,238,0.55)";
-      ctx.font = "800 14px " + cssFontSafe();
-      ctx.fillText(tk, 70, 118);
-
-      // Hebrew triplet big
-      ctx.fillStyle = "#f0d38a";
-      ctx.font = "1000 92px Georgia";
-      ctx.fillText(he, 70, 230);
-
-      // Name meta
-      ctx.fillStyle = "rgba(243,242,238,0.76)";
-      ctx.font = "900 18px " + cssFontSafe();
-      ctx.fillText(`Name #${n}`, 70, 264);
-
-      ctx.fillStyle = "rgba(243,242,238,0.60)";
-      ctx.font = "800 16px " + cssFontSafe();
-      ctx.fillText(nTitle, 70, 292);
-
-      // Title + subtitle
-      ctx.fillStyle = "rgba(243,242,238,0.92)";
-      ctx.font = "1000 44px " + cssFontSafe();
-      wrapText(ctx, title, 70, 370, 1060, 52);
-
-      ctx.fillStyle = "rgba(243,242,238,0.70)";
-      ctx.font = "900 20px " + cssFontSafe();
-      wrapText(ctx, subtitle, 70, 470, 1060, 30);
-
-      // footer stats
-      const statY = 560;
-      ctx.fillStyle = "rgba(243,242,238,0.70)";
-      ctx.font = "900 16px " + cssFontSafe();
-      ctx.fillText(`Certainty ${state.certainty ?? 5}/10`, 70, statY);
-      ctx.fillText(`Energy ${state.energy ?? 5}/10`, 260, statY);
-      ctx.fillText(`Pillars ${state.pillars ?? 0}/100`, 420, statY);
-      ctx.fillText(`Cycles ${state.cycles ?? 0}/10`, 600, statY);
-
-      // small gold accent
-      ctx.fillStyle = "rgba(215,180,90,0.55)";
-      ctx.fillRect(canvas.width-180, statY-14, 110, 4);
-
-      // save copy state (non-invasive)
-      state.card = state.card || {};
-      state.card.title = ($("cardTitle")?.value ?? state.card.title ?? "");
-      state.card.subtitle = ($("cardSubtitle")?.value ?? state.card.subtitle ?? "");
-      saveState();
-
-      // share hint
-      const hint = $("shareHint");
-      if(hint){
-        hint.textContent = (navigator.share ? "Share uses your iOS share sheet." : "Share may be unavailable in this browser. Download works everywhere.");
-      }
-    }
-
-    function toJpegBlob(canvas, quality=0.92){
-      return new Promise((resolve, reject)=>{
-        canvas.toBlob((blob)=>{
-          if(!blob) return reject(new Error("JPEG export failed."));
-          resolve(blob);
-        }, "image/jpeg", quality);
-      });
-    }
-
-    async function downloadJpeg(){
-      const canvas = $("cardCanvas");
-      if(!canvas) return;
-      try{
-        const blob = await toJpegBlob(canvas, 0.92);
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `KAI-${todayKey()}.jpg`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(()=>URL.revokeObjectURL(url), 1500);
-        toast("JPEG downloaded.");
-      }catch(e){
-        showErr("DOWNLOAD ERROR: " + (e?.message || String(e)));
-      }
-    }
-
-    async function shareJpeg(){
-      const canvas = $("cardCanvas");
-      if(!canvas) return;
-      if(!navigator.share){
-        toast("Share not supported here. Use Download.");
-        return;
-      }
-      try{
-        const blob = await toJpegBlob(canvas, 0.92);
-        const file = new File([blob], `KAI-${todayKey()}.jpg`, { type: "image/jpeg" });
-        // Some iOS versions require canShare check
-        if(navigator.canShare && !navigator.canShare({ files: [file] })){
-          toast("Sharing files not supported. Use Download.");
-          return;
-        }
-        await navigator.share({
-          title: "KAI",
-          text: "KAI share card",
-          files: [file]
-        });
-      }catch(e){
-        // user cancel is normal
-        if(String(e?.name||"").toLowerCase().includes("abort")) return;
-        toast("Share failed. Download works.");
-      }
-    }
-
-    function cssFontSafe(){ return "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial"; }
-
-    function roundRect(ctx, x, y, w, h, r){
-      const rr = Math.min(r, w/2, h/2);
-      ctx.beginPath();
-      ctx.moveTo(x+rr, y);
-      ctx.arcTo(x+w, y, x+w, y+h, rr);
-      ctx.arcTo(x+w, y+h, x, y+h, rr);
-      ctx.arcTo(x, y+h, x, y, rr);
-      ctx.arcTo(x, y, x+w, y, rr);
-      ctx.closePath();
-    }
-
-    function wrapText(ctx, text, x, y, maxWidth, lineHeight){
-      const words = String(text||"").split(/\s+/);
-      let line = "";
-      let yy = y;
-      for(const w of words){
-        const test = line ? (line + " " + w) : w;
-        const m = ctx.measureText(test);
-        if(m.width > maxWidth && line){
-          ctx.fillText(line, x, yy);
-          line = w;
-          yy += lineHeight;
-        }else{
-          line = test;
-        }
-      }
-      if(line) ctx.fillText(line, x, yy);
-    }
-
-    function escapeHtml(s){
-      return String(s||"")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function shorten(s, n){
-      const t = String(s||"");
-      if(t.length <= n) return t;
-      return t.slice(0, n-1) + "…";
-    }
-
-    /* ===== Actions ===== */
-    function incPillar(){
-      state.pillars = Math.min(100, (state.pillars ?? 0) + 1);
-      saveState();
-      updateChips();
-      toast("+1 pillar");
-      renderCard();
-    }
-
-    function incCycle(){
-      state.cycles = Math.min(10, (state.cycles ?? 0) + 1);
-      saveState();
-      updateChips();
-      toast("+1 cycle");
-      renderCard();
-    }
-
-    function pickTodaysName(){
-      // deterministic daily pick based on date so it feels stable
-      const tk = todayKey();
-      let seed = 0;
-      for(let i=0;i<tk.length;i++) seed = (seed*31 + tk.charCodeAt(i)) >>> 0;
-      const n = (seed % 72) + 1;
-      state.todayN = n;
-      saveState();
-      renderTodayBox();
-      renderCard();
-      toast("Today’s Name set.");
-    }
-
-    function resetDaily(){
-      state.dayKey = todayKey();
+    assign(obj, out);
+    return out;
+  }
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(KEY.state);
+      if(!raw) return structuredClone(defaultState);
+      return mergeDefaults(JSON.parse(raw), defaultState);
+    }catch{ return structuredClone(defaultState); }
+  }
+  function saveState(){ try{ localStorage.setItem(KEY.state, JSON.stringify(state)); }catch{} }
+
+  function ensureDailyReset(){
+    const tk = todayKey();
+    if(state.dayKey !== tk){
+      state.dayKey = tk;
       state.pillars = 0;
       state.cycles = 0;
       state.todayN = null;
       saveState();
-      updateChips();
-      renderTodayBox();
-      renderCard();
-      toast("Today reset.");
+    }
+  }
+
+  function zodiacFromYMD(ymd){
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((ymd||"").trim());
+    if(!m) return "";
+    const month = parseInt(m[2],10);
+    const day   = parseInt(m[3],10);
+    if ((month===3 && day>=21) || (month===4 && day<=19)) return "Aries";
+    if ((month===4 && day>=20) || (month===5 && day<=20)) return "Taurus";
+    if ((month===5 && day>=21) || (month===6 && day<=20)) return "Gemini";
+    if ((month===6 && day>=21) || (month===7 && day<=22)) return "Cancer";
+    if ((month===7 && day>=23) || (month===8 && day<=22)) return "Leo";
+    if ((month===8 && day>=23) || (month===9 && day<=22)) return "Virgo";
+    if ((month===9 && day>=23) || (month===10 && day<=22)) return "Libra";
+    if ((month===10 && day>=23) || (month===11 && day<=21)) return "Scorpio";
+    if ((month===11 && day>=22) || (month===12 && day<=21)) return "Sagittarius";
+    if ((month===12 && day>=22) || (month===1 && day<=19)) return "Capricorn";
+    if ((month===1 && day>=20) || (month===2 && day<=18)) return "Aquarius";
+    if ((month===2 && day>=19) || (month===3 && day<=20)) return "Pisces";
+    return "";
+  }
+
+  /* ===== Canonical 72 loader (JSON or CSV/TSV) ===== */
+
+  function loadCanon72Map(){
+    try{
+      const raw = localStorage.getItem(KEY.canon72);
+      if(!raw) return null;
+      const arr = JSON.parse(raw);
+      if(!Array.isArray(arr)) return null;
+      const map = new Map();
+      for(const it of arr){
+        const n = Number(it?.n);
+        if(!n || n<1 || n>72) continue;
+        map.set(n, {
+          n,
+          he: String(it?.he || "").trim(),
+          title: String(it?.title || "").trim(),
+          desc: String(it?.desc || "").trim()
+        });
+      }
+      if(map.size < 60) return null;
+      return map;
+    }catch{ return null; }
+  }
+
+  function normalizeCanonAndSave(items){
+    // items: array of {n, he, title, desc}
+    const out = [];
+    for(const it of items){
+      const n = Number(it?.n);
+      if(!n || n<1 || n>72) continue;
+      out.push({
+        n,
+        he: String(it?.he||"").trim(),
+        title: String(it?.title||"").trim(),
+        desc: String(it?.desc||"").trim()
+      });
+    }
+    // validate
+    const validCount = out.filter(x => x.title && x.desc).length;
+    if(out.length < 60 || validCount < 60){
+      throw new Error(`Imported rows look incomplete. Got ${out.length} rows, ${validCount} with title+desc. Need ~72.`);
+    }
+    localStorage.setItem(KEY.canon72, JSON.stringify(out));
+  }
+
+  function parseCSVorTSV(text){
+    // Minimal robust parser: handles commas OR tabs; supports quoted fields.
+    const s = String(text||"").trim();
+    if(!s) return [];
+    const delim = s.includes("\t") ? "\t" : ",";
+    const lines = s.split(/\r?\n/).filter(Boolean);
+
+    // Split line into fields with quotes support
+    const split = (line) => {
+      const out = [];
+      let cur = "";
+      let inQ = false;
+      for(let i=0;i<line.length;i++){
+        const ch = line[i];
+        if(ch === '"'){
+          if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
+          else inQ = !inQ;
+        } else if(ch === delim && !inQ){
+          out.push(cur); cur = "";
+        } else cur += ch;
+      }
+      out.push(cur);
+      return out.map(x => x.trim());
+    };
+
+    const header = split(lines[0]).map(h => h.toLowerCase());
+    const hasHeader = header.includes("n") || header.includes("title") || header.includes("desc");
+    let start = 0;
+    let idxN=0, idxHe=1, idxTitle=2, idxDesc=3;
+
+    if(hasHeader){
+      idxN = header.indexOf("n");
+      idxHe = header.indexOf("he");
+      idxTitle = header.indexOf("title");
+      idxDesc = header.indexOf("desc");
+      if(idxN < 0) idxN = 0;
+      if(idxHe < 0) idxHe = 1;
+      if(idxTitle < 0) idxTitle = 2;
+      if(idxDesc < 0) idxDesc = 3;
+      start = 1;
     }
 
-    function resetAll(){
-      localStorage.removeItem(KEY.state);
-      // keep canonical data unless user clears it separately
-      state = structuredClone(defaultState);
-      ensureDailyReset();
-      saveState();
-      hydrateUI();
+    const items = [];
+    for(let i=start;i<lines.length;i++){
+      const cols = split(lines[i]);
+      const n = cols[idxN];
+      const he = cols[idxHe];
+      const title = cols[idxTitle];
+      const desc = cols[idxDesc];
+      if(!n) continue;
+      items.push({ n, he, title, desc });
+    }
+    return items;
+  }
+
+  function importCanonFromTextarea(){
+    clearErr();
+    const txt = ($("canonInput")?.value || "").trim();
+    if(!txt){ toast("Paste JSON or CSV/TSV first."); return; }
+
+    try{
+      let items = null;
+
+      // JSON if it starts with [ or {
+      if(/^\s*\[/.test(txt)){
+        const parsed = JSON.parse(txt);
+        if(!Array.isArray(parsed)) throw new Error("JSON must be an array of objects.");
+        items = parsed;
+      } else {
+        // CSV/TSV
+        items = parseCSVorTSV(txt);
+      }
+
+      normalizeCanonAndSave(items);
+      toast("Canonical 72 imported.");
+      updateCanonBadge();
       render72();
       renderTodayBox();
       renderCard();
-      toast("All reset.");
+    }catch(e){
+      showErr("CANON IMPORT ERROR: " + (e?.message || String(e)));
     }
+  }
 
-    /* ===== Wire UI ===== */
-    function wire(){
-      // Tabs
-      for(const b of document.querySelectorAll(".tabBtn")){
-        b.addEventListener("click", ()=>{
-          const s = b.getAttribute("data-screen");
-          setActiveScreen(s);
-        });
-      }
+  function clearCanon(){
+    localStorage.removeItem(KEY.canon72);
+    toast("Canonical data cleared.");
+    updateCanonBadge();
+    render72();
+    renderTodayBox();
+    renderCard();
+  }
 
-      // Home sliders
-      const cert = $("certainty");
-      const en = $("energy");
-      if(cert){
-        cert.addEventListener("input", ()=>{
-          state.certainty = parseInt(cert.value, 10);
-          updateChips(); saveState();
-          renderCard();
-        });
-      }
-      if(en){
-        en.addEventListener("input", ()=>{
-          state.energy = parseInt(en.value, 10);
-          updateChips(); saveState();
-          renderCard();
-        });
-      }
+  function updateCanonBadge(){
+    const b = $("canonBadge"); if(!b) return;
+    const canon = loadCanon72Map();
+    if(canon){
+      b.classList.remove("warn");
+      b.textContent = "Canonical titles/descriptions: LOADED";
+    }else{
+      b.classList.add("warn");
+      b.textContent = "Canonical titles/descriptions: NOT LOADED";
+    }
+  }
 
-      // Actions
-      $("btnConnect")?.addEventListener("click", incPillar);
-      $("btnCycle")?.addEventListener("click", incCycle);
-      $("btnPickToday")?.addEventListener("click", ()=>{
-        // If user wants a specific Name, they can pick in 72 list.
-        pickTodaysName();
-      });
-      $("btnGoNames")?.addEventListener("click", ()=> setActiveScreen("names"));
-
-      // Profile
-      $("birthday")?.addEventListener("change", (e)=>{
-        state.profile = state.profile || {};
-        state.profile.birthday = e.target.value || "";
-        state.profile.sign = zodiacFromYMD(state.profile.birthday);
-        const sign = $("sign"); if(sign) sign.value = state.profile.sign || "";
-        saveState();
-        toast("Profile saved.");
-      });
-      $("profileNotes")?.addEventListener("input", (e)=>{
-        state.profile = state.profile || {};
-        state.profile.notes = e.target.value || "";
-        saveState();
-      });
-
-      // Gate toggle
-      $("btnToggleGate")?.addEventListener("click", ()=>{
-        state.ui = state.ui || {};
-        state.ui.gateEnabled = !state.ui.gateEnabled;
-        saveState();
-        setGateToggleLabel();
-        toast(state.ui.gateEnabled ? "Gate ON" : "Gate OFF");
-      });
-      $("btnShowGateNow")?.addEventListener("click", ()=> showGate());
-
-      // Gate sliders + enter
-      const gc = $("gateCert");
-      const ge = $("gateEnergy");
-      if(gc){
-        gc.addEventListener("input", ()=>{ $("gateCertVal").textContent = gc.value; });
-      }
-      if(ge){
-        ge.addEventListener("input", ()=>{ $("gateEnergyVal").textContent = ge.value; });
-      }
-      $("btnEnter")?.addEventListener("click", ()=>{
-        if(gc) state.certainty = parseInt(gc.value,10);
-        if(ge) state.energy = parseInt(ge.value,10);
-        saveState();
-        updateChips();
-        hideGate();
-        toast("Entered.");
-        renderCard();
-      });
-      $("btnGateSkip")?.addEventListener("click", ()=>{
-        hideGate();
-        toast("Skipped.");
-      });
-
-      // 72 list
-      $("n72Search")?.addEventListener("input", render72);
-      $("btnClearSearch")?.addEventListener("click", ()=>{
-        const s = $("n72Search");
-        if(s) s.value = "";
-        render72();
-      });
-
-      // Share card
-      $("btnRenderCard")?.addEventListener("click", renderCard);
-      $("cardTitle")?.addEventListener("input", renderCard);
-      $("cardSubtitle")?.addEventListener("input", renderCard);
-      $("btnDownloadJpg")?.addEventListener("click", downloadJpeg);
-      $("btnShareJpg")?.addEventListener("click", shareJpeg);
-
-      // Canon import
-      $("btnImportCanon")?.addEventListener("click", ()=>{
-        clearErr();
-        importCanon72FromTextarea();
-      });
-      $("btnClearCanon")?.addEventListener("click", ()=>{
-        clearErr();
-        clearCanon72();
-      });
-
-      // Reset
-      $("btnResetDaily")?.addEventListener("click", resetDaily);
-      $("btnResetAll")?.addEventListener("click", ()=>{
-        if(confirm("Reset all KAI data on this device?")){
-          resetAll();
-        }
+  function get72Merged(){
+    const canon = loadCanon72Map();
+    const out = [];
+    for(const base of N72_BASE){
+      const c = canon?.get(base.n);
+      out.push({
+        n: base.n,
+        he: (c?.he && c.he.length) ? c.he : base.he,
+        title: c?.title || "(Title not loaded)",
+        desc: c?.desc || "Load canonical titles + descriptions in Settings."
       });
     }
+    return out;
+  }
 
-    /* ===== Boot ===== */
-    function boot(){
-      clearErr();
-      state = loadState();
-      ensureDailyReset();
-      hydrateUI();
-      wire();
-      render72();
-      renderTodayBox();
-      renderCard();
+  /* ===== Zohar library ===== */
 
-      // Gate on boot
-      maybeShowGateOnBoot();
+  function uid(){
+    return Math.random().toString(16).slice(2) + "-" + Date.now().toString(16);
+  }
 
-      console.log("KAI booted", BUILD);
-      toast("KAI loaded");
-    }
-
-    document.addEventListener("DOMContentLoaded", ()=>{
-      try{ boot(); }
-      catch(e){
-        console.error("BOOT ERROR", e);
-        showErr("BOOT ERROR: " + (e?.message || String(e)) + "\\n" + (e?.stack || ""));
-        alert("KAI boot error (shown on screen).");
+  function loadZohar(){
+    try{
+      const raw = localStorage.getItem(KEY.zohar);
+      if(!raw){
+        localStorage.setItem(KEY.zohar, JSON.stringify(Z_SEED));
+        return structuredClone(Z_SEED);
       }
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : structuredClone(Z_SEED);
+    }catch{
+      localStorage.setItem(KEY.zohar, JSON.stringify(Z_SEED));
+      return structuredClone(Z_SEED);
+    }
+  }
+  function saveZohar(list){ try{ localStorage.setItem(KEY.zohar, JSON.stringify(list)); }catch{} }
+
+  function renderZohar(){
+    const listEl = $("zList");
+    const detailEl = $("zDetail");
+    if(!listEl || !detailEl) return;
+
+    const q = ($("zSearch")?.value || "").trim().toLowerCase();
+    const lib = loadZohar();
+
+    const filtered = lib.filter(it => {
+      if(!q) return true;
+      return (it.title||"").toLowerCase().includes(q) ||
+             (it.cite||"").toLowerCase().includes(q) ||
+             (it.notes||"").toLowerCase().includes(q);
     });
 
-  })();
-  </script>
+    listEl.innerHTML = "";
+    for(const it of filtered){
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = `
+        <div class="hebrew">זוהר</div>
+        <div class="itemMain">
+          <div class="itemTitle">${escapeHtml(it.title || "")}</div>
+          <div class="itemSub">${escapeHtml(shorten(it.cite || "", 80))}</div>
+        </div>
+      `;
+      row.addEventListener("click", ()=> showZoharDetail(it.id));
+      listEl.appendChild(row);
+    }
+    if(filtered.length === 0){
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = `<div class="itemMain"><div class="itemTitle">No matches</div><div class="itemSub">Try a different search.</div></div>`;
+      listEl.appendChild(row);
+    }
+  }
+
+  function showZoharDetail(id){
+    const detailEl = $("zDetail"); if(!detailEl) return;
+    const lib = loadZohar();
+    const it = lib.find(x => x.id === id);
+    if(!it) return;
+
+    detailEl.style.display = "block";
+    detailEl.innerHTML = `
+      <div class="detailTop">
+        <div class="big">זוהר</div>
+        <div class="meta">${escapeHtml(it.cite || "")}</div>
+      </div>
+      <div class="detailTitle">${escapeHtml(it.title || "")}</div>
+      <div class="detailDesc">${escapeHtml(it.notes || "")}</div>
+      <div class="btnRow" style="margin-top:12px;">
+        <button class="btn danger" id="btnZDelete">Delete</button>
+      </div>
+    `;
+
+    $("btnZDelete")?.addEventListener("click", ()=>{
+      if(!confirm("Delete this entry?")) return;
+      const next = lib.filter(x => x.id !== id);
+      saveZohar(next);
+      detailEl.style.display = "none";
+      detailEl.innerHTML = "";
+      toast("Deleted.");
+      renderZohar();
+    });
+  }
+
+  function toggleZAdd(show){
+    const box = $("zAddBox"); if(!box) return;
+    box.style.display = show ? "block" : "none";
+  }
+
+  function saveZAdd(){
+    const title = ($("zTitle")?.value || "").trim();
+    const cite  = ($("zCite")?.value || "").trim();
+    const notes = ($("zNotes")?.value || "").trim();
+    if(!title || !cite){
+      toast("Title + Citation required.");
+      return;
+    }
+    const lib = loadZohar();
+    lib.unshift({ id: uid(), title, cite, notes });
+    saveZohar(lib);
+
+    $("zTitle").value = "";
+    $("zCite").value = "";
+    $("zNotes").value = "";
+
+    toggleZAdd(false);
+    toast("Saved.");
+    renderZohar();
+  }
+
+  /* ===== Gematria ===== */
+
+  const GEM = {
+    "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
+    "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,
+    "ע":70,"פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,"ש":300,"ת":400
+  };
+
+  function stripNiqqudAndSpaces(s){
+    // Remove niqqud (Hebrew combining marks) + punctuation/spaces
+    return String(s||"")
+      .replace(/[\u0591-\u05BD\u05BF-\u05C7]/g,"")
+      .replace(/[^\u05D0-\u05EAךםןףץ]/g,"");
+  }
+
+  function gematriaValue(raw){
+    const s = stripNiqqudAndSpaces(raw);
+    let sum = 0;
+    for(const ch of s){
+      sum += (GEM[ch] || 0);
+    }
+    return sum;
+  }
+
+  function misparKatan(n){
+    let x = Math.abs(Number(n)||0);
+    while(x >= 10){
+      let s = 0;
+      for(const d of String(x)) s += (d.charCodeAt(0)-48);
+      x = s;
+    }
+    return x;
+  }
+
+  function loadGemHist(){
+    try{
+      const raw = localStorage.getItem(KEY.gemHist);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    }catch{ return []; }
+  }
+  function saveGemHist(arr){ try{ localStorage.setItem(KEY.gemHist, JSON.stringify(arr)); }catch{} }
+
+  function renderGemHist(){
+    const el = $("gHist"); if(!el) return;
+    const hist = loadGemHist();
+    el.innerHTML = "";
+    for(const it of hist){
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = `
+        <div class="hebrew">${escapeHtml(it.clean || "")}</div>
+        <div class="itemMain">
+          <div class="itemTitle">${escapeHtml(it.raw || "")}</div>
+          <div class="itemSub">Value: ${it.value} · Katan: ${it.katan}</div>
+        </div>
+      `;
+      el.appendChild(row);
+    }
+    if(hist.length === 0){
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = `<div class="itemMain"><div class="itemTitle">No history yet</div><div class="itemSub">Save a phrase and it will appear here.</div></div>`;
+      el.appendChild(row);
+    }
+  }
+
+  function updateGematriaLive(){
+    const input = $("gInput"); if(!input) return;
+    const raw = input.value || "";
+    const val = gematriaValue(raw);
+    const kat = misparKatan(val);
+    $("gValue").textContent = String(val);
+    $("gKatan").textContent = String(kat);
+  }
+
+  /* ===== Shared UI helpers ===== */
+
+  function escapeHtml(s){
+    return String(s||"")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+  function shorten(s, n){
+    const t = String(s||"");
+    if(t.length <= n) return t;
+    return t.slice(0, n-1) + "…";
+  }
+
+  function updateChips(){
+    const set = (id,val)=>{ const e=$(id); if(e) e.textContent = String(val); };
+    set("pillarsChip", state.pillars ?? 0);
+    set("cyclesChip", state.cycles ?? 0);
+    set("certaintyChip", state.certainty ?? 5);
+    set("energyChip", state.energy ?? 5);
+    $("certaintyVal").textContent = String(state.certainty ?? 5);
+    $("energyVal").textContent = String(state.energy ?? 5);
+  }
+
+  function setActiveScreen(name){
+    const screens = ["home","names","zohar","gematria","card","settings"];
+    for(const s of screens){
+      const el = $("screen-" + s);
+      if(el) el.classList.toggle("active", s === name);
+    }
+    for(const b of document.querySelectorAll(".tabBtn")){
+      b.classList.toggle("active", b.getAttribute("data-screen") === name);
+    }
+    if(name === "card") renderCard();
+    if(name === "zohar") renderZohar();
+    if(name === "gematria") updateGematriaLive();
+  }
+
+  /* ===== Gate ===== */
+  let breathTimer = null;
+  function startBreath(){
+    const text = $("breathText");
+    const hint = $("breathHint");
+    if(!text || !hint) return;
+    let phase = "Inhale";
+    let t = 4;
+    text.textContent = phase;
+    hint.textContent = "4…3…2…1";
+    clearInterval(breathTimer);
+    breathTimer = setInterval(()=>{
+      t -= 1;
+      if(t <= 0){
+        phase = (phase === "Inhale") ? "Exhale" : "Inhale";
+        t = 4;
+        text.textContent = phase;
+      }
+      hint.textContent = `${t}…${Math.max(t-1,1)}…${Math.max(t-2,1)}…1`;
+    }, 1000);
+  }
+  function showGate(){
+    const g = $("gate"); if(!g) return;
+    g.style.display = "flex";
+    $("gateCert").value = String(state.certainty ?? 5);
+    $("gateEnergy").value = String(state.energy ?? 5);
+    $("gateCertVal").textContent = String(state.certainty ?? 5);
+    $("gateEnergyVal").textContent = String(state.energy ?? 5);
+    startBreath();
+  }
+  function hideGate(){
+    const g = $("gate"); if(!g) return;
+    g.style.display = "none";
+    clearInterval(breathTimer); breathTimer = null;
+  }
+  function setGateToggleLabel(){
+    const b = $("btnToggleGate");
+    if(!b) return;
+    b.textContent = state?.ui?.gateEnabled ? "Gate: ON" : "Gate: OFF";
+  }
+
+  /* ===== 72 render ===== */
+
+  function render72(){
+    const list = $("n72List");
+    const detail = $("n72Detail");
+    if(!list || !detail) return;
+
+    const q = ($("n72Search")?.value || "").trim().toLowerCase();
+    const data = get72Merged();
+
+    const filtered = data.filter(it => {
+      if(!q) return true;
+      if(String(it.n).includes(q)) return true;
+      if((it.he||"").toLowerCase().includes(q)) return true;
+      if((it.title||"").toLowerCase().includes(q)) return true;
+      if((it.desc||"").toLowerCase().includes(q)) return true;
+      return false;
+    });
+
+    list.innerHTML = "";
+    for(const it of filtered){
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = `
+        <div class="hebrew">${escapeHtml(it.he || "")}</div>
+        <div class="itemMain">
+          <div class="itemTitle">${it.n}. ${escapeHtml(it.title || "")}</div>
+          <div class="itemSub">${escapeHtml(shorten(it.desc || "", 92))}</div>
+        </div>
+      `;
+      row.addEventListener("click", ()=> show72Detail(it.n));
+      list.appendChild(row);
+    }
+  }
+
+  function show72Detail(n){
+    const detail = $("n72Detail");
+    if(!detail) return;
+    const data = get72Merged();
+    const it = data.find(x => x.n === Number(n));
+    if(!it) return;
+
+    detail.style.display = "block";
+    detail.innerHTML = `
+      <div class="detailTop">
+        <div class="big">${escapeHtml(it.he || "")}</div>
+        <div class="meta">Name #${it.n}</div>
+      </div>
+      <div class="detailTitle">${escapeHtml(it.title || "")}</div>
+      <div class="detailDesc">${escapeHtml(it.desc || "")}</div>
+      <div class="btnRow" style="margin-top:12px;">
+        <button class="btn good" id="btnSetToday">Set as Today’s Name</button>
+      </div>
+    `;
+    $("btnSetToday")?.addEventListener("click", ()=>{
+      state.todayN = it.n;
+      saveState();
+      toast("Set for today.");
+      renderTodayBox();
+      renderCard();
+      setActiveScreen("home");
+    });
+  }
+
+  function renderTodayBox(){
+    const box = $("todayBox");
+    if(!box) return;
+    if(!state.todayN){
+      box.style.display = "none";
+      box.innerHTML = "";
+      return;
+    }
+    const data = get72Merged();
+    const it = data.find(x => x.n === Number(state.todayN));
+    if(!it){
+      box.style.display = "none";
+      box.innerHTML = "";
+      return;
+    }
+    box.style.display = "block";
+    box.innerHTML = `
+      <div class="detailTop">
+        <div class="big">${escapeHtml(it.he || "")}</div>
+        <div class="meta">Today • #${it.n}</div>
+      </div>
+      <div class="detailTitle">${escapeHtml(it.title || "")}</div>
+      <div class="detailDesc">${escapeHtml(it.desc || "")}</div>
+    `;
+  }
+
+  function pickTodaysName(){
+    const tk = todayKey();
+    let seed = 0;
+    for(let i=0;i<tk.length;i++) seed = (seed*31 + tk.charCodeAt(i)) >>> 0;
+    const n = (seed % 72) + 1;
+    state.todayN = n;
+    saveState();
+    renderTodayBox();
+    renderCard();
+    toast("Today’s Name set.");
+  }
+
+  /* ===== Share Card ===== */
+  function renderCard(){
+    const canvas = $("cardCanvas");
+    if(!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if(!ctx) return;
+
+    const title = ($("cardTitle")?.value ?? state.card?.title ?? "").trim() || "Witness. Choose. Repeat. Illuminate.";
+    const subtitle = ($("cardSubtitle")?.value ?? state.card?.subtitle ?? "").trim() || "A daily connection rep toward unity.";
+    const tk = todayKey();
+
+    const data = get72Merged();
+    const featured = data.find(x => x.n === Number(state.todayN)) || data[0];
+    const he = featured?.he || " ";
+    const n  = featured?.n || 1;
+    const nTitle = featured?.title || "";
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = "#050505";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    const g1 = ctx.createRadialGradient(canvas.width*0.35, canvas.height*0.15, 10, canvas.width*0.35, canvas.height*0.15, canvas.width*0.75);
+    g1.addColorStop(0, "rgba(215,180,90,0.22)");
+    g1.addColorStop(1, "rgba(215,180,90,0)");
+    ctx.fillStyle = g1; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    const g2 = ctx.createRadialGradient(canvas.width*0.82, canvas.height*0.65, 10, canvas.width*0.82, canvas.height*0.65, canvas.width*0.70);
+    g2.addColorStop(0, "rgba(240,211,138,0.12)");
+    g2.addColorStop(1, "rgba(240,211,138,0)");
+    ctx.fillStyle = g2; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    roundRect(ctx, 26, 26, canvas.width-52, canvas.height-52, 30);
+    ctx.strokeStyle = "rgba(255,255,255,0.10)"; ctx.lineWidth = 2; ctx.stroke();
+
+    roundRect(ctx, 44, 44, canvas.width-88, canvas.height-88, 26);
+    ctx.strokeStyle = "rgba(215,180,90,0.22)"; ctx.lineWidth = 2; ctx.stroke();
+
+    ctx.fillStyle = "rgba(243,242,238,0.90)";
+    ctx.font = "900 26px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial";
+    ctx.textAlign = "left";
+    ctx.fillText("KAI", 70, 92);
+
+    ctx.fillStyle = "rgba(243,242,238,0.55)";
+    ctx.font = "800 14px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial";
+    ctx.fillText(tk, 70, 118);
+
+    ctx.fillStyle = "#f0d38a";
+    ctx.font = "1000 92px Georgia";
+    ctx.fillText(he, 70, 230);
+
+    ctx.fillStyle = "rgba(243,242,238,0.76)";
+    ctx.font = "900 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial";
+    ctx.fillText(`Name #${n}`, 70, 264);
+
+    ctx.fillStyle = "rgba(243,242,238,0.60)";
+    ctx.font = "800 16px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial";
+    ctx.fillText(nTitle, 70, 292);
+
+    ctx.fillStyle = "rgba(243,242,238,0.92)";
+    ctx.font = "1000 44px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial";
+    wrapText(ctx, title, 70, 370, 1060, 52);
+
+    ctx.fillStyle = "rgba(243,242,238,0.70)";
+    ctx.font = "900 20px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial";
+    wrapText(ctx, subtitle, 70, 470, 1060, 30);
+
+    const statY = 560;
+    ctx.fillStyle = "rgba(243,242,238,0.70)";
+    ctx.font = "900 16px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial";
+    ctx.fillText(`Certainty ${state.certainty ?? 5}/10`, 70, statY);
+    ctx.fillText(`Energy ${state.energy ?? 5}/10`, 260, statY);
+    ctx.fillText(`Pillars ${state.pillars ?? 0}/100`, 420, statY);
+    ctx.fillText(`Cycles ${state.cycles ?? 0}/10`, 600, statY);
+
+    ctx.fillStyle = "rgba(215,180,90,0.55)";
+    ctx.fillRect(canvas.width-180, statY-14, 110, 4);
+
+    state.card = state.card || {};
+    state.card.title = ($("cardTitle")?.value ?? state.card.title ?? "");
+    state.card.subtitle = ($("cardSubtitle")?.value ?? state.card.subtitle ?? "");
+    saveState();
+
+    $("shareHint").textContent = (navigator.share ? "Share uses your iOS share sheet." : "Share may be unavailable here. Download works everywhere.");
+  }
+
+  function roundRect(ctx, x, y, w, h, r){
+    const rr = Math.min(r, w/2, h/2);
+    ctx.beginPath();
+    ctx.moveTo(x+rr, y);
+    ctx.arcTo(x+w, y, x+w, y+h, rr);
+    ctx.arcTo(x+w, y+h, x, y+h, rr);
+    ctx.arcTo(x, y+h, x, y, rr);
+    ctx.arcTo(x, y, x+w, y, rr);
+    ctx.closePath();
+  }
+
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+    const words = String(text||"").split(/\s+/);
+    let line = "";
+    let yy = y;
+    for(const w of words){
+      const test = line ? (line + " " + w) : w;
+      const m = ctx.measureText(test);
+      if(m.width > maxWidth && line){
+        ctx.fillText(line, x, yy);
+        line = w;
+        yy += lineHeight;
+      }else line = test;
+    }
+    if(line) ctx.fillText(line, x, yy);
+  }
+
+  function toJpegBlob(canvas, quality=0.92){
+    return new Promise((resolve, reject)=>{
+      canvas.toBlob((blob)=>{
+        if(!blob) return reject(new Error("JPEG export failed."));
+        resolve(blob);
+      }, "image/jpeg", quality);
+    });
+  }
+  async function downloadJpeg(){
+    const canvas = $("cardCanvas"); if(!canvas) return;
+    try{
+      const blob = await toJpegBlob(canvas, 0.92);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `KAI-${todayKey()}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1500);
+      toast("JPEG downloaded.");
+    }catch(e){ showErr("DOWNLOAD ERROR: " + (e?.message || String(e))); }
+  }
+  async function shareJpeg(){
+    const canvas = $("cardCanvas"); if(!canvas) return;
+    if(!navigator.share){ toast("Share not supported here. Use Download."); return; }
+    try{
+      const blob = await toJpegBlob(canvas, 0.92);
+      const file = new File([blob], `KAI-${todayKey()}.jpg`, { type: "image/jpeg" });
+      if(navigator.canShare && !navigator.canShare({ files: [file] })){
+        toast("Sharing files not supported. Use Download.");
+        return;
+      }
+      await navigator.share({ title:"KAI", text:"KAI share card", files:[file] });
+    }catch(e){
+      if(String(e?.name||"").toLowerCase().includes("abort")) return;
+      toast("Share failed. Download works.");
+    }
+  }
+
+  /* ===== Counters / resets ===== */
+  function incPillar(){
+    state.pillars = Math.min(100, (state.pillars ?? 0) + 1);
+    saveState(); updateChips(); toast("+1 pillar"); renderCard();
+  }
+  function incCycle(){
+    state.cycles = Math.min(10, (state.cycles ?? 0) + 1);
+    saveState(); updateChips(); toast("+1 cycle"); renderCard();
+  }
+  function resetDaily(){
+    state.dayKey = todayKey();
+    state.pillars = 0;
+    state.cycles = 0;
+    state.todayN = null;
+    saveState(); updateChips(); renderTodayBox(); renderCard(); toast("Today reset.");
+  }
+  function resetAll(){
+    localStorage.removeItem(KEY.state);
+    state = structuredClone(defaultState);
+    ensureDailyReset();
+    saveState();
+    hydrateUI();
+    render72();
+    renderZohar();
+    renderGemHist();
+    renderTodayBox();
+    renderCard();
+    toast("All reset.");
+  }
+
+  /* ===== Hydrate ===== */
+  function hydrateUI(){
+    $("certainty").value = String(state.certainty ?? 5);
+    $("energy").value = String(state.energy ?? 5);
+    updateChips();
+
+    $("birthday").value = state.profile?.birthday || "";
+    $("sign").value = state.profile?.sign || "";
+    $("profileNotes").value = state.profile?.notes || "";
+
+    $("cardTitle").value = state.card?.title || "";
+    $("cardSubtitle").value = state.card?.subtitle || "";
+
+    setGateToggleLabel();
+    updateCanonBadge();
+    $("buildVersion").textContent = BUILD;
+
+    renderGemHist();
+    updateGematriaLive();
+  }
+
+  /* ===== Wire ===== */
+  function wire(){
+    for(const b of document.querySelectorAll(".tabBtn")){
+      b.addEventListener("click", ()=> setActiveScreen(b.getAttribute("data-screen")));
+    }
+
+    $("certainty").addEventListener("input", ()=>{
+      state.certainty = parseInt($("certainty").value,10);
+      updateChips(); saveState(); renderCard();
+    });
+    $("energy").addEventListener("input", ()=>{
+      state.energy = parseInt($("energy").value,10);
+      updateChips(); saveState(); renderCard();
+    });
+
+    $("btnConnect").addEventListener("click", incPillar);
+    $("btnCycle").addEventListener("click", incCycle);
+    $("btnPickToday").addEventListener("click", pickTodaysName);
+    $("btnGoNames").addEventListener("click", ()=> setActiveScreen("names"));
+
+    $("birthday").addEventListener("change", (e)=>{
+      state.profile = state.profile || {};
+      state.profile.birthday = e.target.value || "";
+      state.profile.sign = zodiacFromYMD(state.profile.birthday);
+      $("sign").value = state.profile.sign || "";
+      saveState();
+      toast("Profile saved.");
+    });
+    $("profileNotes").addEventListener("input", (e)=>{
+      state.profile = state.profile || {};
+      state.profile.notes = e.target.value || "";
+      saveState();
+    });
+
+    // Gate
+    $("btnToggleGate").addEventListener("click", ()=>{
+      state.ui = state.ui || {};
+      state.ui.gateEnabled = !state.ui.gateEnabled;
+      saveState(); setGateToggleLabel();
+      toast(state.ui.gateEnabled ? "Gate ON" : "Gate OFF");
+    });
+    $("btnShowGateNow").addEventListener("click", showGate);
+
+    $("gateCert").addEventListener("input", ()=> $("gateCertVal").textContent = $("gateCert").value);
+    $("gateEnergy").addEventListener("input", ()=> $("gateEnergyVal").textContent = $("gateEnergy").value);
+    $("btnEnter").addEventListener("click", ()=>{
+      state.certainty = parseInt($("gateCert").value,10);
+      state.energy = parseInt($("gateEnergy").value,10);
+      saveState(); updateChips(); hideGate(); toast("Entered."); renderCard();
+    });
+    $("btnGateSkip").addEventListener("click", ()=>{ hideGate(); toast("Skipped."); });
+
+    // 72
+    $("n72Search").addEventListener("input", render72);
+    $("btnClearSearch").addEventListener("click", ()=>{ $("n72Search").value=""; render72(); });
+
+    // Zohar
+    $("zSearch").addEventListener("input", renderZohar);
+    $("btnZClear").addEventListener("click", ()=>{ $("zSearch").value=""; renderZohar(); });
+    $("btnZAdd").addEventListener("click", ()=> toggleZAdd(true));
+    $("btnZCancel").addEventListener("click", ()=> toggleZAdd(false));
+    $("btnZSave").addEventListener("click", saveZAdd);
+
+    // Gematria
+    $("gInput").addEventListener("input", updateGematriaLive);
+    $("btnGSave").addEventListener("click", ()=>{
+      const raw = ($("gInput").value || "").trim();
+      if(!raw){ toast("Type something first."); return; }
+      const clean = stripNiqqudAndSpaces(raw);
+      const value = gematriaValue(raw);
+      const katan = misparKatan(value);
+      const hist = loadGemHist();
+      hist.unshift({ raw, clean, value, katan, t: Date.now() });
+      saveGemHist(hist.slice(0, 50));
+      toast("Saved.");
+      renderGemHist();
+    });
+    $("btnGClear").addEventListener("click", ()=>{
+      if(!confirm("Clear gematria history?")) return;
+      localStorage.removeItem(KEY.gemHist);
+      toast("Cleared.");
+      renderGemHist();
+    });
+
+    // Share card
+    $("btnRenderCard").addEventListener("click", renderCard);
+    $("cardTitle").addEventListener("input", renderCard);
+    $("cardSubtitle").addEventListener("input", renderCard);
+    $("btnDownloadJpg").addEventListener("click", downloadJpeg);
+    $("btnShareJpg").addEventListener("click", shareJpeg);
+
+    // Canon import
+    $("btnImportCanon").addEventListener("click", importCanonFromTextarea);
+    $("btnClearCanon").addEventListener("click", clearCanon);
+
+    // Reset
+    $("btnResetDaily").addEventListener("click", resetDaily);
+    $("btnResetAll").addEventListener("click", ()=>{ if(confirm("Reset all KAI data on this device?")) resetAll(); });
+  }
+
+  function boot(){
+    clearErr();
+    state = loadState();
+    ensureDailyReset();
+    hydrateUI();
+    wire();
+    render72();
+    renderZohar();
+    renderTodayBox();
+    renderCard();
+
+    if(state?.ui?.gateEnabled) showGate();
+
+    console.log("KAI booted", BUILD);
+    toast("KAI loaded");
+  }
+
+  document.addEventListener("DOMContentLoaded", ()=>{
+    try{ boot(); }
+    catch(e){
+      console.error("BOOT ERROR", e);
+      showErr("BOOT ERROR: " + (e?.message || String(e)) + "\\n" + (e?.stack || ""));
+      alert("KAI boot error (shown on screen).");
+    }
+  });
+
+})();
+</script>
 </body>
 </html>
