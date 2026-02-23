@@ -972,6 +972,50 @@ $("btnAssess").addEventListener("click", n72_showAssess);
 
     // home buttons
     $("btnConnect").addEventListener("click", ()=>{
+// --- Gate (front door) ---
+$("btnGateConnect").addEventListener("click", ()=>{
+  try{
+    const today = new Date().toISOString().slice(0,10);
+    state.entry = state.entry || {};
+    if(state.entry.lastGateAt !== today){
+      state.entry.lastGateAt = today;
+      state.entry.gateCountToday = 0;
+      state.entry.enteredToday = false;
+    }
+    state.entry.gateCountToday = (state.entry.gateCountToday || 0) + 1;
+
+    state.pillars = (state.pillars || 0) + 1;
+    saveState();
+    updateChips();
+    renderGateStatus();
+    toast("Connected (+1)");
+  }catch(e){
+    showErr("Gate error: " + (e?.message || String(e)));
+  }
+});
+
+$("btnGateEnter").addEventListener("click", ()=>{
+  try{
+    const today = new Date().toISOString().slice(0,10);
+    state.entry = state.entry || {};
+    state.entry.lastGateAt = today;
+    state.entry.enteredToday = true;
+    saveState();
+    renderGateStatus();
+    // go to Study (your tab name may differ)
+    setTab("names72"); // if your Study tab is "names72"
+  }catch(e){
+    showErr("Enter error: " + (e?.message || String(e)));
+  }
+});
+
+function renderGateStatus(){
+  try{
+    const today = new Date().toISOString().slice(0,10);
+    const ec = (state.entry && state.entry.lastGateAt === today) ? (state.entry.gateCountToday || 0) : 0;
+    $("gateStatus").textContent = `Today: ${ec} connection rep${ec===1?"":"s"} · Use Connect, then Enter Study.`;
+  }catch{}
+}
       state.pillars = Math.min(100, (state.pillars||0) + 1);
       saveState(); updateChips();
       toast("Connection +1");
@@ -1130,6 +1174,7 @@ $("btnAssess").addEventListener("click", n72_showAssess);
     $("tikkun").value = state.profile?.tikkun || "";
     $("notes").value = state.profile?.notes || "";
     updateChips();
+    renderGateStatus();
 
     // initial list
     n72_renderList(N72);
