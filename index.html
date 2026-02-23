@@ -451,13 +451,76 @@ function zodiacFromYMD(ymd){
   }
 
   // ---------- storage (versioned + safe) ----------
-  const KEY = {
+  const KEY = {<div id="gate" class="card" style="margin-bottom:14px;">
+  <h3>Welcome</h3>
+  <div class="hint" style="margin-bottom:10px;">
+    One tap = one connection rep. Then you enter Study.
+  </div>
+
+  <div class="btnrow">
+    <button id="btnGateConnect" class="primary">CONNECT ( +1 pillar )</button>
+    <button id="btnGateEnter" class="gold">Enter Study</button>
+  </div>
+
+  <div class="hint" id="gateStatus" style="margin-top:10px; opacity:.9;"></div>
+</div><div id="gate" class="card" style="margin-bottom:14px;">
+  <h3>Welcome</h3>
+  <div class="hint" style="margin-bottom:10px;">
+    One tap = one connection rep. Then you enter Study.
+  </div>
+
+  <div class="btnrow">
+    <button id="btnGateConnect" class="primary">CONNECT ( +1 pillar )</button>
+    <button id="btnGateEnter" class="gold">Enter Study</button>
+  </div>
+
+  <div class="hint" id="gateStatus" style="margin-top:10px; opacity:.9;"></div>
+</div><div id="gate" class="card" style="margin-bottom:14px;">
+  <h3>Welcome</h3>
+  <div class="hint" style="margin-bottom:10px;">
+    One tap = one connection rep. Then you enter Study.
+  </div>
+
+  <div class="btnrow">
+    <button id="btnGateConnect" class="primary">CONNECT ( +1 pillar )</button>
+    <button id="btnGateEnter" class="gold">Enter Study</button>
+  </div>
+
+  <div class="hint" id="gateStatus" style="margin-top:10px; opacity:.9;"></div>
+</div><div id="gate" class="card" style="margin-bottom:14px;">
+  <h3>Welcome</h3>
+  <div class="hint" style="margin-bottom:10px;">
+    One tap = one connection rep. Then you enter Study.
+  </div>
+
+  <div class="btnrow">
+    <button id="btnGateConnect" class="primary">CONNECT ( +1 pillar )</button>
+    <button id="btnGateEnter" class="gold">Enter Study</button>
+  </div>
+
+  <div class="hint" id="gateStatus" style="margin-top:10px; opacity:.9;"></div>
+</div>
     state: "kai_state_v1",
     n72_selected: "kai_72_selected_v1",
     n72_notes: "kai_72_notes_v1"
   };
 
   const defaultState = {
+entry: {
+  lastGateAt: "",
+  gateCountToday: 0,
+  enteredToday: false
+},
+todayThread: {
+  name72Id: 1,
+  zoharId: "atika-001",
+  restrictPrompt: "",
+  sealLine: ""
+},
+zohar: {
+  favorites: []
+}
+    
     pillars: 0,
     cycles: 0,
     certainty: 5,
