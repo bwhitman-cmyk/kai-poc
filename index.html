@@ -11,10 +11,10 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <link rel="apple-touch-icon" href="/apple-touch-icon-v4.png?v=KAI-2026-02-23c">
-  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192-v4.png?v=KAI-2026-02-23c">
-  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512-v4.png?v=KAI-2026-02-23c">
-  <link rel="manifest" href="/manifest.webmanifest?v=KAI-2026-02-23c">
+  <link rel="apple-touch-icon" href="/apple-touch-icon-v4.png?v=KAI-2026-02-26">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192-v4.png?v=KAI-2026-02-26">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512-v4.png?v=KAI-2026-02-26">
+  <link rel="manifest" href="/manifest.webmanifest?v=KAI-2026-02-26">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,447 +23,276 @@
   <title>KAI</title>
   <style>
     :root {
-      --bg: #060608;
-      --bg2: #0c0c10;
-      --surface: rgba(255,255,255,.042);
-      --surface2: rgba(255,255,255,.065);
-      --border: rgba(255,255,255,.08);
-      --border2: rgba(215,180,90,.22);
-      --text: #f2f0e8;
-      --muted: rgba(242,240,232,.52);
-      --faint: rgba(242,240,232,.28);
-      --gold: #d7b45a;
-      --gold2: #f0d38a;
-      --gold3: rgba(215,180,90,.15);
-      --good: #34d399;
-      --danger: #f87171;
-      --shadow: 0 24px 80px rgba(0,0,0,.6);
-      --r: 20px;
-      --r2: 14px;
-      --font: 'Inter', ui-sans-serif, system-ui;
-      --serif: 'Cinzel', 'Times New Roman', serif;
-      --mono: ui-monospace, 'SF Mono', Menlo, monospace;
-      --transition: 220ms cubic-bezier(.4,0,.2,1);
+      --bg:#060608; --surface:rgba(255,255,255,.042); --surface2:rgba(255,255,255,.07);
+      --border:rgba(255,255,255,.08); --border2:rgba(215,180,90,.25);
+      --text:#f2f0e8; --muted:rgba(242,240,232,.52); --faint:rgba(242,240,232,.28);
+      --gold:#d7b45a; --gold2:#f0d38a; --gold3:rgba(215,180,90,.14);
+      --good:#34d399; --danger:#f87171;
+      --shadow:0 24px 80px rgba(0,0,0,.6);
+      --r:20px; --r2:14px;
+      --font:'Inter',ui-sans-serif,system-ui,sans-serif;
+      --serif:'Cinzel','Times New Roman',serif;
+      --mono:ui-monospace,'SF Mono',Menlo,monospace;
+      --ease:220ms cubic-bezier(.4,0,.2,1);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { height: 100%; scroll-behavior: smooth; }
-    body {
-      height: 100%;
-      font-family: var(--font);
-      color: var(--text);
-      background: var(--bg);
-      overflow-x: hidden;
-      font-size: 15px;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{height:100%;scroll-behavior:smooth;}
+    body{
+      min-height:100%; font-family:var(--font); color:var(--text);
+      background:var(--bg); overflow-x:hidden; font-size:15px;
+      line-height:1.5; -webkit-font-smoothing:antialiased;
     }
 
 ```
-/* ── Noise texture overlay ── */
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  opacity: .025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 128px;
+/* Ambient background */
+.amb{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.amb-o{position:absolute;border-radius:50%;filter:blur(90px);animation:drift 20s ease-in-out infinite alternate;}
+.amb-o:nth-child(1){width:700px;height:500px;top:-20%;left:-10%;background:rgba(215,180,90,.09);animation-delay:0s;}
+.amb-o:nth-child(2){width:500px;height:400px;top:40%;right:-15%;background:rgba(215,180,90,.07);animation-delay:-7s;}
+.amb-o:nth-child(3){width:350px;height:280px;bottom:-5%;left:35%;background:rgba(215,180,90,.06);animation-delay:-14s;}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(35px,25px) scale(1.07)}}
+
+/* Layout */
+.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:0 14px 140px;}
+
+/* Brand */
+.brand{
+  text-align:center;padding:32px 0 4px;
+  font-family:var(--serif);font-size:34px;font-weight:900;letter-spacing:.45em;
+  color:var(--gold2);text-shadow:0 0 60px rgba(215,180,90,.3);user-select:none;
+}
+.brand-sub{text-align:center;font-size:11px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-bottom:22px;}
+
+/* Error */
+.errorBanner{
+  display:none;margin:10px 0 12px;padding:12px 16px;border-radius:var(--r2);
+  border:1px solid rgba(248,113,113,.3);background:rgba(248,113,113,.08);
+  color:#fecaca;font-family:var(--mono);font-size:12px;white-space:pre-wrap;
 }
 
-/* ── Ambient glow ── */
-.ambient {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+/* Chips */
+.chipRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 18px;}
+.chip{
+  display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;
+  background:var(--surface);border:1px solid var(--border);
+  backdrop-filter:blur(16px);font-size:13px;font-weight:500;
+  transition:border-color var(--ease),transform var(--ease);
 }
-.ambient-orb {
-  position: absolute; border-radius: 50%; filter: blur(80px);
-  animation: drift 18s ease-in-out infinite alternate;
-}
-.ambient-orb:nth-child(1) { width:700px;height:500px;top:-15%;left:-10%; background:rgba(215,180,90,.10); animation-delay:0s; }
-.ambient-orb:nth-child(2) { width:500px;height:400px;top:30%;right:-15%; background:rgba(215,180,90,.07); animation-delay:-6s; }
-.ambient-orb:nth-child(3) { width:400px;height:300px;bottom:-10%;left:30%; background:rgba(215,180,90,.06); animation-delay:-12s; }
-@keyframes drift { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(40px,30px) scale(1.08)} }
+.chip:hover{border-color:var(--border2);transform:translateY(-1px);}
+.c-lbl{color:var(--muted);}
+.c-val{color:var(--gold2);font-weight:700;font-variant-numeric:tabular-nums;}
+.c-max{color:var(--faint);font-size:11px;}
+.c-prog{width:38px;height:3px;background:rgba(255,255,255,.10);border-radius:99px;overflow:hidden;}
+.c-prog-fill{height:100%;background:var(--gold);border-radius:99px;transition:width .4s ease;}
 
-/* ── Layout ── */
-.wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 0 14px 140px; }
+/* Tabs */
+.tabs{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:22px;}
+.tabBtn{
+  appearance:none;border:1px solid var(--border);background:var(--surface);
+  color:var(--muted);padding:9px 16px;border-radius:999px;
+  font-family:var(--font);font-size:13px;font-weight:600;
+  cursor:pointer;user-select:none;transition:all var(--ease);
+}
+.tabBtn:hover{color:var(--text);border-color:rgba(255,255,255,.16);background:var(--surface2);}
+.tabBtn.active{border-color:rgba(215,180,90,.45);background:var(--gold3);color:var(--gold2);font-weight:700;}
 
-/* ── Brand ── */
-.brand {
-  text-align: center; padding: 32px 0 6px;
-  font-family: var(--serif);
-  font-size: 36px; font-weight: 900; letter-spacing: .4em;
-  color: var(--gold2);
-  text-shadow: 0 0 60px rgba(215,180,90,.35);
-  user-select: none;
-  animation: fadeSlideDown .7s both;
+/* Panel */
+.panel{
+  background:rgba(10,10,14,.88);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;
+  box-shadow:var(--shadow);backdrop-filter:blur(20px);margin:12px 0;
 }
-.brand-sub {
-  text-align: center; font-size: 11px; letter-spacing: .25em; color: var(--muted);
-  text-transform: uppercase; margin-bottom: 20px;
-  animation: fadeSlideDown .7s .1s both;
-}
-@keyframes fadeSlideDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:none} }
-@keyframes fadeSlideUp   { from{opacity:0;transform:translateY(10px)}  to{opacity:1;transform:none} }
-@keyframes fadeIn        { from{opacity:0} to{opacity:1} }
-@keyframes scaleIn       { from{opacity:0;transform:scale(.93)} to{opacity:1;transform:scale(1)} }
-@keyframes pulse         { 0%,100%{opacity:1} 50%{opacity:.6} }
+.panelTitle{font-family:var(--serif);font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:4px;}
+.panelSub{font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:12px;}
+.panelHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
 
-/* ── Error Banner ── */
-.errorBanner {
-  display: none; margin: 10px 0 12px; padding: 12px 16px;
-  border-radius: var(--r2); border: 1px solid rgba(248,113,113,.3);
-  background: rgba(248,113,113,.08); color: #fecaca;
-  font-family: var(--mono); font-size: 12px; white-space: pre-wrap;
-  animation: fadeIn .3s;
+/* Metrics */
+.metricRow{
+  margin:12px 0;padding:14px 16px;border-radius:var(--r2);
+  border:1px solid var(--border);background:var(--surface);
+  transition:border-color var(--ease);
 }
+.metricRow:focus-within{border-color:var(--border2);}
+.metricLbl{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.metricLbl-name{font-size:13px;font-weight:600;color:rgba(242,240,232,.8);}
+.metricLbl-val{font-family:var(--serif);font-size:20px;color:var(--gold2);min-width:28px;text-align:right;}
+.meter{display:flex;gap:3px;margin-bottom:9px;}
+.m-seg{flex:1;height:4px;border-radius:99px;background:rgba(255,255,255,.08);transition:background .2s;}
+.m-seg.lit{background:var(--gold);}
+.m-seg.lit.hi{background:var(--good);}
+.m-seg.lit.lo{background:var(--danger);}
 
-/* ── Chips ── */
-.chipRow {
-  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
-  margin: 0 0 18px;
-  animation: fadeSlideDown .7s .15s both;
+/* Range input */
+input[type="range"]{-webkit-appearance:none;width:100%;height:2px;background:transparent;outline:none;cursor:pointer;}
+input[type="range"]::-webkit-slider-runnable-track{background:rgba(255,255,255,.08);height:2px;border-radius:1px;}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--gold2);border:2px solid rgba(0,0,0,.4);
+  box-shadow:0 2px 12px rgba(215,180,90,.4);
+  transition:transform .15s,box-shadow .15s;margin-top:-9px;
 }
-.chip {
-  display: flex; align-items: center; gap: 6px;
-  padding: 8px 14px; border-radius: 999px;
-  background: var(--surface); border: 1px solid var(--border);
-  backdrop-filter: blur(16px);
-  font-size: 13px; font-weight: 500;
-  transition: border-color var(--transition), background var(--transition), transform var(--transition);
-}
-.chip:hover { border-color: var(--border2); transform: translateY(-1px); }
-.chip-label { color: var(--muted); }
-.chip-val { color: var(--gold2); font-weight: 700; font-variant-numeric: tabular-nums; }
-.chip-max { color: var(--faint); font-size: 11px; }
-.chip-icon { font-size: 14px; }
+input[type="range"]:hover::-webkit-slider-thumb{transform:scale(1.2);box-shadow:0 4px 20px rgba(215,180,90,.6);}
+input[type="range"]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold2);border:2px solid rgba(0,0,0,.4);}
+input[type="range"]::-moz-range-track{background:rgba(255,255,255,.08);height:2px;border-radius:1px;}
 
-/* ── Progress bar inside chip ── */
-.chip-prog {
-  width: 40px; height: 3px; background: rgba(255,255,255,.10); border-radius: 99px; overflow: hidden;
+/* Buttons */
+.btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.btn{
+  appearance:none;border:1px solid var(--border);background:var(--surface);
+  color:var(--text);padding:11px 18px;border-radius:var(--r2);
+  font-family:var(--font);font-size:13px;font-weight:600;
+  cursor:pointer;user-select:none;transition:all var(--ease);
 }
-.chip-prog-fill {
-  height: 100%; background: var(--gold); border-radius: 99px;
-  transition: width .4s cubic-bezier(.4,0,.2,1);
-}
+.btn:hover{background:var(--surface2);border-color:rgba(255,255,255,.16);}
+.btn:active{transform:scale(.97);}
+.btn.primary{border:0;background:linear-gradient(135deg,#d7b45a,#c49a3a);color:#0a0805;font-weight:700;box-shadow:0 4px 20px rgba(215,180,90,.22);}
+.btn.primary:hover{box-shadow:0 6px 28px rgba(215,180,90,.38);transform:translateY(-1px);}
+.btn.good{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08);color:#a7f3d0;}
+.btn.good:hover{border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.13);}
+.btn.danger{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.08);color:#fecaca;}
+.btn.danger:hover{border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.13);}
 
-/* ── Tabs ── */
-.tabs {
-  display: flex; justify-content: center; gap: 6px; flex-wrap: wrap;
-  margin-bottom: 22px;
-  animation: fadeSlideDown .7s .2s both;
+/* Big connect button */
+.bigAction{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  width:100%;padding:18px 20px;border-radius:var(--r2);
+  font-size:16px;font-weight:700;letter-spacing:.03em;
+  border:1.5px solid rgba(52,211,153,.3);background:rgba(52,211,153,.08);color:#a7f3d0;
+  cursor:pointer;appearance:none;font-family:var(--font);user-select:none;
+  transition:all var(--ease);
 }
-.tabBtn {
-  appearance: none; border: 1px solid var(--border);
-  background: var(--surface); color: var(--muted);
-  padding: 9px 16px; border-radius: 999px;
-  font-family: var(--font); font-size: 13px; font-weight: 600;
-  cursor: pointer; user-select: none;
-  transition: all var(--transition);
-}
-.tabBtn:hover { color: var(--text); border-color: rgba(255,255,255,.16); background: var(--surface2); }
-.tabBtn.active {
-  border-color: rgba(215,180,90,.45); background: var(--gold3);
-  color: var(--gold2); font-weight: 700;
-}
+.bigAction:hover{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.5);transform:translateY(-1px);box-shadow:0 8px 30px rgba(52,211,153,.10);}
+.bigAction:active{transform:scale(.98);}
+.plus-icon{width:32px;height:32px;border-radius:50%;border:2px solid rgba(52,211,153,.4);display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;flex-shrink:0;}
 
-/* ── Panel ── */
-.panel {
-  background: rgba(12,12,16,.82); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 20px;
-  box-shadow: var(--shadow); backdrop-filter: blur(20px);
-  margin: 12px 0;
-  animation: fadeSlideUp .45s both;
-}
-.panel + .panel { animation-delay: .05s; }
-.panel:nth-child(3) { animation-delay: .10s; }
-.panel:nth-child(4) { animation-delay: .15s; }
-.panel:nth-child(5) { animation-delay: .20s; }
+/* Pillar flash */
+.pfx{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--serif);font-size:72px;color:var(--gold2);pointer-events:none;z-index:99998;animation:pfxAnim .65s ease-out forwards;}
+@keyframes pfxAnim{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-120%) scale(1.5)}}
 
-.panelHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
-.panelTitle { font-family: var(--serif); font-size: 11px; font-weight: 700; letter-spacing: .22em; color: var(--gold); text-transform: uppercase; }
-.panelSub { font-size: 13px; color: var(--muted); line-height: 1.45; }
+/* Fields */
+.fieldRow{display:flex;flex-direction:column;gap:6px;margin-top:14px;}
+.fieldRow label{font-size:11px;font-weight:700;letter-spacing:.08em;color:rgba(242,240,232,.7);text-transform:uppercase;}
+input[type="text"],input[type="date"],textarea,select{
+  width:100%;padding:11px 14px;border-radius:var(--r2);
+  border:1px solid var(--border);background:rgba(0,0,0,.38);
+  color:var(--text);outline:none;font-size:15px;font-family:var(--font);
+  transition:border-color var(--ease),background var(--ease);
+  -webkit-appearance:none;
+}
+input[type="text"]:focus,input[type="date"]:focus,textarea:focus,select:focus{border-color:var(--border2);background:rgba(0,0,0,.5);}
+textarea{min-height:110px;font-family:var(--mono);font-size:13px;resize:vertical;}
+::placeholder{color:var(--faint);}
 
-/* ── Metric sliders ── */
-.metricRow {
-  margin: 12px 0; padding: 14px 16px; border-radius: var(--r2);
-  border: 1px solid var(--border); background: var(--surface);
-  transition: border-color var(--transition);
-}
-.metricRow:focus-within { border-color: var(--border2); }
-.metricLabel {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 10px; font-size: 13px; font-weight: 600;
-}
-.metricLabel-name { color: rgba(242,240,232,.8); }
-.metricLabel-val {
-  font-family: var(--serif); font-size: 18px; color: var(--gold2); min-width: 28px; text-align: right;
-  transition: transform .15s;
-}
-.metricLabel-val.bump { animation: bumpVal .2s; }
-@keyframes bumpVal { 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
-.meter {
-  display: flex; gap: 3px; margin-bottom: 8px;
-}
-.meter-seg {
-  flex: 1; height: 4px; border-radius: 99px;
-  background: rgba(255,255,255,.08);
-  transition: background .2s;
-}
-.meter-seg.lit { background: var(--gold); }
-.meter-seg.lit.high { background: var(--good); }
-.meter-seg.lit.low  { background: var(--danger); }
-input[type="range"] {
-  -webkit-appearance: none; width: 100%; height: 2px;
-  background: transparent; outline: none; cursor: pointer;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 18px; height: 18px;
-  border-radius: 50%; background: var(--gold2);
-  border: 2px solid rgba(0,0,0,.4);
-  box-shadow: 0 2px 12px rgba(215,180,90,.35);
-  transition: transform .15s, box-shadow .15s;
-}
-input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.2); box-shadow: 0 4px 20px rgba(215,180,90,.5); }
-input[type="range"]::-webkit-slider-runnable-track { background: rgba(255,255,255,.08); height: 2px; border-radius: 1px; }
+/* Screens */
+.screen{display:none;}
+.screen.active{display:block;}
 
-/* ── Buttons ── */
-.btnRow { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-.btn {
-  appearance: none;
-  border: 1px solid var(--border); background: var(--surface);
-  color: var(--text); padding: 11px 18px; border-radius: var(--r2);
-  font-family: var(--font); font-size: 13px; font-weight: 600;
-  cursor: pointer; user-select: none;
-  transition: all var(--transition); position: relative; overflow: hidden;
-}
-.btn::after {
-  content: ''; position: absolute; inset: 0;
-  background: rgba(255,255,255,0); transition: background .15s;
-}
-.btn:hover::after { background: rgba(255,255,255,.04); }
-.btn:active { transform: scale(.97); }
+/* Badge */
+.badge{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--muted);}
+.badge.warn{border-color:rgba(248,113,113,.35);background:rgba(248,113,113,.08);color:#fecaca;}
+.badge.ok{border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.08);color:#a7f3d0;}
 
-.btn.primary {
-  border: 0; background: linear-gradient(135deg, #d7b45a 0%, #c49a3a 100%);
-  color: #0a0805; font-weight: 700;
-  box-shadow: 0 4px 20px rgba(215,180,90,.25);
-}
-.btn.primary:hover { box-shadow: 0 6px 28px rgba(215,180,90,.4); transform: translateY(-1px); }
-.btn.good { border-color: rgba(52,211,153,.3); background: rgba(52,211,153,.08); color: #a7f3d0; }
-.btn.good:hover { border-color: rgba(52,211,153,.5); background: rgba(52,211,153,.12); }
-.btn.danger { border-color: rgba(248,113,113,.3); background: rgba(248,113,113,.08); color: #fecaca; }
-.btn.danger:hover { border-color: rgba(248,113,113,.5); background: rgba(248,113,113,.12); }
-.btn.icon-btn { padding: 11px 14px; }
+/* Search row */
+.searchRow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px;}
+.searchRow input{flex:1;min-width:160px;}
 
-/* ── Tap ripple ── */
-.ripple-host { position: relative; overflow: hidden; }
-.ripple {
-  position: absolute; width: 80px; height: 80px; border-radius: 50%;
-  background: rgba(215,180,90,.25); transform: translate(-50%,-50%) scale(0);
-  animation: rippleAnim .5s ease-out forwards; pointer-events: none;
+/* List */
+.list{margin-top:12px;border-radius:var(--r2);overflow:hidden;border:1px solid var(--border);}
+.item{
+  display:flex;gap:14px;padding:14px 16px;
+  background:rgba(255,255,255,.025);border-bottom:1px solid rgba(255,255,255,.05);
+  cursor:pointer;transition:background var(--ease);
 }
-@keyframes rippleAnim { to { transform: translate(-50%,-50%) scale(4); opacity: 0; } }
+.item:hover{background:rgba(255,255,255,.05);}
+.item:active{background:rgba(255,255,255,.07);}
+.item:last-child{border-bottom:0;}
+.item-empty{padding:28px 16px;text-align:center;color:var(--muted);font-size:14px;background:var(--surface);}
+.hebrew{min-width:62px;font-family:'Times New Roman',Georgia,serif;font-size:22px;font-weight:700;color:var(--gold2);letter-spacing:.05em;line-height:1.2;padding-top:2px;}
+.itemMain{flex:1;min-width:0;}
+.itemTitle{font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.itemSub{margin-top:3px;color:var(--muted);font-size:13px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.item-num{font-size:11px;color:var(--faint);margin-bottom:2px;font-family:var(--serif);}
 
-/* ── Fields ── */
-.fieldRow { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
-.fieldRow label { font-size: 12px; font-weight: 600; letter-spacing: .06em; color: rgba(242,240,232,.75); text-transform: uppercase; }
-input[type="text"], input[type="date"], textarea, select {
-  width: 100%; padding: 11px 14px; border-radius: var(--r2);
-  border: 1px solid var(--border); background: rgba(0,0,0,.35);
-  color: var(--text); outline: none; font-size: 15px; font-family: var(--font);
-  transition: border-color var(--transition), background var(--transition);
-}
-input[type="text"]:focus, input[type="date"]:focus, textarea:focus, select:focus {
-  border-color: var(--border2); background: rgba(0,0,0,.45);
-}
-textarea { min-height: 110px; font-family: var(--mono); font-size: 13px; resize: vertical; }
-::placeholder { color: var(--faint); }
+/* Detail */
+.detail{margin-top:12px;padding:18px;border-radius:var(--r2);border:1px solid var(--border2);background:rgba(215,180,90,.04);}
+.detailTop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline;margin-bottom:10px;}
+.detailTop .big{font-family:'Times New Roman',Georgia,serif;font-size:38px;font-weight:700;color:var(--gold2);line-height:1;}
+.detailTop .meta{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.08em;}
+.detailTitle{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--gold2);margin-bottom:8px;}
+.detailDesc{color:rgba(242,240,232,.78);line-height:1.55;font-size:14px;}
 
-/* ── Screen ── */
-.screen { display: none; }
-.screen.active { display: block; animation: fadeIn .3s; }
+/* Gematria */
+.gmRow{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch;margin-top:14px;}
+.gmBox{padding:14px 18px;border-radius:var(--r2);border:1px solid var(--border);background:var(--surface);flex:1;min-width:80px;transition:border-color var(--ease);}
+.gmBox.lit{border-color:rgba(215,180,90,.3);}
+.gmLabel{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.gmNum{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--gold2);font-variant-numeric:tabular-nums;}
+.equivBox{display:none;margin-top:12px;padding:11px 14px;border-radius:var(--r2);border:1px solid rgba(215,180,90,.2);background:rgba(215,180,90,.05);font-size:13px;color:rgba(242,240,232,.8);}
+.equivBox.show{display:block;}
 
-/* ── Badge ── */
-.badge {
-  padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
-  border: 1px solid var(--border); background: var(--surface); color: var(--muted);
-}
-.badge.warn { border-color: rgba(248,113,113,.35); background: rgba(248,113,113,.08); color: #fecaca; }
-.badge.ok   { border-color: rgba(52,211,153,.35);  background: rgba(52,211,153,.08);  color: #a7f3d0; }
+/* Card */
+canvas{width:100%;max-width:720px;height:auto;display:block;border-radius:var(--r2);border:1px solid var(--border);box-shadow:0 20px 80px rgba(0,0,0,.6);}
+.cardWrap{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start;}
 
-/* ── Search ── */
-.searchRow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
-.searchRow input { flex: 1; min-width: 180px; }
-
-/* ── List ── */
-.list { margin-top: 12px; border-radius: var(--r2); overflow: hidden; border: 1px solid var(--border); }
-.item {
-  display: flex; gap: 14px; padding: 14px 16px;
-  background: rgba(255,255,255,.025);
-  border-bottom: 1px solid rgba(255,255,255,.05);
-  cursor: pointer; transition: background var(--transition), transform var(--transition);
-}
-.item:hover { background: rgba(255,255,255,.05); }
-.item:active { transform: scale(.99); }
-.item:last-child { border-bottom: 0; }
-.item-empty { padding: 28px 16px; text-align: center; color: var(--muted); font-size: 14px; background: var(--surface); }
-
-.hebrew {
-  min-width: 64px; font-family: 'Times New Roman', Georgia, serif;
-  font-size: 22px; font-weight: 700; color: var(--gold2);
-  letter-spacing: .06em; text-align: left; line-height: 1.2;
-  padding-top: 2px;
-}
-.itemMain { flex: 1; min-width: 0; }
-.itemTitle { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.itemSub   { margin-top: 3px; color: var(--muted); font-size: 13px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.item-num  { font-family: var(--serif); font-size: 12px; color: var(--faint); margin-top: 2px; }
-
-/* ── Detail panel ── */
-.detail {
-  margin-top: 12px; padding: 18px; border-radius: var(--r2);
-  border: 1px solid var(--border2); background: rgba(215,180,90,.04);
-  animation: scaleIn .25s;
-}
-.detailTop { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 12px; }
-.detailTop .big { font-family: 'Times New Roman', Georgia, serif; font-size: 36px; font-weight: 700; color: var(--gold2); letter-spacing: .06em; line-height: 1; }
-.detailTop .meta { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .08em; }
-.detailTitle { font-family: var(--serif); font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--gold2); }
-.detailDesc  { color: rgba(242,240,232,.78); line-height: 1.55; font-size: 14px; }
-
-/* ── Home: Quick Action button ── */
-.bigAction {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  width: 100%; padding: 18px 20px; border-radius: var(--r2);
-  font-size: 16px; font-weight: 700; letter-spacing: .04em;
-  border: 1.5px solid rgba(52,211,153,.3);
-  background: rgba(52,211,153,.08); color: #a7f3d0;
-  cursor: pointer; appearance: none;
-  font-family: var(--font); user-select: none;
-  transition: all var(--transition); position: relative; overflow: hidden;
-}
-.bigAction:hover { background: rgba(52,211,153,.14); border-color: rgba(52,211,153,.5); transform: translateY(-1px); box-shadow: 0 8px 30px rgba(52,211,153,.12); }
-.bigAction:active { transform: scale(.98); }
-.bigAction .plus-icon {
-  width: 32px; height: 32px; border-radius: 50%;
-  border: 2px solid rgba(52,211,153,.4);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; line-height: 1; flex-shrink: 0;
+/* Toast */
+.toast{
+  position:fixed;left:50%;bottom:28px;transform:translateX(-50%);
+  padding:11px 20px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
+  background:rgba(10,10,16,.9);color:rgba(242,240,232,.9);
+  box-shadow:0 10px 40px rgba(0,0,0,.4);
+  display:none;z-index:99999;max-width:92vw;text-align:center;
+  backdrop-filter:blur(16px);font-size:14px;font-weight:500;
 }
 
-/* ── Pillar counter flash ── */
-.pillar-flash {
-  position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  font-family: var(--serif); font-size: 64px; color: var(--gold2);
-  pointer-events: none; z-index: 99998;
-  animation: pillarPop .6s ease-out forwards;
-}
-@keyframes pillarPop { 0%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-100%) scale(1.4)} }
+/* Foot hint */
+.footHint{margin-top:14px;color:var(--faint);font-size:12px;line-height:1.5;}
+.tiny{font-size:12px;color:var(--muted);}
 
-/* ── Gate overlay ── */
-.gate {
-  position: fixed; inset: 0; z-index: 99999;
-  display: none; align-items: center; justify-content: center; padding: 18px;
-  background: rgba(0,0,0,.72); backdrop-filter: blur(20px);
+/* ── GATE ── key fix: pointer-events none when hidden */
+.gate{
+  position:fixed;inset:0;z-index:99999;
+  align-items:center;justify-content:center;padding:18px;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(18px);
+  /* Hidden state */
+  display:none;
+  pointer-events:none;
 }
-.gate.open { display: flex; animation: fadeIn .4s; }
-.gateCard {
-  width: min(520px, 96vw); border-radius: 28px;
-  border: 1px solid rgba(215,180,90,.25); background: rgba(8,8,12,.92);
-  box-shadow: 0 40px 120px rgba(0,0,0,.75), 0 0 80px rgba(215,180,90,.06);
-  padding: 28px 24px;
-  animation: scaleIn .4s;
+.gate.open{
+  display:flex;
+  pointer-events:auto;
 }
-.gateTitle { text-align: center; font-family: var(--serif); font-weight: 900; letter-spacing: .45em; font-size: 32px; margin-bottom: 6px; color: var(--gold2); text-shadow: 0 0 40px rgba(215,180,90,.3); }
-.gateSub   { text-align: center; color: var(--muted); margin-bottom: 20px; font-size: 13px; letter-spacing: .08em; }
+.gateCard{
+  width:min(520px,96vw);border-radius:28px;
+  border:1px solid rgba(215,180,90,.25);background:rgba(8,8,12,.95);
+  box-shadow:0 40px 120px rgba(0,0,0,.75),0 0 80px rgba(215,180,90,.05);
+  padding:28px 24px;
+}
+.gateTitle{text-align:center;font-family:var(--serif);font-weight:900;letter-spacing:.45em;font-size:32px;margin-bottom:6px;color:var(--gold2);text-shadow:0 0 40px rgba(215,180,90,.25);}
+.gateSub{text-align:center;color:var(--muted);margin-bottom:20px;font-size:13px;letter-spacing:.06em;}
 
-/* ── Breath ring ── */
-.breathRing {
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 20px; width: 140px; height: 140px;
+/* Breath ring */
+.breathWrap{display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.breathRing{
+  width:120px;height:120px;border-radius:50%;
+  border:2px solid rgba(215,180,90,.25);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:border-color 1s,box-shadow 1s,transform 1s;
 }
-.breathRingInner {
-  width: 100px; height: 100px; border-radius: 50%;
-  border: 2px solid rgba(215,180,90,.25);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  position: relative;
-  box-shadow: 0 0 0 0 rgba(215,180,90,0);
-  transition: box-shadow 1s ease;
-}
-.breathRingInner.expand {
-  animation: breathExpand 4s ease-in-out infinite;
-}
-@keyframes breathExpand {
-  0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(215,180,90,.0); border-color: rgba(215,180,90,.25); }
-  50%      { transform: scale(1.22); box-shadow: 0 0 0 18px rgba(215,180,90,.0); border-color: rgba(215,180,90,.6); }
-}
-.breathPhase { font-family: var(--serif); font-size: 14px; font-weight: 700; color: var(--gold2); }
-.breathCount { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.breathRing.inhale{border-color:rgba(215,180,90,.6);box-shadow:0 0 0 14px rgba(215,180,90,.06);transform:scale(1.12);}
+.breathRing.exhale{border-color:rgba(215,180,90,.2);box-shadow:0 0 0 0 rgba(215,180,90,0);transform:scale(1);}
+.breathPhase{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--gold2);}
+.breathCount{font-size:13px;color:var(--muted);margin-top:3px;}
 
-/* ── Gematria ── */
-.gmRow { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
-.gmBox {
-  padding: 14px 18px; border-radius: var(--r2); border: 1px solid var(--border);
-  background: var(--surface); min-width: 90px;
-  transition: border-color var(--transition);
-}
-.gmBox.has-value { border-color: rgba(215,180,90,.3); }
-.gmLabel { font-size: 11px; font-weight: 600; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
-.gmNum { font-family: var(--serif); font-weight: 700; font-size: 28px; color: var(--gold2); font-variant-numeric: tabular-nums; transition: color .2s; }
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:99px;}
 
-/* ── Equivalence ── */
-.equivBox {
-  margin-top: 12px; padding: 12px 14px; border-radius: var(--r2);
-  border: 1px solid rgba(215,180,90,.18); background: rgba(215,180,90,.04);
-  font-size: 13px; color: var(--muted); line-height: 1.5; display: none;
-}
-.equivBox.show { display: block; animation: fadeIn .3s; }
-
-/* ── Share card ── */
-canvas {
-  width: 100%; max-width: 720px; height: auto; display: block;
-  border-radius: var(--r2); border: 1px solid var(--border);
-  box-shadow: 0 20px 80px rgba(0,0,0,.6);
-}
-.cardWrap { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-start; }
-
-/* ── Toast ── */
-.toast {
-  position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
-  padding: 11px 18px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12);
-  background: rgba(12,12,18,.85); color: rgba(242,240,232,.9);
-  box-shadow: 0 10px 40px rgba(0,0,0,.4); display: none; z-index: 99999;
-  max-width: 92vw; text-align: center; backdrop-filter: blur(16px);
-  font-size: 14px; font-weight: 500;
-  animation: toastIn .25s;
-}
-@keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(8px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-
-/* ── Hint text ── */
-.footHint { margin-top: 14px; color: var(--faint); font-size: 12px; line-height: 1.5; }
-.tiny     { font-size: 12px; color: var(--muted); }
-
-/* ── Name circle for today's pick ── */
-.nameCircle {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 110px; height: 110px; border-radius: 50%;
-  border: 2px solid rgba(215,180,90,.3); background: rgba(215,180,90,.06);
-  float: right; margin: 0 0 8px 16px;
-  flex-shrink: 0;
-}
-.nameCircle .nc-he    { font-family: 'Times New Roman', Georgia, serif; font-size: 28px; font-weight: 700; color: var(--gold2); }
-.nameCircle .nc-num   { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-/* ── Separator ── */
-.sep { border: 0; border-top: 1px solid var(--border); margin: 14px 0; }
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 99px; }
-
-/* ── Responsive ── */
-@media (max-width: 600px) {
-  .brand { font-size: 28px; }
-  .cardWrap { flex-direction: column; }
-  .tabBtn { padding: 8px 12px; font-size: 12px; }
+@media(max-width:600px){
+  .brand{font-size:28px;}
+  .cardWrap{flex-direction:column;}
+  .tabBtn{padding:8px 11px;font-size:12px;}
+  .gmRow{flex-direction:column;}
 }
 ```
 
@@ -471,11 +300,7 @@ canvas {
 </head>
 
 <body>
-  <div class="ambient">
-    <div class="ambient-orb"></div>
-    <div class="ambient-orb"></div>
-    <div class="ambient-orb"></div>
-  </div>
+  <div class="amb"><div class="amb-o"></div><div class="amb-o"></div><div class="amb-o"></div></div>
 
   <div class="wrap">
     <div class="brand">KAI</div>
@@ -486,26 +311,22 @@ canvas {
 <!-- CHIPS -->
 <div class="chipRow">
   <div class="chip">
-    <span class="chip-icon">◈</span>
-    <span class="chip-label">Pillars</span>
-    <span class="chip-val" id="pillarsChip">0</span>
-    <div class="chip-prog"><div class="chip-prog-fill" id="pillarsProg" style="width:0%"></div></div>
+    <span class="c-lbl">Pillars</span>
+    <span class="c-val" id="pillarsChip">0</span>
+    <div class="c-prog"><div class="c-prog-fill" id="pillarsFill" style="width:0%"></div></div>
   </div>
   <div class="chip">
-    <span class="chip-icon">↻</span>
-    <span class="chip-label">Cycles</span>
-    <span class="chip-val" id="cyclesChip">0</span>
-    <span class="chip-max">/10</span>
+    <span class="c-lbl">Cycles</span>
+    <span class="c-val" id="cyclesChip">0</span>
+    <span class="c-max">/10</span>
   </div>
   <div class="chip">
-    <span class="chip-icon">◎</span>
-    <span class="chip-label">Certainty</span>
-    <span class="chip-val" id="certaintyChip">5</span>
+    <span class="c-lbl">Certainty</span>
+    <span class="c-val" id="certaintyChip">5</span>
   </div>
   <div class="chip">
-    <span class="chip-icon">⚡</span>
-    <span class="chip-label">Energy</span>
-    <span class="chip-val" id="energyChip">5</span>
+    <span class="c-lbl">Energy</span>
+    <span class="c-val" id="energyChip">5</span>
   </div>
 </div>
 
@@ -515,79 +336,70 @@ canvas {
   <button class="tabBtn" data-screen="names">72 Names</button>
   <button class="tabBtn" data-screen="zohar">Zohar</button>
   <button class="tabBtn" data-screen="gematria">Gematria</button>
-  <button class="tabBtn" data-screen="card">Share</button>
+  <button class="tabBtn" data-screen="card">Share Card</button>
   <button class="tabBtn" data-screen="settings">Settings</button>
 </div>
 
-<!-- ═══════ HOME ═══════ -->
+<!-- HOME -->
 <section id="screen-home" class="screen active">
 
-  <!-- Quick Actions -->
   <div class="panel">
-    <div class="panelHeader">
-      <div class="panelTitle">Quick Actions</div>
-    </div>
-    <button id="btnConnect" class="bigAction ripple-host">
+    <div class="panelTitle">Quick Actions</div>
+    <button id="btnConnect" class="bigAction">
       <span class="plus-icon">+</span>
       <span>Connect &nbsp;— Add Pillar</span>
     </button>
     <div class="btnRow">
-      <button id="btnCycle" class="btn">↻ &nbsp;Full Cycle</button>
-      <button id="btnPickToday" class="btn primary">✦ &nbsp;Today's Name</button>
+      <button id="btnCycle" class="btn">↻ Full Cycle</button>
+      <button id="btnPickToday" class="btn primary">✦ Today's Name</button>
       <button id="btnGoNames" class="btn">Browse 72 →</button>
     </div>
-    <div class="footHint">Pillars = connection reps (max 100). Cycles = full practice pass (max 10). Resets each day.</div>
+    <div class="footHint">Pillars = connection reps (max 100). Cycles = full practice pass (max 10). Resets daily.</div>
   </div>
 
-  <!-- Daily Metrics -->
   <div class="panel">
-    <div class="panelHeader">
-      <div>
-        <div class="panelTitle">Daily Metrics</div>
-        <div class="panelSub" style="margin-top:3px;">Honest signal. No story, just data.</div>
-      </div>
-    </div>
+    <div class="panelTitle">Daily Metrics</div>
+    <div class="panelSub">Honest signal. No story, just data.</div>
 
     <div class="metricRow">
-      <div class="metricLabel">
-        <span class="metricLabel-name">Certainty</span>
-        <span class="metricLabel-val" id="certaintyVal">5</span>
+      <div class="metricLbl">
+        <span class="metricLbl-name">Certainty</span>
+        <span class="metricLbl-val" id="certaintyVal">5</span>
       </div>
       <div class="meter" id="certaintyMeter"></div>
-      <input id="certainty" type="range" min="0" max="10" step="1" value="5" aria-label="Certainty">
+      <input id="certainty" type="range" min="0" max="10" step="1" value="5">
     </div>
 
     <div class="metricRow">
-      <div class="metricLabel">
-        <span class="metricLabel-name">Energy</span>
-        <span class="metricLabel-val" id="energyVal">5</span>
+      <div class="metricLbl">
+        <span class="metricLbl-name">Energy</span>
+        <span class="metricLbl-val" id="energyVal">5</span>
       </div>
       <div class="meter" id="energyMeter"></div>
-      <input id="energy" type="range" min="0" max="10" step="1" value="5" aria-label="Energy">
+      <input id="energy" type="range" min="0" max="10" step="1" value="5">
     </div>
   </div>
 
-  <!-- Today's Name -->
   <div class="panel">
-    <div class="panelHeader">
-      <div class="panelTitle">Today's 72 Name</div>
-      <div id="todayNameBadge" style="display:none;" class="badge ok"></div>
+    <div class="panelHead">
+      <div>
+        <div class="panelTitle">Today's 72 Name</div>
+      </div>
+      <span id="todayBadge" class="badge ok" style="display:none;"></span>
     </div>
+    <div id="todayEmpty" class="panelSub">Pick a name for today's practice, or browse all 72.</div>
     <div id="todayBox"></div>
-    <div id="todayEmpty" class="panelSub">Pick a name for today's practice, or browse the full 72.</div>
   </div>
 
-  <!-- Profile -->
   <div class="panel">
     <div class="panelTitle">Profile</div>
-
     <div class="fieldRow">
       <label for="birthday">Birthday</label>
-      <input id="birthday" type="date" aria-label="Birthday">
+      <input id="birthday" type="date">
     </div>
-    <div class="fieldRow" id="signRow" style="display:none;">
-      <label>Astrological Sign</label>
-      <input id="sign" type="text" readonly tabindex="-1">
+    <div class="fieldRow">
+      <label for="sign">Astrological Sign</label>
+      <input id="sign" type="text" readonly placeholder="Enter birthday above to calculate" tabindex="-1" style="cursor:default;">
     </div>
     <div class="fieldRow">
       <label for="profileNotes">Intention</label>
@@ -596,64 +408,61 @@ canvas {
   </div>
 </section>
 
-<!-- ═══════ 72 NAMES ═══════ -->
+<!-- 72 NAMES -->
 <section id="screen-names" class="screen">
   <div class="panel">
-    <div class="panelHeader" style="margin-bottom:0">
+    <div class="panelHead">
       <div>
         <div class="panelTitle">72 Names</div>
-        <div class="panelSub" style="margin-top:3px;">Hebrew triplets built-in. Titles load from canonical paste.</div>
+        <div class="panelSub">Hebrew triplets built-in. Titles load from canonical paste in Settings.</div>
       </div>
-      <div id="canonBadge" class="badge warn">Titles: NOT LOADED</div>
+      <span id="canonBadge" class="badge warn">Titles: NOT LOADED</span>
     </div>
-
-    <div class="searchRow" style="margin-top:16px;">
-      <input id="n72Search" type="text" placeholder="Search by number, title, or Hebrew…" autocomplete="off" aria-label="Search names">
+    <div class="searchRow">
+      <input id="n72Search" type="text" placeholder="Search by number, title, or Hebrew…" autocomplete="off">
       <button id="btnClearSearch" class="btn">Clear</button>
     </div>
-
     <div class="list" id="n72List"></div>
     <div id="n72Detail" class="detail" style="display:none;"></div>
-
-    <div class="footHint">
-      If you see "(Title not loaded)", go to <strong>Settings → Canonical 72</strong> and paste your canonical data as JSON or CSV/TSV.
-    </div>
+    <div class="footHint">See "(Title not loaded)"? Go to <strong>Settings → Canonical 72</strong> and paste your JSON or CSV.</div>
   </div>
 </section>
 
-<!-- ═══════ ZOHAR ═══════ -->
+<!-- ZOHAR -->
 <section id="screen-zohar" class="screen">
   <div class="panel">
-    <div class="panelHeader">
+    <div class="panelHead">
       <div>
         <div class="panelTitle">Zohar Library</div>
-        <div class="panelSub" style="margin-top:3px;">Curated reference: topics, citations, your notes.</div>
+        <div class="panelSub">Curated reference: topics, citations, your notes. Focus seed: Atika Kadisha.</div>
       </div>
       <button id="btnZAdd" class="btn primary">+ Add</button>
     </div>
 
     <div class="searchRow">
-      <input id="zSearch" type="text" placeholder="Search topics, parsha, keywords…" autocomplete="off" aria-label="Search Zohar">
+      <input id="zSearch" type="text" placeholder="Search topics, parsha, keywords…" autocomplete="off">
       <button id="btnZClear" class="btn">Clear</button>
     </div>
 
-    <div id="zAddBox" class="detail" style="display:none; margin-top:14px;">
-      <div class="panelTitle" style="margin-bottom:12px;">New Entry</div>
-      <div class="fieldRow">
-        <label for="zTitle">Title</label>
-        <input id="zTitle" type="text" placeholder="Atika Kadisha: concealed root…">
-      </div>
-      <div class="fieldRow">
-        <label for="zCite">Citation</label>
-        <input id="zCite" type="text" placeholder="Zohar Terumah 165b | Vol/folio…">
-      </div>
-      <div class="fieldRow">
-        <label for="zNotes">Notes</label>
-        <textarea id="zNotes" placeholder="Your distilled takeaway, action, or meditation cue."></textarea>
-      </div>
-      <div class="btnRow">
-        <button id="btnZSave" class="btn good">Save Entry</button>
-        <button id="btnZCancel" class="btn">Cancel</button>
+    <div id="zAddBox" style="display:none;">
+      <div class="detail" style="margin-top:14px;">
+        <div class="panelTitle" style="margin-bottom:12px;">New Entry</div>
+        <div class="fieldRow" style="margin-top:0;">
+          <label for="zTitle">Title</label>
+          <input id="zTitle" type="text" placeholder="Atika Kadisha: concealed root…">
+        </div>
+        <div class="fieldRow">
+          <label for="zCite">Citation</label>
+          <input id="zCite" type="text" placeholder="Zohar Terumah 165b | Vol/folio…">
+        </div>
+        <div class="fieldRow">
+          <label for="zNotes">Notes</label>
+          <textarea id="zNotes" placeholder="Your distilled takeaway, action, or meditation cue."></textarea>
+        </div>
+        <div class="btnRow">
+          <button id="btnZSave" class="btn good">Save Entry</button>
+          <button id="btnZCancel" class="btn">Cancel</button>
+        </div>
       </div>
     </div>
 
@@ -662,18 +471,18 @@ canvas {
   </div>
 </section>
 
-<!-- ═══════ GEMATRIA ═══════ -->
+<!-- GEMATRIA -->
 <section id="screen-gematria" class="screen">
   <div class="panel">
     <div class="panelTitle">Gematria</div>
-    <div class="panelSub" style="margin-top:4px; margin-bottom:16px;">Type Hebrew. Get value instantly. Supports finals + Mispar Katan.</div>
+    <div class="panelSub">Type Hebrew. Get value instantly. Supports finals + Mispar Katan.</div>
 
     <div class="fieldRow" style="margin-top:0;">
       <label for="gInput">Hebrew Text</label>
-      <input id="gInput" type="text" placeholder="e.g., אֲתִּיקָא קַדִּישָׁא" style="font-size:20px; font-family:'Times New Roman',Georgia,serif; letter-spacing:.08em;" dir="rtl" autocomplete="off">
+      <input id="gInput" type="text" placeholder="אֲתִּיקָא קַדִּישָׁא" autocomplete="off" spellcheck="false" style="font-family:'Times New Roman',Georgia,serif;font-size:22px;letter-spacing:.06em;" dir="auto">
     </div>
 
-    <div class="gmRow" style="margin-top:14px;">
+    <div class="gmRow">
       <div class="gmBox" id="gmBoxVal">
         <div class="gmLabel">Value</div>
         <div id="gValue" class="gmNum">—</div>
@@ -683,8 +492,8 @@ canvas {
         <div id="gKatan" class="gmNum">—</div>
       </div>
       <div class="gmBox" id="gmBoxClean">
-        <div class="gmLabel">Clean</div>
-        <div id="gClean" class="gmNum" style="font-size:20px; font-family:'Times New Roman',serif;">—</div>
+        <div class="gmLabel">Stripped</div>
+        <div id="gClean" class="gmNum" style="font-family:'Times New Roman',serif;font-size:20px;">—</div>
       </div>
     </div>
 
@@ -699,14 +508,14 @@ canvas {
   </div>
 </section>
 
-<!-- ═══════ SHARE CARD ═══════ -->
+<!-- SHARE CARD -->
 <section id="screen-card" class="screen">
   <div class="panel">
     <div class="panelTitle">Share Card</div>
-    <div class="panelSub" style="margin-top:4px; margin-bottom:16px;">Export as JPEG. One-tap share.</div>
+    <div class="panelSub">Export as JPEG. One-tap share on iOS.</div>
     <div class="cardWrap">
       <canvas id="cardCanvas" width="1200" height="630"></canvas>
-      <div style="flex:1; min-width:240px;">
+      <div style="flex:1;min-width:240px;">
         <div class="fieldRow" style="margin-top:0;">
           <label for="cardTitle">Title</label>
           <input id="cardTitle" type="text" placeholder="Witness. Choose. Repeat. Illuminate.">
@@ -726,45 +535,42 @@ canvas {
   </div>
 </section>
 
-<!-- ═══════ SETTINGS ═══════ -->
+<!-- SETTINGS -->
 <section id="screen-settings" class="screen">
-
   <div class="panel">
     <div class="panelTitle">Gate</div>
-    <div class="panelSub" style="margin-top:4px;">Breath + rating screen on every open.</div>
-    <div class="btnRow" style="margin-top:12px;">
-      <button id="btnToggleGate" class="btn"></button>
+    <div class="panelSub">Opens a breath + rating screen each time you launch.</div>
+    <div class="btnRow" style="margin-top:10px;">
+      <button id="btnToggleGate" class="btn">Gate: ON</button>
       <button id="btnShowGateNow" class="btn">Preview Gate</button>
     </div>
   </div>
 
   <div class="panel">
     <div class="panelTitle">Canonical 72</div>
-    <div class="panelSub" style="margin-top:4px;">Paste titles + descriptions once. JSON or CSV/TSV accepted.</div>
-    <div class="tiny" style="margin-top:4px;">CSV columns: n, he, title, desc (header row optional)</div>
-
-    <div class="fieldRow">
+    <div class="panelSub">Paste your full 72 Names titles + descriptions once. JSON or CSV/TSV.</div>
+    <div class="tiny" style="margin-bottom:10px;">CSV columns: n, he, title, desc (header row optional)</div>
+    <div class="fieldRow" style="margin-top:0;">
       <label for="canonInput">Paste JSON or CSV/TSV</label>
-      <textarea id="canonInput" placeholder='JSON: [{"n":1,"he":"והו","title":"Time Travel","desc":"..."}, ...]
+      <textarea id="canonInput" placeholder='JSON: [{"n":1,"he":"והו","title":"Time Travel","desc":"How to fix the past"}, ...]
 ```
 
 CSV:
 n,he,title,desc
 1,והו,Time Travel,How to fix the past’></textarea>
 </div>
+<div class="btnRow">
+<button id="btnImportCanon" class="btn primary">Import</button>
+<button id="btnClearCanon" class="btn danger">Clear</button>
+</div>
+<div class="footHint">After import the badge in <strong>72 Names</strong> will flip to LOADED.</div>
+</div>
 
 ```
-    <div class="btnRow">
-      <button id="btnImportCanon" class="btn primary">Import</button>
-      <button id="btnClearCanon" class="btn danger">Clear Data</button>
-    </div>
-    <div class="footHint">After import, the badge in <strong>72 Names</strong> will flip to LOADED.</div>
-  </div>
-
   <div class="panel">
-    <div class="panelTitle">Data & Reset</div>
-    <div class="panelSub" style="margin-top:4px; margin-bottom:12px;">Hard reset clears all local data on this device.</div>
-    <div class="btnRow">
+    <div class="panelTitle">Data &amp; Reset</div>
+    <div class="panelSub" style="margin-bottom:10px;">Hard reset clears all local data on this device.</div>
+    <div class="btnRow" style="margin-top:0;">
       <button id="btnResetDaily" class="btn">Reset Today's Counters</button>
       <button id="btnResetAll" class="btn danger">Reset Everything</button>
     </div>
@@ -773,51 +579,51 @@ n,he,title,desc
   <div class="panel">
     <div class="panelTitle">Build</div>
     <div class="tiny" style="margin-top:4px;">Version: <span id="buildVersion"></span></div>
-    <div class="tiny">Tip: append ?v=KAI-2026-02-23c to force refresh.</div>
+    <div class="tiny">Tip: add ?v=KAI-2026-02-26 to URL to force refresh.</div>
   </div>
 </section>
 ```
 
-  </div>
+  </div><!-- /wrap -->
 
-  <!-- ═══════ GATE ═══════ -->
+  <!-- GATE OVERLAY -->
 
-  <div id="gate" class="gate" aria-modal="true" role="dialog" aria-label="Entry gate">
+  <div id="gate" class="gate" role="dialog" aria-modal="true" aria-label="Entry gate">
     <div class="gateCard">
       <div class="gateTitle">KAI</div>
       <div class="gateSub">Breathe. Rate. Enter.</div>
 
 ```
-  <div class="breathRing">
-    <div class="breathRingInner" id="breathRing">
+  <div class="breathWrap">
+    <div id="breathRing" class="breathRing exhale">
       <div id="breathPhase" class="breathPhase">Inhale</div>
       <div id="breathCount" class="breathCount">4</div>
     </div>
   </div>
 
   <div class="metricRow">
-    <div class="metricLabel">
-      <span class="metricLabel-name">Certainty</span>
-      <span class="metricLabel-val" id="gateCertVal">5</span>
+    <div class="metricLbl">
+      <span class="metricLbl-name">Certainty</span>
+      <span class="metricLbl-val" id="gateCertVal">5</span>
     </div>
     <div class="meter" id="gateCertMeter"></div>
-    <input id="gateCert" type="range" min="0" max="10" step="1" value="5" aria-label="Gate certainty">
+    <input id="gateCert" type="range" min="0" max="10" step="1" value="5">
   </div>
 
   <div class="metricRow">
-    <div class="metricLabel">
-      <span class="metricLabel-name">Energy</span>
-      <span class="metricLabel-val" id="gateEnergyVal">5</span>
+    <div class="metricLbl">
+      <span class="metricLbl-name">Energy</span>
+      <span class="metricLbl-val" id="gateEnergyVal">5</span>
     </div>
     <div class="meter" id="gateEnergyMeter"></div>
-    <input id="gateEnergy" type="range" min="0" max="10" step="1" value="5" aria-label="Gate energy">
+    <input id="gateEnergy" type="range" min="0" max="10" step="1" value="5">
   </div>
 
   <div class="btnRow" style="margin-top:18px;">
     <button id="btnEnter" class="btn primary" style="flex:1;">Enter KAI</button>
     <button id="btnGateSkip" class="btn">Skip</button>
   </div>
-  <div class="footHint" style="text-align:center; margin-top:12px;">A threshold, not a wall.</div>
+  <div class="footHint" style="text-align:center;margin-top:12px;">A threshold, not a wall.</div>
 </div>
 ```
 
@@ -826,42 +632,32 @@ n,he,title,desc
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
-(() => {
+(function() {
   "use strict";
-  const BUILD = "KAI-2026-02-23c";
+  var BUILD = "KAI-2026-02-26";
 
-  /* ── Error guards ── */
-  window.addEventListener("error", e => {
-    try { showErr("JS ERROR: " + (e?.message || "unknown") + "\n" + (e?.error?.stack || "")); } catch {}
+  // ── Global error catching ──
+  window.addEventListener("error", function(e) {
+    try { showErr("JS ERROR: " + (e.message || "unknown") + "\n" + ((e.error && e.error.stack) || "")); } catch(_) {}
   });
-  window.addEventListener("unhandledrejection", e => {
-    try { showErr("PROMISE ERROR: " + (e?.reason?.message || String(e?.reason || "unknown"))); } catch {}
+  window.addEventListener("unhandledrejection", function(e) {
+    try { showErr("PROMISE ERROR: " + ((e.reason && e.reason.message) || String(e.reason || "unknown"))); } catch(_) {}
   });
 
-  /* ── Storage keys ── */
-  const KEY = {
-    state:   "KAI_STATE_V3",
-    canon72: "KAI_CANON_72_V2",
-    zohar:   "KAI_ZOHAR_LIB_V1",
-    gemHist: "KAI_GEM_HIST_V1"
+  // ── Keys ──
+  var KEY = { state:"KAI_STATE_V3", canon72:"KAI_CANON_72_V2", zohar:"KAI_ZOHAR_LIB_V1", gemHist:"KAI_GEM_HIST_V1" };
+
+  var defaultState = {
+    ui:{ gateEnabled:true },
+    dayKey:"", pillars:0, cycles:0, certainty:5, energy:5,
+    profile:{ birthday:"", sign:"", notes:"" },
+    todayN:null, card:{ title:"", subtitle:"" }
   };
 
-  const defaultState = {
-    ui:       { gateEnabled: true },
-    dayKey:   "",
-    pillars:  0,
-    cycles:   0,
-    certainty: 5,
-    energy:   5,
-    profile:  { birthday: "", sign: "", notes: "" },
-    todayN:   null,
-    card:     { title: "", subtitle: "" }
-  };
+  var state = deepClone(defaultState);
 
-  let state = structuredClone(defaultState);
-
-  /* ── 72 Names base data ── */
-  const N72_BASE = [
+  // ── N72 Base ──
+  var N72_BASE = [
     {n:1,he:"והו"},{n:2,he:"ילי"},{n:3,he:"סיט"},{n:4,he:"עלם"},{n:5,he:"מהש"},{n:6,he:"ללה"},
     {n:7,he:"אכא"},{n:8,he:"כהת"},{n:9,he:"הזי"},{n:10,he:"אלד"},{n:11,he:"לאו"},{n:12,he:"ההע"},
     {n:13,he:"יזל"},{n:14,he:"מבה"},{n:15,he:"הרי"},{n:16,he:"הקם"},{n:17,he:"לאו"},{n:18,he:"כלא"},
@@ -873,195 +669,186 @@ n,he,title,desc
     {n:49,he:"והו"},{n:50,he:"דני"},{n:51,he:"החש"},{n:52,he:"עמם"},{n:53,he:"ננא"},{n:54,he:"נית"},
     {n:55,he:"מבה"},{n:56,he:"פוי"},{n:57,he:"נמב"},{n:58,he:"ייל"},{n:59,he:"הרח"},{n:60,he:"מצר"},
     {n:61,he:"ומב"},{n:62,he:"יהה"},{n:63,he:"ענו"},{n:64,he:"מחי"},{n:65,he:"דמב"},{n:66,he:"מנק"},
-    {n:67,he:"איע"},{n:68,he:"וחו"},{n:69,he:"ראה"},{n:70,he:"יבמ"},{n:71,he:"היי"},{n:72,he:"מום"},
+    {n:67,he:"איע"},{n:68,he:"וחו"},{n:69,he:"ראה"},{n:70,he:"יבמ"},{n:71,he:"היי"},{n:72,he:"מום"}
   ];
 
-  /* ── Seeded Zohar library ── */
-  const Z_SEED = [
-    { id: uid(), title: "Atika Kadisha (General)", cite: "Zohar (Atika/Arich Anpin thematic index)", notes: "Anchor folder for Atika. Add precise citations you trust." },
-    { id: uid(), title: "Terumah: Mishkan as Living Architecture", cite: "Zohar Terumah (add folio once verified)", notes: "Mishkan is not history: it is the present-tense construction of self." },
-    { id: uid(), title: "Concealed of the Concealed", cite: "Atika Kadisha motif (verify volume/folio)", notes: "Work: humility + restriction. The root is hidden but its effects are concrete." }
+  var Z_SEED = [
+    {id:uid(),title:"Atika Kadisha (General)",cite:"Zohar (Atika/Arich Anpin thematic index)",notes:"Anchor folder for Atika. Add precise citations you trust."},
+    {id:uid(),title:"Terumah: Mishkan as Living Architecture",cite:"Zohar Terumah (add folio once verified)",notes:"Mishkan is not history: it is the present-tense construction of self."},
+    {id:uid(),title:"Concealed of the Concealed",cite:"Atika Kadisha motif (verify volume/folio)",notes:"Work: humility + restriction. Root is hidden but effects are concrete."}
   ];
 
-  /* ── Helpers ── */
-  const $ = id => document.getElementById(id);
+  // ── Tiny utilities ──
+  function ge(id) { return document.getElementById(id); }
   function uid() { return Math.random().toString(16).slice(2) + "-" + Date.now().toString(16); }
-  function escHtml(s) {
-    return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+  function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
+  function clamp(v,lo,hi) { return Math.min(hi, Math.max(lo, v)); }
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
-  function shorten(s, n) { const t = String(s ?? ""); return t.length <= n ? t : t.slice(0, n-1) + "…"; }
-  function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+  function shorten(s,n) { var t=String(s==null?"":s); return t.length<=n?t:t.slice(0,n-1)+"…"; }
 
-  let _toastTimer;
-  function toast(msg, duration = 2200) {
-    const t = $("toast"); if (!t) return;
-    t.textContent = msg; t.style.display = "block"; t.style.animation = "none";
-    requestAnimationFrame(() => { t.style.animation = "toastIn .25s"; });
-    clearTimeout(_toastTimer);
-    _toastTimer = setTimeout(() => { t.style.display = "none"; }, duration);
+  var _toastTm;
+  function toast(msg) {
+    var t = ge("toast"); if(!t) return;
+    t.textContent = msg; t.style.display = "block";
+    clearTimeout(_toastTm);
+    _toastTm = setTimeout(function(){ t.style.display="none"; }, 2400);
   }
-  function showErr(msg) {
-    const el = $("err"); if (!el) return;
-    el.style.display = "block"; el.textContent = msg;
-  }
-  function clearErr() {
-    const el = $("err"); if (!el) return;
-    el.style.display = "none"; el.textContent = "";
-  }
+  function showErr(msg) { var e=ge("err"); if(!e) return; e.style.display="block"; e.textContent=msg; }
+  function clearErr() { var e=ge("err"); if(!e) return; e.style.display="none"; e.textContent=""; }
 
   function todayKey() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    var d=new Date();
+    return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
   }
+  function pad(n){ return n<10?"0"+n:String(n); }
 
-  /* ── Meter visual ── */
-  function buildMeter(containerId, value, max = 10) {
-    const el = $(containerId); if (!el) return;
+  // ── Meter ──
+  function buildMeter(id, val, max) {
+    max = max || 10;
+    var el = ge(id); if(!el) return;
     el.innerHTML = "";
-    for (let i = 1; i <= max; i++) {
-      const seg = document.createElement("div");
-      seg.className = "meter-seg" + (i <= value ? " lit" + (value <= 3 ? " low" : value >= 8 ? " high" : "") : "");
+    for(var i=1;i<=max;i++){
+      var seg = document.createElement("div");
+      var cls = "m-seg";
+      if(i<=val) cls += " lit" + (val<=3?" lo":val>=8?" hi":"");
+      seg.className = cls;
       el.appendChild(seg);
     }
   }
 
-  /* ── Ripple effect ── */
-  function addRipple(btn) {
-    btn.addEventListener("click", e => {
-      const r = document.createElement("span");
-      r.className = "ripple";
-      const rect = btn.getBoundingClientRect();
-      r.style.left = (e.clientX - rect.left) + "px";
-      r.style.top  = (e.clientY - rect.top) + "px";
-      btn.appendChild(r);
-      setTimeout(() => r.remove(), 600);
-    });
-  }
-
-  /* ── State ── */
-  function mergeDefaults(obj, defs) {
-    const out = structuredClone(defs);
-    const assign = (src, dst) => {
-      for (const k of Object.keys(src ?? {})) {
-        if (src[k] && typeof src[k] === "object" && !Array.isArray(src[k])) {
-          dst[k] = dst[k] && typeof dst[k] === "object" ? dst[k] : {};
-          assign(src[k], dst[k]);
-        } else dst[k] = src[k];
+  // ── State persistence ──
+  function mergeObj(src, dst) {
+    // deep merge src into dst
+    var out = deepClone(dst);
+    function assign(s, d) {
+      var k;
+      for(k in s){
+        if(!Object.prototype.hasOwnProperty.call(s,k)) continue;
+        if(s[k] && typeof s[k]==="object" && !Array.isArray(s[k])){
+          d[k] = (d[k] && typeof d[k]==="object") ? d[k] : {};
+          assign(s[k], d[k]);
+        } else d[k] = s[k];
       }
-    };
-    assign(obj, out); return out;
+    }
+    assign(src, out); return out;
   }
   function loadState() {
-    try { const raw = localStorage.getItem(KEY.state); return raw ? mergeDefaults(JSON.parse(raw), defaultState) : structuredClone(defaultState); }
-    catch { return structuredClone(defaultState); }
+    try {
+      var raw = localStorage.getItem(KEY.state);
+      if(!raw) return deepClone(defaultState);
+      return mergeObj(JSON.parse(raw), defaultState);
+    } catch(e) { return deepClone(defaultState); }
   }
-  function saveState() { try { localStorage.setItem(KEY.state, JSON.stringify(state)); } catch {} }
+  function saveState() { try{ localStorage.setItem(KEY.state, JSON.stringify(state)); }catch(_){} }
 
   function ensureDailyReset() {
-    const tk = todayKey();
-    if (state.dayKey !== tk) {
-      state.dayKey = tk; state.pillars = 0; state.cycles = 0; state.todayN = null; saveState();
+    var tk = todayKey();
+    if(state.dayKey !== tk){
+      state.dayKey=tk; state.pillars=0; state.cycles=0; state.todayN=null; saveState();
     }
   }
 
-  /* ── Zodiac ── */
-  function zodiacFromYMD(ymd) {
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((ymd ?? "").trim());
-    if (!m) return "";
-    const mo = parseInt(m[2], 10), dy = parseInt(m[3], 10);
-    if ((mo===3&&dy>=21)||(mo===4&&dy<=19)) return "Aries ♈";
-    if ((mo===4&&dy>=20)||(mo===5&&dy<=20)) return "Taurus ♉";
-    if ((mo===5&&dy>=21)||(mo===6&&dy<=20)) return "Gemini ♊";
-    if ((mo===6&&dy>=21)||(mo===7&&dy<=22)) return "Cancer ♋";
-    if ((mo===7&&dy>=23)||(mo===8&&dy<=22)) return "Leo ♌";
-    if ((mo===8&&dy>=23)||(mo===9&&dy<=22)) return "Virgo ♍";
-    if ((mo===9&&dy>=23)||(mo===10&&dy<=22)) return "Libra ♎";
-    if ((mo===10&&dy>=23)||(mo===11&&dy<=21)) return "Scorpio ♏";
-    if ((mo===11&&dy>=22)||(mo===12&&dy<=21)) return "Sagittarius ♐";
-    if ((mo===12&&dy>=22)||(mo===1&&dy<=19)) return "Capricorn ♑";
-    if ((mo===1&&dy>=20)||(mo===2&&dy<=18)) return "Aquarius ♒";
-    if ((mo===2&&dy>=19)||(mo===3&&dy<=20)) return "Pisces ♓";
+  // ── Zodiac ──
+  function zodiac(ymd) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd||"").trim());
+    if(!m) return "";
+    var mo=parseInt(m[2],10), dy=parseInt(m[3],10);
+    if((mo===3&&dy>=21)||(mo===4&&dy<=19)) return "Aries ♈";
+    if((mo===4&&dy>=20)||(mo===5&&dy<=20)) return "Taurus ♉";
+    if((mo===5&&dy>=21)||(mo===6&&dy<=20)) return "Gemini ♊";
+    if((mo===6&&dy>=21)||(mo===7&&dy<=22)) return "Cancer ♋";
+    if((mo===7&&dy>=23)||(mo===8&&dy<=22)) return "Leo ♌";
+    if((mo===8&&dy>=23)||(mo===9&&dy<=22)) return "Virgo ♍";
+    if((mo===9&&dy>=23)||(mo===10&&dy<=22)) return "Libra ♎";
+    if((mo===10&&dy>=23)||(mo===11&&dy<=21)) return "Scorpio ♏";
+    if((mo===11&&dy>=22)||(mo===12&&dy<=21)) return "Sagittarius ♐";
+    if((mo===12&&dy>=22)||(mo===1&&dy<=19)) return "Capricorn ♑";
+    if((mo===1&&dy>=20)||(mo===2&&dy<=18)) return "Aquarius ♒";
+    if((mo===2&&dy>=19)||(mo===3&&dy<=20)) return "Pisces ♓";
     return "";
   }
 
-  /* ── Canon 72 ── */
-  function loadCanon72Map() {
+  // ── Canon 72 ──
+  function loadCanonMap() {
     try {
-      const raw = localStorage.getItem(KEY.canon72); if (!raw) return null;
-      const arr = JSON.parse(raw); if (!Array.isArray(arr)) return null;
-      const map = new Map();
-      for (const it of arr) {
-        const n = Number(it?.n);
-        if (!n || n < 1 || n > 72) continue;
-        map.set(n, { n, he: String(it?.he ?? "").trim(), title: String(it?.title ?? "").trim(), desc: String(it?.desc ?? "").trim() });
+      var raw = localStorage.getItem(KEY.canon72); if(!raw) return null;
+      var arr = JSON.parse(raw); if(!Array.isArray(arr)) return null;
+      var map = {};
+      for(var i=0;i<arr.length;i++){
+        var n=Number(arr[i].n);
+        if(!n||n<1||n>72) continue;
+        map[n]={n:n,he:String(arr[i].he||"").trim(),title:String(arr[i].title||"").trim(),desc:String(arr[i].desc||"").trim()};
       }
-      return map.size >= 60 ? map : null;
-    } catch { return null; }
+      var cnt=0; for(var k in map) cnt++;
+      return cnt>=60 ? map : null;
+    } catch(e){ return null; }
   }
 
-  function normalizeCanonAndSave(items) {
-    const out = [];
-    for (const it of items) {
-      const n = Number(it?.n);
-      if (!n || n < 1 || n > 72) continue;
-      out.push({ n, he: String(it?.he ?? "").trim(), title: String(it?.title ?? "").trim(), desc: String(it?.desc ?? "").trim() });
+  function normalizeAndSaveCanon(items) {
+    var out=[];
+    for(var i=0;i<items.length;i++){
+      var n=Number(items[i].n);
+      if(!n||n<1||n>72) continue;
+      out.push({n:n,he:String(items[i].he||"").trim(),title:String(items[i].title||"").trim(),desc:String(items[i].desc||"").trim()});
     }
-    const validCount = out.filter(x => x.title && x.desc).length;
-    if (out.length < 60 || validCount < 60) throw new Error(`Import looks incomplete. Got ${out.length} rows, ${validCount} with title+desc. Need ~72.`);
+    var valid=0;
+    for(var j=0;j<out.length;j++) if(out[j].title&&out[j].desc) valid++;
+    if(out.length<60||valid<60) throw new Error("Import incomplete: "+out.length+" rows, "+valid+" with title+desc. Need ~72.");
     localStorage.setItem(KEY.canon72, JSON.stringify(out));
   }
 
-  function parseCSVorTSV(text) {
-    const s = String(text ?? "").trim(); if (!s) return [];
-    const delim = s.includes("\t") ? "\t" : ",";
-    const lines = s.split(/\r?\n/).filter(Boolean);
-    const split = line => {
-      const out = []; let cur = "", inQ = false;
-      for (let i = 0; i < line.length; i++) {
-        const ch = line[i];
-        if (ch === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
-        else if (ch === delim && !inQ) { out.push(cur); cur = ""; }
-        else cur += ch;
+  function parseCSV(text) {
+    var s=String(text||"").trim(); if(!s) return [];
+    var delim=s.indexOf("\t")>=0?"\t":",";
+    var lines=s.split(/\r?\n/).filter(Boolean);
+    function splitLine(line){
+      var out=[],cur="",inQ=false;
+      for(var i=0;i<line.length;i++){
+        var ch=line[i];
+        if(ch==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+        else if(ch===delim&&!inQ){out.push(cur.trim());cur="";}
+        else cur+=ch;
       }
-      out.push(cur);
-      return out.map(x => x.trim());
-    };
-    const header = split(lines[0]).map(h => h.toLowerCase());
-    const hasHeader = header.includes("n") || header.includes("title") || header.includes("desc");
-    let start = 0, idxN = 0, idxHe = 1, idxTitle = 2, idxDesc = 3;
-    if (hasHeader) {
-      idxN = Math.max(0, header.indexOf("n"));
-      idxHe = header.indexOf("he") >= 0 ? header.indexOf("he") : 1;
-      idxTitle = header.indexOf("title") >= 0 ? header.indexOf("title") : 2;
-      idxDesc = header.indexOf("desc") >= 0 ? header.indexOf("desc") : 3;
-      start = 1;
+      out.push(cur.trim()); return out;
     }
-    const items = [];
-    for (let i = start; i < lines.length; i++) {
-      const cols = split(lines[i]);
-      if (!cols[idxN]) continue;
-      items.push({ n: cols[idxN], he: cols[idxHe], title: cols[idxTitle], desc: cols[idxDesc] });
+    var hdr=splitLine(lines[0]).map(function(h){return h.toLowerCase();});
+    var hasHdr=hdr.indexOf("n")>=0||hdr.indexOf("title")>=0||hdr.indexOf("desc")>=0;
+    var iN=0,iHe=1,iTitle=2,iDesc=3,start=0;
+    if(hasHdr){
+      iN=hdr.indexOf("n")>=0?hdr.indexOf("n"):0;
+      iHe=hdr.indexOf("he")>=0?hdr.indexOf("he"):1;
+      iTitle=hdr.indexOf("title")>=0?hdr.indexOf("title"):2;
+      iDesc=hdr.indexOf("desc")>=0?hdr.indexOf("desc"):3;
+      start=1;
+    }
+    var items=[];
+    for(var i=start;i<lines.length;i++){
+      var cols=splitLine(lines[i]);
+      if(!cols[iN]) continue;
+      items.push({n:cols[iN],he:cols[iHe],title:cols[iTitle],desc:cols[iDesc]});
     }
     return items;
   }
 
   function importCanon() {
     clearErr();
-    const txt = ($("canonInput")?.value ?? "").trim();
-    if (!txt) { toast("Paste JSON or CSV/TSV first."); return; }
+    var txt = String((ge("canonInput")||{}).value||"").trim();
+    if(!txt){ toast("Paste JSON or CSV/TSV first."); return; }
     try {
-      let items;
-      if (/^\s*\[/.test(txt)) {
-        const parsed = JSON.parse(txt);
-        if (!Array.isArray(parsed)) throw new Error("JSON must be an array of objects.");
-        items = parsed;
-      } else {
-        items = parseCSVorTSV(txt);
-      }
-      normalizeCanonAndSave(items);
+      var items;
+      if(/^\s*\[/.test(txt)){
+        var parsed=JSON.parse(txt);
+        if(!Array.isArray(parsed)) throw new Error("JSON must be an array.");
+        items=parsed;
+      } else items=parseCSV(txt);
+      normalizeAndSaveCanon(items);
       toast("✓ Canonical 72 imported.");
       updateCanonBadge(); render72(); renderTodayBox(); renderCard();
-    } catch (e) { showErr("IMPORT ERROR: " + (e?.message ?? String(e))); }
+    } catch(e){ showErr("IMPORT ERROR: "+(e.message||String(e))); }
   }
 
   function clearCanon() {
@@ -1070,626 +857,582 @@ n,he,title,desc
   }
 
   function updateCanonBadge() {
-    const b = $("canonBadge"); if (!b) return;
-    const loaded = !!loadCanon72Map();
-    b.className = "badge" + (loaded ? " ok" : " warn");
-    b.textContent = loaded ? "Titles: LOADED" : "Titles: NOT LOADED";
+    var b=ge("canonBadge"); if(!b) return;
+    var ok=!!loadCanonMap();
+    b.className="badge "+(ok?"ok":"warn");
+    b.textContent=ok?"Titles: LOADED":"Titles: NOT LOADED";
   }
 
   function get72Merged() {
-    const canon = loadCanon72Map();
-    return N72_BASE.map(base => {
-      const c = canon?.get(base.n);
-      return { n: base.n, he: (c?.he?.length ? c.he : base.he), title: c?.title || "(Title not loaded)", desc: c?.desc || "Load canonical titles in Settings." };
+    var canon=loadCanonMap();
+    return N72_BASE.map(function(base){
+      var c=canon?canon[base.n]:null;
+      return {
+        n:base.n,
+        he:(c&&c.he&&c.he.length)?c.he:base.he,
+        title:(c&&c.title)?c.title:"(Title not loaded)",
+        desc:(c&&c.desc)?c.desc:"Load canonical titles in Settings."
+      };
     });
   }
 
-  /* ── Zohar ── */
+  // ── Zohar ──
   function loadZohar() {
-    try {
-      const raw = localStorage.getItem(KEY.zohar);
-      if (!raw) { localStorage.setItem(KEY.zohar, JSON.stringify(Z_SEED)); return structuredClone(Z_SEED); }
-      const arr = JSON.parse(raw);
-      return Array.isArray(arr) ? arr : structuredClone(Z_SEED);
-    } catch { localStorage.setItem(KEY.zohar, JSON.stringify(Z_SEED)); return structuredClone(Z_SEED); }
+    try{
+      var raw=localStorage.getItem(KEY.zohar);
+      if(!raw){localStorage.setItem(KEY.zohar,JSON.stringify(Z_SEED));return deepClone(Z_SEED);}
+      var arr=JSON.parse(raw);
+      return Array.isArray(arr)?arr:deepClone(Z_SEED);
+    }catch(_){localStorage.setItem(KEY.zohar,JSON.stringify(Z_SEED));return deepClone(Z_SEED);}
   }
-  function saveZohar(list) { try { localStorage.setItem(KEY.zohar, JSON.stringify(list)); } catch {} }
+  function saveZohar(list){try{localStorage.setItem(KEY.zohar,JSON.stringify(list));}catch(_){}}
 
   function renderZohar() {
-    const listEl = $("zList"); if (!listEl) return;
-    const q = ($("zSearch")?.value ?? "").trim().toLowerCase();
-    const lib = loadZohar();
-    const filtered = lib.filter(it => !q || [it.title, it.cite, it.notes].some(f => (f ?? "").toLowerCase().includes(q)));
-
-    listEl.innerHTML = "";
-    if (!filtered.length) {
-      listEl.innerHTML = '<div class="item-empty">No matching entries.</div>'; return;
-    }
-    for (const it of filtered) {
-      const row = document.createElement("div"); row.className = "item";
-      row.innerHTML = `<div class="hebrew">זוהר</div>
-        <div class="itemMain">
-          <div class="itemTitle">${escHtml(it.title ?? "")}</div>
-          <div class="itemSub">${escHtml(shorten(it.cite ?? "", 80))}</div>
-        </div>`;
-      row.addEventListener("click", () => showZoharDetail(it.id));
+    var listEl=ge("zList"); if(!listEl) return;
+    var q=String((ge("zSearch")||{}).value||"").trim().toLowerCase();
+    var lib=loadZohar();
+    var filtered=lib.filter(function(it){
+      if(!q) return true;
+      return [it.title,it.cite,it.notes].some(function(f){return String(f||"").toLowerCase().indexOf(q)>=0;});
+    });
+    listEl.innerHTML="";
+    if(!filtered.length){listEl.innerHTML='<div class="item-empty">No matching entries.</div>';return;}
+    filtered.forEach(function(it){
+      var row=document.createElement("div"); row.className="item";
+      row.innerHTML='<div class="hebrew">זוהר</div><div class="itemMain"><div class="itemTitle">'+esc(it.title||"")+'</div><div class="itemSub">'+esc(shorten(it.cite||"",80))+'</div></div>';
+      row.addEventListener("click",function(){showZoharDetail(it.id);});
       listEl.appendChild(row);
-    }
+    });
   }
 
   function showZoharDetail(id) {
-    const detailEl = $("zDetail"); if (!detailEl) return;
-    const lib = loadZohar(); const it = lib.find(x => x.id === id); if (!it) return;
-    detailEl.style.display = "block";
-    detailEl.innerHTML = `
-      <div class="detailTop">
-        <div class="big">זוהר</div>
-        <div class="meta">${escHtml(it.cite ?? "")}</div>
-      </div>
-      <div class="detailTitle">${escHtml(it.title ?? "")}</div>
-      <div class="detailDesc">${escHtml(it.notes ?? "")}</div>
-      <div class="btnRow" style="margin-top:14px;">
-        <button class="btn danger" id="btnZDelete">Delete</button>
-        <button class="btn" id="btnZClose">Close</button>
-      </div>`;
-    $("btnZDelete")?.addEventListener("click", () => {
-      if (!confirm("Delete this entry?")) return;
-      saveZohar(lib.filter(x => x.id !== id));
-      detailEl.style.display = "none"; detailEl.innerHTML = "";
-      toast("Deleted."); renderZohar();
+    var el=ge("zDetail"); if(!el) return;
+    var lib=loadZohar(); var it=null;
+    for(var i=0;i<lib.length;i++) if(lib[i].id===id){it=lib[i];break;}
+    if(!it) return;
+    el.style.display="block";
+    el.innerHTML='<div class="detailTop"><div class="big">זוהר</div><div class="meta">'+esc(it.cite||"")+'</div></div>'
+      +'<div class="detailTitle">'+esc(it.title||"")+'</div>'
+      +'<div class="detailDesc">'+esc(it.notes||"")+'</div>'
+      +'<div class="btnRow" style="margin-top:14px;"><button class="btn danger" id="btnZDel">Delete</button><button class="btn" id="btnZClose">Close</button></div>';
+    ge("btnZDel").addEventListener("click",function(){
+      if(!confirm("Delete this entry?")) return;
+      saveZohar(lib.filter(function(x){return x.id!==id;}));
+      el.style.display="none"; el.innerHTML=""; toast("Deleted."); renderZohar();
     });
-    $("btnZClose")?.addEventListener("click", () => { detailEl.style.display = "none"; detailEl.innerHTML = ""; });
-    detailEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    ge("btnZClose").addEventListener("click",function(){ el.style.display="none"; el.innerHTML=""; });
+    el.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
 
   function toggleZAdd(show) {
-    const box = $("zAddBox"); if (!box) return;
-    box.style.display = show ? "block" : "none";
-    if (show) $("zTitle")?.focus();
+    var box=ge("zAddBox"); if(!box) return;
+    box.style.display=show?"block":"none";
+    if(show){ var f=ge("zTitle"); if(f) f.focus(); }
   }
 
   function saveZAdd() {
-    const title = ($("zTitle")?.value ?? "").trim();
-    const cite  = ($("zCite")?.value ?? "").trim();
-    const notes = ($("zNotes")?.value ?? "").trim();
-    if (!title || !cite) { toast("Title + Citation required."); return; }
-    const lib = loadZohar();
-    lib.unshift({ id: uid(), title, cite, notes });
+    var title=String((ge("zTitle")||{}).value||"").trim();
+    var cite=String((ge("zCite")||{}).value||"").trim();
+    var notes=String((ge("zNotes")||{}).value||"").trim();
+    if(!title||!cite){toast("Title + Citation required.");return;}
+    var lib=loadZohar();
+    lib.unshift({id:uid(),title:title,cite:cite,notes:notes});
     saveZohar(lib);
-    ["zTitle","zCite","zNotes"].forEach(id => { const el = $(id); if(el) el.value = ""; });
+    ["zTitle","zCite","zNotes"].forEach(function(id){var el=ge(id);if(el)el.value="";});
     toggleZAdd(false); toast("✓ Saved."); renderZohar();
   }
 
-  /* ── Gematria ── */
-  const GEM = {
+  // ── Gematria ──
+  var GEM={
     "א":1,"ב":2,"ג":3,"ד":4,"ה":5,"ו":6,"ז":7,"ח":8,"ט":9,
     "י":10,"כ":20,"ך":20,"ל":30,"מ":40,"ם":40,"נ":50,"ן":50,"ס":60,
     "ע":70,"פ":80,"ף":80,"צ":90,"ץ":90,"ק":100,"ר":200,"ש":300,"ת":400
   };
-
-  function stripNiqqud(s) {
-    return String(s ?? "").replace(/[\u0591-\u05BD\u05BF-\u05C7]/g, "").replace(/[^\u05D0-\u05EAךםןףץ]/g, "");
+  function stripNiqqud(s){
+    return String(s||"").replace(/[\u0591-\u05BD\u05BF-\u05C7]/g,"").replace(/[^\u05D0-\u05EA\u05DA\u05DD\u05DF\u05E3\u05E5]/g,"");
   }
-  function gematriaValue(raw) {
-    const s = stripNiqqud(raw); let sum = 0;
-    for (const ch of s) sum += (GEM[ch] ?? 0);
+  function gemVal(raw){
+    var s=stripNiqqud(raw),sum=0;
+    for(var i=0;i<s.length;i++) sum+=(GEM[s[i]]||0);
     return sum;
   }
-  function misparKatan(n) {
-    let x = Math.abs(Number(n) ?? 0);
-    while (x >= 10) { let s = 0; for (const d of String(x)) s += +d; x = s; }
+  function misparKatan(n){
+    var x=Math.abs(Number(n)||0);
+    while(x>=10){var s=0;var st=String(x);for(var i=0;i<st.length;i++)s+=parseInt(st[i],10);x=s;}
     return x;
   }
+  var KNOWN_GM={26:"YHVH (יהוה)",72:"The 72 Names",86:"Elohim (אלהים)",314:"Shaddai (שדי)",358:"Mashiach / Nachash",613:"613 Commandments",32:"32 Paths of Wisdom",22:"22 Letters",10:"10 Sephiroth"};
 
-  /* Famous gematria equivalences (small lookup) */
-  const KNOWN_GM = {
-    26: "YHVH (יהוה)", 72: "Chesed / The 72 Names", 26: "YHVH", 86: "Elohim (אלהים)",
-    314: "Shaddai (שדי)", 358: "Mashiach (משיח) / Nachash (נחש)", 613: "613 Commandments",
-    777: "OTz ChIIM (עץ חיים)", 32: "32 Paths of Wisdom", 10: "Sephiroth", 22: "22 Letters"
-  };
-  function getEquiv(val) { return KNOWN_GM[val] ?? null; }
-
-  function loadGemHist() {
-    try { const raw = localStorage.getItem(KEY.gemHist); const arr = raw ? JSON.parse(raw) : []; return Array.isArray(arr) ? arr : []; }
-    catch { return []; }
+  function updateGemLive(){
+    var inp=ge("gInput"); if(!inp) return;
+    var raw=inp.value||"";
+    var val=gemVal(raw);
+    var kat=misparKatan(val);
+    var clean=stripNiqqud(raw);
+    var hasV=val>0;
+    ge("gValue").textContent=hasV?String(val):"—";
+    ge("gKatan").textContent=hasV?String(kat):"—";
+    ge("gClean").textContent=clean||"—";
+    ge("gmBoxVal").className="gmBox"+(hasV?" lit":"");
+    ge("gmBoxKatan").className="gmBox"+(hasV?" lit":"");
+    ge("gmBoxClean").className="gmBox"+(clean?" lit":"");
+    var eb=ge("equivBox");
+    var eq=hasV?KNOWN_GM[val]:null;
+    if(eb){eb.className="equivBox"+(eq?" show":"");if(eq)eb.textContent="✦  "+val+" = "+eq;}
   }
-  function saveGemHist(arr) { try { localStorage.setItem(KEY.gemHist, JSON.stringify(arr)); } catch {} }
 
-  function renderGemHist() {
-    const el = $("gHist"); if (!el) return;
-    const hist = loadGemHist();
-    el.innerHTML = "";
-    if (!hist.length) { el.innerHTML = '<div class="item-empty">No history yet. Save a phrase.</div>'; return; }
-    for (const it of hist) {
-      const row = document.createElement("div"); row.className = "item";
-      row.innerHTML = `
-        <div class="hebrew" style="font-size:18px;">${escHtml(it.clean || "")}</div>
-        <div class="itemMain">
-          <div class="itemTitle">${escHtml(it.raw || "")}</div>
-          <div class="itemSub">Value: ${it.value} · Katan: ${it.katan}${it.equiv ? " · " + escHtml(it.equiv) : ""}</div>
-        </div>`;
+  function loadGemHist(){try{var r=localStorage.getItem(KEY.gemHist);var a=r?JSON.parse(r):[];return Array.isArray(a)?a:[];}catch(_){return[];}}
+  function saveGemHist(a){try{localStorage.setItem(KEY.gemHist,JSON.stringify(a));}catch(_){}}
+
+  function renderGemHist(){
+    var el=ge("gHist"); if(!el) return;
+    var hist=loadGemHist();
+    el.innerHTML="";
+    if(!hist.length){el.innerHTML='<div class="item-empty">No history yet. Save a phrase.</div>';return;}
+    hist.forEach(function(it){
+      var row=document.createElement("div"); row.className="item";
+      row.innerHTML='<div class="hebrew" style="font-size:18px;">'+esc(it.clean||"")+'</div>'
+        +'<div class="itemMain"><div class="itemTitle">'+esc(it.raw||"")+'</div>'
+        +'<div class="itemSub">Value: '+it.value+' · Katan: '+it.katan+(it.equiv?" · "+esc(it.equiv):"")+'</div></div>';
       el.appendChild(row);
-    }
+    });
   }
 
-  function updateGematriaLive() {
-    const input = $("gInput"); if (!input) return;
-    const raw = input.value ?? "";
-    const val = gematriaValue(raw);
-    const kat = misparKatan(val);
-    const clean = stripNiqqud(raw);
-    const hasVal = val > 0;
-    $("gValue").textContent = hasVal ? String(val) : "—";
-    $("gKatan").textContent = hasVal ? String(kat) : "—";
-    $("gClean").textContent = clean || "—";
-    $("gmBoxVal").classList.toggle("has-value", hasVal);
-    $("gmBoxKatan").classList.toggle("has-value", hasVal);
-    $("gmBoxClean").classList.toggle("has-value", !!clean);
-    const equivBox = $("equivBox");
-    const equiv = hasVal ? getEquiv(val) : null;
-    if (equivBox) {
-      if (equiv) { equivBox.className = "equivBox show"; equivBox.textContent = `✦ ${val} = ${equiv}`; }
-      else { equivBox.className = "equivBox"; }
-    }
+  // ── Chips ──
+  function updateChips(){
+    function set(id,v){var e=ge(id);if(e)e.textContent=String(v);}
+    set("pillarsChip",state.pillars||0);
+    set("cyclesChip",state.cycles||0);
+    set("certaintyChip",state.certainty||5);
+    set("energyChip",state.energy||5);
+    var pf=ge("pillarsFill"); if(pf) pf.style.width=((state.pillars||0)/100*100)+"%";
+    var cv=ge("certaintyVal"); if(cv) cv.textContent=String(state.certainty||5);
+    var ev=ge("energyVal"); if(ev) ev.textContent=String(state.energy||5);
+    buildMeter("certaintyMeter",state.certainty||5);
+    buildMeter("energyMeter",state.energy||5);
   }
 
-  /* ── Chips / UI state ── */
-  function updateChips() {
-    const set = (id, val) => { const e = $(id); if (e) e.textContent = String(val); };
-    set("pillarsChip", state.pillars ?? 0);
-    set("cyclesChip", state.cycles ?? 0);
-    set("certaintyChip", state.certainty ?? 5);
-    set("energyChip", state.energy ?? 5);
-    const pp = $("pillarsProg");
-    if (pp) pp.style.width = ((state.pillars ?? 0) / 100 * 100) + "%";
-    const cv = $("certaintyVal"); if (cv) cv.textContent = String(state.certainty ?? 5);
-    const ev = $("energyVal"); if (ev) ev.textContent = String(state.energy ?? 5);
-    buildMeter("certaintyMeter", state.certainty ?? 5);
-    buildMeter("energyMeter", state.energy ?? 5);
+  function setActiveScreen(name){
+    ["home","names","zohar","gematria","card","settings"].forEach(function(s){
+      var el=ge("screen-"+s); if(el) el.classList.toggle("active",s===name);
+    });
+    document.querySelectorAll(".tabBtn").forEach(function(b){
+      b.classList.toggle("active",b.getAttribute("data-screen")===name);
+    });
+    if(name==="card") renderCard();
+    if(name==="zohar") renderZohar();
+    if(name==="gematria"){updateGemLive();renderGemHist();}
+    if(name==="names") render72();
   }
 
-  function setActiveScreen(name) {
-    const screens = ["home","names","zohar","gematria","card","settings"];
-    for (const s of screens) {
-      const el = $("screen-" + s); if (el) el.classList.toggle("active", s === name);
-    }
-    for (const b of document.querySelectorAll(".tabBtn")) {
-      b.classList.toggle("active", b.getAttribute("data-screen") === name);
-    }
-    if (name === "card")      { renderCard(); }
-    if (name === "zohar")     { renderZohar(); }
-    if (name === "gematria")  { updateGematriaLive(); renderGemHist(); }
-    if (name === "names")     { render72(); }
-  }
-
-  /* ── Gate / Breath ── */
-  let breathTimer = null, breathPhaseVal = "Inhale", breathCount = 4;
-  function startBreath() {
-    const phase = $("breathPhase"), count = $("breathCount"), ring = $("breathRing");
-    if (!phase || !count) return;
-    breathPhaseVal = "Inhale"; breathCount = 4;
-    phase.textContent = "Inhale"; count.textContent = "4";
-    if (ring) ring.classList.add("expand");
-    clearInterval(breathTimer);
-    breathTimer = setInterval(() => {
-      breathCount--;
-      if (breathCount <= 0) {
-        breathPhaseVal = breathPhaseVal === "Inhale" ? "Exhale" : "Inhale";
-        breathCount = 4;
-        if (phase) phase.textContent = breathPhaseVal;
+  // ── Gate ──
+  var _breathTimer=null, _breathPhase="inhale", _breathCount=4;
+  function startBreath(){
+    var ring=ge("breathRing"),phase=ge("breathPhase"),count=ge("breathCount");
+    _breathPhase="inhale"; _breathCount=4;
+    if(ring){ring.className="breathRing inhale";}
+    if(phase) phase.textContent="Inhale";
+    if(count) count.textContent="4";
+    clearInterval(_breathTimer);
+    _breathTimer=setInterval(function(){
+      _breathCount--;
+      if(_breathCount<=0){
+        _breathPhase=_breathPhase==="inhale"?"exhale":"inhale";
+        _breathCount=4;
+        if(ring) ring.className="breathRing "+_breathPhase;
+        if(phase) phase.textContent=_breathPhase==="inhale"?"Inhale":"Exhale";
       }
-      if (count) count.textContent = String(breathCount);
-    }, 1000);
+      if(count) count.textContent=String(_breathCount);
+    },1000);
   }
-  function stopBreath() { clearInterval(breathTimer); breathTimer = null; const ring = $("breathRing"); if (ring) ring.classList.remove("expand"); }
-  function showGate() {
-    const g = $("gate"); if (!g) return;
+  function stopBreath(){ clearInterval(_breathTimer); _breathTimer=null; }
+
+  function showGate(){
+    var g=ge("gate"); if(!g) return;
     g.classList.add("open");
-    const cert = state.certainty ?? 5, enrg = state.energy ?? 5;
-    $("gateCert").value = String(cert); $("gateEnergy").value = String(enrg);
-    $("gateCertVal").textContent = String(cert); $("gateEnergyVal").textContent = String(enrg);
-    buildMeter("gateCertMeter", cert); buildMeter("gateEnergyMeter", enrg);
+    var cert=state.certainty||5, enrg=state.energy||5;
+    ge("gateCert").value=String(cert); ge("gateEnergy").value=String(enrg);
+    ge("gateCertVal").textContent=String(cert); ge("gateEnergyVal").textContent=String(enrg);
+    buildMeter("gateCertMeter",cert); buildMeter("gateEnergyMeter",enrg);
     startBreath();
   }
-  function hideGate() { const g = $("gate"); if (!g) return; g.classList.remove("open"); stopBreath(); }
-  function setGateLabel() { const b = $("btnToggleGate"); if (b) b.textContent = state?.ui?.gateEnabled ? "Gate: ON" : "Gate: OFF"; }
+  function hideGate(){
+    var g=ge("gate"); if(!g) return;
+    g.classList.remove("open"); stopBreath();
+  }
+  function setGateLabel(){ var b=ge("btnToggleGate"); if(b) b.textContent=(state.ui&&state.ui.gateEnabled)?"Gate: ON":"Gate: OFF"; }
 
-  /* ── 72 Names render ── */
-  function render72() {
-    const list = $("n72List"); if (!list) return;
-    const q = ($("n72Search")?.value ?? "").trim().toLowerCase();
-    const data = get72Merged();
-    const filtered = q ? data.filter(it =>
-      String(it.n).includes(q) || (it.he ?? "").toLowerCase().includes(q) ||
-      (it.title ?? "").toLowerCase().includes(q) || (it.desc ?? "").toLowerCase().includes(q)
-    ) : data;
-
-    list.innerHTML = "";
-    if (!filtered.length) { list.innerHTML = '<div class="item-empty">No matches found.</div>'; return; }
-    for (const it of filtered) {
-      const row = document.createElement("div"); row.className = "item";
-      row.innerHTML = `
-        <div class="hebrew">${escHtml(it.he ?? "")}</div>
-        <div class="itemMain">
-          <div class="item-num">#${it.n}</div>
-          <div class="itemTitle">${escHtml(it.title ?? "")}</div>
-          <div class="itemSub">${escHtml(shorten(it.desc ?? "", 90))}</div>
-        </div>`;
-      row.addEventListener("click", () => show72Detail(it.n));
+  // ── 72 Names ──
+  function render72(){
+    var list=ge("n72List"); if(!list) return;
+    var q=String((ge("n72Search")||{}).value||"").trim().toLowerCase();
+    var data=get72Merged();
+    var filtered=q?data.filter(function(it){
+      return String(it.n).indexOf(q)>=0||(it.he||"").toLowerCase().indexOf(q)>=0
+        ||(it.title||"").toLowerCase().indexOf(q)>=0||(it.desc||"").toLowerCase().indexOf(q)>=0;
+    }):data;
+    list.innerHTML="";
+    if(!filtered.length){list.innerHTML='<div class="item-empty">No matches.</div>';return;}
+    filtered.forEach(function(it){
+      var row=document.createElement("div"); row.className="item";
+      row.innerHTML='<div class="hebrew">'+esc(it.he||"")+'</div>'
+        +'<div class="itemMain">'
+        +'<div class="item-num">#'+it.n+'</div>'
+        +'<div class="itemTitle">'+esc(it.title||"")+'</div>'
+        +'<div class="itemSub">'+esc(shorten(it.desc||"",90))+'</div>'
+        +'</div>';
+      row.addEventListener("click",function(){show72Detail(it.n);});
       list.appendChild(row);
-    }
+    });
   }
 
-  function show72Detail(n) {
-    const detail = $("n72Detail"); if (!detail) return;
-    const it = get72Merged().find(x => x.n === Number(n)); if (!it) return;
-    detail.style.display = "block";
-    detail.innerHTML = `
-      <div class="detailTop">
-        <div class="big">${escHtml(it.he ?? "")}</div>
-        <div class="meta">Name #${it.n}</div>
-      </div>
-      <div class="detailTitle">${escHtml(it.title ?? "")}</div>
-      <div class="detailDesc">${escHtml(it.desc ?? "")}</div>
-      <div class="btnRow" style="margin-top:14px;">
-        <button class="btn primary" id="btnSetToday">✦ Set as Today's Name</button>
-        <button class="btn" id="btnCloseDetail">Close</button>
-      </div>`;
-    $("btnSetToday")?.addEventListener("click", () => {
-      state.todayN = it.n; saveState();
-      toast(`✓ Name #${it.n} — ${it.title} set for today.`);
+  function show72Detail(n){
+    var detail=ge("n72Detail"); if(!detail) return;
+    var data=get72Merged(); var it=null;
+    for(var i=0;i<data.length;i++) if(data[i].n===Number(n)){it=data[i];break;}
+    if(!it) return;
+    detail.style.display="block";
+    detail.innerHTML='<div class="detailTop"><div class="big">'+esc(it.he||"")+'</div><div class="meta">Name #'+it.n+'</div></div>'
+      +'<div class="detailTitle">'+esc(it.title||"")+'</div>'
+      +'<div class="detailDesc">'+esc(it.desc||"")+'</div>'
+      +'<div class="btnRow" style="margin-top:14px;">'
+      +'<button class="btn primary" id="btnSetToday">✦ Set as Today\'s Name</button>'
+      +'<button class="btn" id="btnCloseDetail">Close</button>'
+      +'</div>';
+    ge("btnSetToday").addEventListener("click",function(){
+      state.todayN=it.n; saveState();
+      toast("✓ Name #"+it.n+" — "+it.title+" set for today.");
       renderTodayBox(); renderCard(); setActiveScreen("home");
     });
-    $("btnCloseDetail")?.addEventListener("click", () => { detail.style.display = "none"; detail.innerHTML = ""; });
-    detail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    ge("btnCloseDetail").addEventListener("click",function(){detail.style.display="none";detail.innerHTML="";});
+    detail.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
 
-  function renderTodayBox() {
-    const box = $("todayBox"), empty = $("todayEmpty"), badge = $("todayNameBadge");
-    if (!box) return;
-    if (!state.todayN) {
-      box.innerHTML = "";
-      if (empty) empty.style.display = "block";
-      if (badge) badge.style.display = "none";
+  function renderTodayBox(){
+    var box=ge("todayBox"), empty=ge("todayEmpty"), badge=ge("todayBadge");
+    if(!box) return;
+    if(!state.todayN){
+      box.innerHTML="";
+      if(empty) empty.style.display="block";
+      if(badge) badge.style.display="none";
       return;
     }
-    const it = get72Merged().find(x => x.n === Number(state.todayN));
-    if (!it) { box.innerHTML = ""; if (empty) empty.style.display = "block"; return; }
-    if (empty) empty.style.display = "none";
-    if (badge) { badge.style.display = "inline"; badge.textContent = `#${it.n} Active`; }
-    box.innerHTML = `
-      <div class="detail" style="margin-top:0;">
-        <div class="detailTop">
-          <div class="big">${escHtml(it.he ?? "")}</div>
-          <div class="meta">Today · #${it.n}</div>
-        </div>
-        <div class="detailTitle">${escHtml(it.title ?? "")}</div>
-        <div class="detailDesc">${escHtml(it.desc ?? "")}</div>
-      </div>`;
+    var data=get72Merged(); var it=null;
+    for(var i=0;i<data.length;i++) if(data[i].n===Number(state.todayN)){it=data[i];break;}
+    if(!it){box.innerHTML="";if(empty) empty.style.display="block";return;}
+    if(empty) empty.style.display="none";
+    if(badge){badge.style.display="inline";badge.textContent="#"+it.n+" Active";}
+    box.innerHTML='<div class="detail" style="margin-top:0;">'
+      +'<div class="detailTop"><div class="big">'+esc(it.he||"")+'</div><div class="meta">Today · #'+it.n+'</div></div>'
+      +'<div class="detailTitle">'+esc(it.title||"")+'</div>'
+      +'<div class="detailDesc">'+esc(it.desc||"")+'</div>'
+      +'</div>';
   }
 
-  function pickTodaysName() {
-    const tk = todayKey(); let seed = 0;
-    for (let i = 0; i < tk.length; i++) seed = (seed * 31 + tk.charCodeAt(i)) >>> 0;
-    const n = (seed % 72) + 1;
-    state.todayN = n; saveState(); renderTodayBox(); renderCard();
-    const it = get72Merged().find(x => x.n === n);
-    toast(`✦ Today's Name: #${n}${it ? " — " + it.title : ""}`);
+  function pickTodaysName(){
+    var tk=todayKey(), seed=0;
+    for(var i=0;i<tk.length;i++) seed=(seed*31+tk.charCodeAt(i))>>>0;
+    var n=(seed%72)+1;
+    state.todayN=n; saveState(); renderTodayBox(); renderCard();
+    var it=get72Merged().filter(function(x){return x.n===n;})[0];
+    toast("✦ Today's Name: #"+n+(it?" — "+it.title:""));
   }
 
-  /* ── Pillar flash animation ── */
-  function flashPillar() {
-    const el = document.createElement("div");
-    el.className = "pillar-flash";
-    el.textContent = "+" + (state.pillars ?? 0);
+  // ── Pillar flash ──
+  function flashPillar(){
+    var el=document.createElement("div");
+    el.className="pfx"; el.textContent="+"+(state.pillars||0);
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 700);
+    setTimeout(function(){el.remove();},700);
   }
 
-  /* ── Counters ── */
-  function incPillar() {
-    if ((state.pillars ?? 0) >= 100) { toast("100 pillars reached today! 🏛️"); return; }
-    state.pillars = clamp((state.pillars ?? 0) + 1, 0, 100);
+  // ── Counters ──
+  function incPillar(){
+    if((state.pillars||0)>=100){toast("100 pillars today! 🏛️");return;}
+    state.pillars=clamp((state.pillars||0)+1,0,100);
     saveState(); updateChips(); flashPillar(); renderCard();
   }
-  function incCycle() {
-    if ((state.cycles ?? 0) >= 10) { toast("10 cycles complete today!"); return; }
-    state.cycles = clamp((state.cycles ?? 0) + 1, 0, 10);
-    saveState(); updateChips(); toast(`↻ Cycle ${state.cycles}/10 complete.`); renderCard();
+  function incCycle(){
+    if((state.cycles||0)>=10){toast("10 cycles complete!");return;}
+    state.cycles=clamp((state.cycles||0)+1,0,10);
+    saveState(); updateChips(); toast("↻ Cycle "+state.cycles+"/10 complete."); renderCard();
   }
-  function resetDaily() {
-    state.dayKey = todayKey(); state.pillars = 0; state.cycles = 0; state.todayN = null;
-    saveState(); updateChips(); renderTodayBox(); renderCard(); toast("Today reset.");
+  function resetDaily(){
+    state.dayKey=todayKey();state.pillars=0;state.cycles=0;state.todayN=null;
+    saveState();updateChips();renderTodayBox();renderCard();toast("Today reset.");
   }
-  function resetAll() {
-    localStorage.removeItem(KEY.state); state = structuredClone(defaultState);
+  function resetAll(){
+    localStorage.removeItem(KEY.state); state=deepClone(defaultState);
     ensureDailyReset(); saveState(); hydrateUI(); render72(); renderZohar(); renderGemHist(); renderTodayBox(); renderCard();
     toast("All data reset.");
   }
 
-  /* ── Share card canvas ── */
-  function renderCard() {
-    const canvas = $("cardCanvas"); if (!canvas) return;
-    const ctx = canvas.getContext("2d"); if (!ctx) return;
+  // ── Canvas card ──
+  function renderCard(){
+    var canvas=ge("cardCanvas"); if(!canvas) return;
+    var ctx=canvas.getContext("2d"); if(!ctx) return;
+    var cw=canvas.width, ch=canvas.height;
+    var titleTxt=String((ge("cardTitle")||{}).value||"").trim()||"Witness. Choose. Repeat. Illuminate.";
+    var subTxt=String((ge("cardSubtitle")||{}).value||"").trim()||"Daily connection rep toward unity.";
+    var tk=todayKey();
+    var data=get72Merged();
+    var feat=null;
+    if(state.todayN) for(var i=0;i<data.length;i++) if(data[i].n===Number(state.todayN)){feat=data[i];break;}
+    if(!feat) feat=data[0];
 
-    const cw = canvas.width, ch = canvas.height;
-    const titleText    = ($("cardTitle")?.value ?? state.card?.title ?? "").trim() || "Witness. Choose. Repeat. Illuminate.";
-    const subtitleText = ($("cardSubtitle")?.value ?? state.card?.subtitle ?? "").trim() || "Daily connection rep toward unity.";
-    const tk = todayKey();
-    const data = get72Merged();
-    const feat = data.find(x => x.n === Number(state.todayN)) ?? data[0];
+    ctx.clearRect(0,0,cw,ch);
+    ctx.fillStyle="#050507"; ctx.fillRect(0,0,cw,ch);
 
-    ctx.clearRect(0, 0, cw, ch);
+    var g1=ctx.createRadialGradient(cw*.38,ch*.12,10,cw*.38,ch*.12,cw*.7);
+    g1.addColorStop(0,"rgba(215,180,90,.18)"); g1.addColorStop(1,"rgba(215,180,90,0)");
+    ctx.fillStyle=g1; ctx.fillRect(0,0,cw,ch);
 
-    // Background
-    ctx.fillStyle = "#050507"; ctx.fillRect(0, 0, cw, ch);
-    const bg1 = ctx.createRadialGradient(cw*.38, ch*.1, 10, cw*.38, ch*.1, cw*.7);
-    bg1.addColorStop(0, "rgba(215,180,90,.18)"); bg1.addColorStop(1, "rgba(215,180,90,0)");
-    ctx.fillStyle = bg1; ctx.fillRect(0, 0, cw, ch);
-    const bg2 = ctx.createRadialGradient(cw*.85, ch*.75, 10, cw*.85, ch*.75, cw*.55);
-    bg2.addColorStop(0, "rgba(240,211,138,.10)"); bg2.addColorStop(1, "rgba(240,211,138,0)");
-    ctx.fillStyle = bg2; ctx.fillRect(0, 0, cw, ch);
+    var g2=ctx.createRadialGradient(cw*.85,ch*.8,10,cw*.85,ch*.8,cw*.5);
+    g2.addColorStop(0,"rgba(240,211,138,.10)"); g2.addColorStop(1,"rgba(240,211,138,0)");
+    ctx.fillStyle=g2; ctx.fillRect(0,0,cw,ch);
 
-    // Borders
-    rrect(ctx, 22, 22, cw-44, ch-44, 28);
-    ctx.strokeStyle = "rgba(255,255,255,.08)"; ctx.lineWidth = 1.5; ctx.stroke();
-    rrect(ctx, 38, 38, cw-76, ch-76, 22);
-    ctx.strokeStyle = "rgba(215,180,90,.20)"; ctx.lineWidth = 1.5; ctx.stroke();
+    rrect(ctx,22,22,cw-44,ch-44,28);
+    ctx.strokeStyle="rgba(255,255,255,.08)"; ctx.lineWidth=1.5; ctx.stroke();
+    rrect(ctx,38,38,cw-76,ch-76,22);
+    ctx.strokeStyle="rgba(215,180,90,.20)"; ctx.lineWidth=1.5; ctx.stroke();
 
-    // Brand
-    ctx.fillStyle = "rgba(242,240,232,.9)";
-    ctx.font = "900 30px 'Times New Roman', Georgia, serif"; ctx.textAlign = "left";
-    ctx.fillText("KAI", 68, 92);
-    ctx.fillStyle = "rgba(242,240,232,.45)";
-    ctx.font = "500 14px ui-sans-serif, system-ui, Helvetica";
-    ctx.fillText(tk, 68, 116);
+    ctx.textAlign="left";
+    ctx.fillStyle="rgba(242,240,232,.88)";
+    ctx.font="bold 30px 'Times New Roman',Georgia,serif"; ctx.fillText("KAI",68,92);
+    ctx.fillStyle="rgba(242,240,232,.45)"; ctx.font="500 14px sans-serif"; ctx.fillText(tk,68,116);
 
-    // Hebrew name large
-    ctx.fillStyle = "#f0d38a";
-    ctx.font = "700 100px 'Times New Roman', Georgia, serif";
-    ctx.fillText(feat?.he ?? "", 68, 240);
-    ctx.fillStyle = "rgba(242,240,232,.65)";
-    ctx.font = "600 17px ui-sans-serif, system-ui, Helvetica";
-    ctx.fillText(`Name #${feat?.n ?? 1}`, 68, 272);
-    ctx.fillStyle = "rgba(242,240,232,.5)";
-    ctx.font = "500 15px ui-sans-serif, system-ui, Helvetica";
-    ctx.fillText(feat?.title ?? "", 68, 298);
+    ctx.fillStyle="#f0d38a"; ctx.font="bold 100px 'Times New Roman',Georgia,serif";
+    ctx.fillText(feat.he||"",68,246);
+    ctx.fillStyle="rgba(242,240,232,.65)"; ctx.font="600 17px sans-serif"; ctx.fillText("Name #"+feat.n,68,276);
+    ctx.fillStyle="rgba(242,240,232,.5)"; ctx.font="500 15px sans-serif"; ctx.fillText(feat.title||"",68,302);
 
-    // Title text
-    ctx.fillStyle = "rgba(242,240,232,.94)";
-    ctx.font = "700 42px ui-sans-serif, system-ui, Helvetica";
-    wrapText(ctx, titleText, 68, 378, cw - 136, 54);
+    ctx.fillStyle="rgba(242,240,232,.94)"; ctx.font="bold 40px sans-serif";
+    wrapText(ctx,titleTxt,68,380,cw-136,52);
+    ctx.fillStyle="rgba(242,240,232,.62)"; ctx.font="500 19px sans-serif";
+    wrapText(ctx,subTxt,68,466,cw-136,28);
 
-    // Subtitle
-    ctx.fillStyle = "rgba(242,240,232,.62)";
-    ctx.font = "500 19px ui-sans-serif, system-ui, Helvetica";
-    wrapText(ctx, subtitleText, 68, 468, cw - 136, 28);
+    var sY=565;
+    ctx.fillStyle="rgba(215,180,90,.5)"; ctx.fillRect(68,sY-12,100,3);
+    ctx.fillStyle="rgba(242,240,232,.65)"; ctx.font="600 14px sans-serif";
+    var stats=["Certainty "+(state.certainty||5)+"/10","Energy "+(state.energy||5)+"/10","Pillars "+(state.pillars||0)+"/100","Cycles "+(state.cycles||0)+"/10"];
+    var sx=68;
+    for(var s=0;s<stats.length;s++){ctx.fillText(stats[s],sx,sY);sx+=ctx.measureText(stats[s]).width+26;}
 
-    // Stats bar
-    const sY = 568;
-    ctx.fillStyle = "rgba(215,180,90,.45)";
-    ctx.fillRect(68, sY - 12, 100, 3);
-    ctx.fillStyle = "rgba(242,240,232,.65)";
-    ctx.font = "600 15px ui-sans-serif, system-ui, Helvetica";
-    const stats = [
-      `Certainty ${state.certainty ?? 5}/10`,
-      `Energy ${state.energy ?? 5}/10`,
-      `Pillars ${state.pillars ?? 0}/100`,
-      `Cycles ${state.cycles ?? 0}/10`
-    ];
-    let sx = 68;
-    for (const s of stats) { ctx.fillText(s, sx, sY); sx += ctx.measureText(s).width + 28; }
-
-    state.card = state.card ?? {};
-    state.card.title = $("cardTitle")?.value ?? "";
-    state.card.subtitle = $("cardSubtitle")?.value ?? "";
+    // Save card fields to state
+    if(!state.card) state.card={};
+    state.card.title=String((ge("cardTitle")||{}).value||"");
+    state.card.subtitle=String((ge("cardSubtitle")||{}).value||"");
     saveState();
 
-    const hint = $("shareHint");
-    if (hint) hint.textContent = navigator.share ? "iOS share sheet available." : "Share unavailable here — use Download.";
+    var hint=ge("shareHint");
+    if(hint) hint.textContent=navigator.share?"iOS share sheet available.":"Share unavailable — use Download.";
   }
 
-  function rrect(ctx, x, y, w, h, r) {
-    r = Math.min(r, w/2, h/2);
+  function rrect(ctx,x,y,w,h,r){
+    r=Math.min(r,w/2,h/2);
     ctx.beginPath();
-    ctx.moveTo(x+r, y); ctx.arcTo(x+w, y, x+w, y+h, r);
-    ctx.arcTo(x+w, y+h, x, y+h, r); ctx.arcTo(x, y+h, x, y, r);
-    ctx.arcTo(x, y, x+w, y, r); ctx.closePath();
+    ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
   }
-  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-    const words = String(text ?? "").split(/\s+/); let line = "", yy = y;
-    for (const w of words) {
-      const test = line ? line + " " + w : w;
-      if (ctx.measureText(test).width > maxWidth && line) { ctx.fillText(line, x, yy); line = w; yy += lineHeight; }
-      else line = test;
+  function wrapText(ctx,text,x,y,maxW,lh){
+    var words=String(text||"").split(/\s+/),line="",yy=y;
+    for(var i=0;i<words.length;i++){
+      var test=line?line+" "+words[i]:words[i];
+      if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,yy);line=words[i];yy+=lh;}
+      else line=test;
     }
-    if (line) ctx.fillText(line, x, yy);
+    if(line) ctx.fillText(line,x,yy);
   }
 
-  async function toJpegBlob(canvas, q = 0.92) {
-    return new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(new Error("JPEG export failed")), "image/jpeg", q));
+  function toJpegBlob(canvas,q){
+    return new Promise(function(res,rej){
+      canvas.toBlob(function(b){b?res(b):rej(new Error("JPEG export failed"));},
+        "image/jpeg",q||0.92);
+    });
   }
-  async function downloadJpeg() {
-    const canvas = $("cardCanvas"); if (!canvas) return;
-    try {
-      const blob = await toJpegBlob(canvas);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = `KAI-${todayKey()}.jpg`;
+  function downloadJpeg(){
+    var canvas=ge("cardCanvas"); if(!canvas) return;
+    toJpegBlob(canvas,0.92).then(function(blob){
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement("a");
+      a.href=url; a.download="KAI-"+todayKey()+".jpg";
       document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      setTimeout(function(){URL.revokeObjectURL(url);},1500);
       toast("↓ JPEG downloaded.");
-    } catch (e) { showErr("DOWNLOAD ERROR: " + (e?.message ?? String(e))); }
+    }).catch(function(e){showErr("DOWNLOAD ERROR: "+(e.message||String(e)));});
   }
-  async function shareJpeg() {
-    const canvas = $("cardCanvas"); if (!canvas) return;
-    if (!navigator.share) { toast("Share not supported here. Use Download."); return; }
-    try {
-      const blob = await toJpegBlob(canvas);
-      const file = new File([blob], `KAI-${todayKey()}.jpg`, { type: "image/jpeg" });
-      if (navigator.canShare && !navigator.canShare({ files: [file] })) { toast("File sharing unsupported. Use Download."); return; }
-      await navigator.share({ title: "KAI", text: "KAI share card", files: [file] });
-    } catch (e) { if (!String(e?.name ?? "").toLowerCase().includes("abort")) toast("Share failed. Use Download."); }
+  function shareJpeg(){
+    var canvas=ge("cardCanvas"); if(!canvas) return;
+    if(!navigator.share){toast("Share not supported here — use Download.");return;}
+    toJpegBlob(canvas,0.92).then(function(blob){
+      var file=new File([blob],"KAI-"+todayKey()+".jpg",{type:"image/jpeg"});
+      if(navigator.canShare&&!navigator.canShare({files:[file]})){toast("File sharing unsupported — use Download.");return;}
+      return navigator.share({title:"KAI",text:"KAI share card",files:[file]});
+    }).catch(function(e){
+      if(String((e&&e.name)||"").toLowerCase().indexOf("abort")<0) toast("Share failed. Use Download.");
+    });
   }
 
-  /* ── Hydrate UI ── */
-  function hydrateUI() {
-    $("certainty").value = String(state.certainty ?? 5);
-    $("energy").value = String(state.energy ?? 5);
+  // ── Hydrate ──
+  function hydrateUI(){
+    ge("certainty").value=String(state.certainty||5);
+    ge("energy").value=String(state.energy||5);
     updateChips();
-    $("birthday").value = state.profile?.birthday ?? "";
-    $("sign").value = state.profile?.sign ?? "";
-    const signRow = $("signRow");
-    if (signRow) signRow.style.display = state.profile?.sign ? "flex" : "none";
-    $("profileNotes").value = state.profile?.notes ?? "";
-    $("cardTitle").value = state.card?.title ?? "";
-    $("cardSubtitle").value = state.card?.subtitle ?? "";
+    ge("birthday").value=String((state.profile&&state.profile.birthday)||"");
+    ge("sign").value=String((state.profile&&state.profile.sign)||"");
+    ge("profileNotes").value=String((state.profile&&state.profile.notes)||"");
+    ge("cardTitle").value=String((state.card&&state.card.title)||"");
+    ge("cardSubtitle").value=String((state.card&&state.card.subtitle)||"");
     setGateLabel(); updateCanonBadge();
-    $("buildVersion").textContent = BUILD;
-    renderGemHist(); updateGematriaLive();
+    ge("buildVersion").textContent=BUILD;
+    renderGemHist(); updateGemLive();
   }
 
-  /* ── Wire events ── */
-  function wire() {
+  // ── Wire ──
+  function wire(){
     // Tabs
-    for (const b of document.querySelectorAll(".tabBtn")) {
-      b.addEventListener("click", () => setActiveScreen(b.getAttribute("data-screen")));
-    }
-
-    // Sliders – main
-    $("certainty").addEventListener("input", () => {
-      state.certainty = parseInt($("certainty").value, 10);
-      const v = $("certaintyVal");
-      if (v) { v.textContent = String(state.certainty); v.classList.add("bump"); setTimeout(() => v.classList.remove("bump"), 200); }
-      buildMeter("certaintyMeter", state.certainty);
-      updateChips(); saveState(); renderCard();
-    });
-    $("energy").addEventListener("input", () => {
-      state.energy = parseInt($("energy").value, 10);
-      const v = $("energyVal");
-      if (v) { v.textContent = String(state.energy); v.classList.add("bump"); setTimeout(() => v.classList.remove("bump"), 200); }
-      buildMeter("energyMeter", state.energy);
-      updateChips(); saveState(); renderCard();
+    document.querySelectorAll(".tabBtn").forEach(function(b){
+      b.addEventListener("click",function(){setActiveScreen(b.getAttribute("data-screen"));});
     });
 
-    // Ripple on connect button
-    addRipple($("btnConnect"));
+    // Sliders
+    ge("certainty").addEventListener("input",function(){
+      state.certainty=parseInt(ge("certainty").value,10);
+      ge("certaintyVal").textContent=String(state.certainty);
+      buildMeter("certaintyMeter",state.certainty);
+      updateChips(); saveState(); renderCard();
+    });
+    ge("energy").addEventListener("input",function(){
+      state.energy=parseInt(ge("energy").value,10);
+      ge("energyVal").textContent=String(state.energy);
+      buildMeter("energyMeter",state.energy);
+      updateChips(); saveState(); renderCard();
+    });
 
     // Actions
-    $("btnConnect").addEventListener("click", incPillar);
-    $("btnCycle").addEventListener("click", incCycle);
-    $("btnPickToday").addEventListener("click", pickTodaysName);
-    $("btnGoNames").addEventListener("click", () => setActiveScreen("names"));
+    ge("btnConnect").addEventListener("click",incPillar);
+    ge("btnCycle").addEventListener("click",incCycle);
+    ge("btnPickToday").addEventListener("click",pickTodaysName);
+    ge("btnGoNames").addEventListener("click",function(){setActiveScreen("names");});
 
     // Profile
-    $("birthday").addEventListener("change", e => {
-      state.profile = state.profile ?? {};
-      state.profile.birthday = e.target.value ?? "";
-      state.profile.sign = zodiacFromYMD(state.profile.birthday);
-      $("sign").value = state.profile.sign ?? "";
-      const signRow = $("signRow");
-      if (signRow) signRow.style.display = state.profile.sign ? "flex" : "none";
+    ge("birthday").addEventListener("change",function(e){
+      if(!state.profile) state.profile={};
+      state.profile.birthday=e.target.value||"";
+      state.profile.sign=zodiac(state.profile.birthday);
+      ge("sign").value=state.profile.sign||"";
       saveState(); toast("✓ Profile saved.");
     });
-    $("profileNotes").addEventListener("input", e => {
-      state.profile = state.profile ?? {}; state.profile.notes = e.target.value ?? ""; saveState();
+    ge("profileNotes").addEventListener("input",function(e){
+      if(!state.profile) state.profile={};
+      state.profile.notes=e.target.value||""; saveState();
     });
 
     // Gate
-    $("btnToggleGate").addEventListener("click", () => {
-      state.ui = state.ui ?? {}; state.ui.gateEnabled = !state.ui.gateEnabled;
-      saveState(); setGateLabel(); toast(state.ui.gateEnabled ? "Gate ON" : "Gate OFF");
+    ge("btnToggleGate").addEventListener("click",function(){
+      if(!state.ui) state.ui={};
+      state.ui.gateEnabled=!state.ui.gateEnabled;
+      saveState(); setGateLabel(); toast(state.ui.gateEnabled?"Gate ON":"Gate OFF");
     });
-    $("btnShowGateNow").addEventListener("click", showGate);
-    $("gateCert").addEventListener("input", () => {
-      const v = parseInt($("gateCert").value, 10);
-      $("gateCertVal").textContent = String(v); buildMeter("gateCertMeter", v);
+    ge("btnShowGateNow").addEventListener("click",showGate);
+    ge("gateCert").addEventListener("input",function(){
+      var v=parseInt(ge("gateCert").value,10);
+      ge("gateCertVal").textContent=String(v); buildMeter("gateCertMeter",v);
     });
-    $("gateEnergy").addEventListener("input", () => {
-      const v = parseInt($("gateEnergy").value, 10);
-      $("gateEnergyVal").textContent = String(v); buildMeter("gateEnergyMeter", v);
+    ge("gateEnergy").addEventListener("input",function(){
+      var v=parseInt(ge("gateEnergy").value,10);
+      ge("gateEnergyVal").textContent=String(v); buildMeter("gateEnergyMeter",v);
     });
-    $("btnEnter").addEventListener("click", () => {
-      state.certainty = parseInt($("gateCert").value, 10);
-      state.energy = parseInt($("gateEnergy").value, 10);
+    ge("btnEnter").addEventListener("click",function(){
+      state.certainty=parseInt(ge("gateCert").value,10);
+      state.energy=parseInt(ge("gateEnergy").value,10);
       saveState(); updateChips(); hideGate(); renderCard(); toast("Entered. ✦");
     });
-    $("btnGateSkip").addEventListener("click", () => { hideGate(); toast("Skipped."); });
+    ge("btnGateSkip").addEventListener("click",function(){ hideGate(); toast("Skipped."); });
 
     // 72 Names
-    $("n72Search").addEventListener("input", render72);
-    $("btnClearSearch").addEventListener("click", () => { $("n72Search").value = ""; render72(); });
+    ge("n72Search").addEventListener("input",render72);
+    ge("btnClearSearch").addEventListener("click",function(){ge("n72Search").value="";render72();});
 
     // Zohar
-    $("zSearch").addEventListener("input", renderZohar);
-    $("btnZClear").addEventListener("click", () => { $("zSearch").value = ""; renderZohar(); });
-    $("btnZAdd").addEventListener("click", () => toggleZAdd(true));
-    $("btnZCancel").addEventListener("click", () => toggleZAdd(false));
-    $("btnZSave").addEventListener("click", saveZAdd);
+    ge("zSearch").addEventListener("input",renderZohar);
+    ge("btnZClear").addEventListener("click",function(){ge("zSearch").value="";renderZohar();});
+    ge("btnZAdd").addEventListener("click",function(){toggleZAdd(true);});
+    ge("btnZCancel").addEventListener("click",function(){toggleZAdd(false);});
+    ge("btnZSave").addEventListener("click",saveZAdd);
 
     // Gematria
-    $("gInput").addEventListener("input", updateGematriaLive);
-    $("btnGSave").addEventListener("click", () => {
-      const raw = ($("gInput").value ?? "").trim();
-      if (!raw) { toast("Type something first."); return; }
-      const clean = stripNiqqud(raw);
-      const value = gematriaValue(raw);
-      const katan = misparKatan(value);
-      const equiv = getEquiv(value) ?? "";
-      const hist = loadGemHist();
-      hist.unshift({ raw, clean, value, katan, equiv, t: Date.now() });
-      saveGemHist(hist.slice(0, 50));
-      toast(`✓ Saved. Value: ${value}`); renderGemHist();
+    ge("gInput").addEventListener("input",updateGemLive);
+    ge("btnGSave").addEventListener("click",function(){
+      var raw=String((ge("gInput")||{}).value||"").trim();
+      if(!raw){toast("Type something first.");return;}
+      var clean=stripNiqqud(raw);
+      var value=gemVal(raw); var katan=misparKatan(value);
+      var equiv=KNOWN_GM[value]||"";
+      var hist=loadGemHist();
+      hist.unshift({raw:raw,clean:clean,value:value,katan:katan,equiv:equiv,t:Date.now()});
+      saveGemHist(hist.slice(0,50));
+      toast("✓ Saved. Value: "+value); renderGemHist();
     });
-    $("btnGClear").addEventListener("click", () => {
-      if (!confirm("Clear gematria history?")) return;
+    ge("btnGClear").addEventListener("click",function(){
+      if(!confirm("Clear gematria history?")) return;
       localStorage.removeItem(KEY.gemHist); toast("History cleared."); renderGemHist();
     });
 
-    // Share Card
-    $("btnRenderCard").addEventListener("click", renderCard);
-    $("cardTitle").addEventListener("input", renderCard);
-    $("cardSubtitle").addEventListener("input", renderCard);
-    $("btnDownloadJpg").addEventListener("click", downloadJpeg);
-    $("btnShareJpg").addEventListener("click", shareJpeg);
+    // Card
+    ge("btnRenderCard").addEventListener("click",renderCard);
+    ge("cardTitle").addEventListener("input",renderCard);
+    ge("cardSubtitle").addEventListener("input",renderCard);
+    ge("btnDownloadJpg").addEventListener("click",downloadJpeg);
+    ge("btnShareJpg").addEventListener("click",shareJpeg);
 
     // Canon
-    $("btnImportCanon").addEventListener("click", importCanon);
-    $("btnClearCanon").addEventListener("click", clearCanon);
+    ge("btnImportCanon").addEventListener("click",importCanon);
+    ge("btnClearCanon").addEventListener("click",clearCanon);
 
     // Reset
-    $("btnResetDaily").addEventListener("click", resetDaily);
-    $("btnResetAll").addEventListener("click", () => { if (confirm("Reset all KAI data on this device?")) resetAll(); });
+    ge("btnResetDaily").addEventListener("click",resetDaily);
+    ge("btnResetAll").addEventListener("click",function(){if(confirm("Reset all KAI data on this device?")) resetAll();});
 
-    // Keyboard: Enter on gate
-    document.addEventListener("keydown", e => {
-      if (e.key === "Escape" && $("gate")?.classList.contains("open")) { hideGate(); toast("Skipped."); }
-      if (e.key === "Enter" && $("gate")?.classList.contains("open")) $("btnEnter")?.click();
+    // Keyboard
+    document.addEventListener("keydown",function(e){
+      var g=ge("gate");
+      if(e.key==="Escape"&&g&&g.classList.contains("open")){hideGate();toast("Skipped.");}
+      if(e.key==="Enter"&&g&&g.classList.contains("open")){ge("btnEnter").click();}
     });
   }
 
-  /* ── Boot ── */
-  function boot() {
+  // ── Boot ──
+  function boot(){
     clearErr();
-    state = loadState();
+    state=loadState();
     ensureDailyReset();
     hydrateUI();
     wire();
     render72();
     renderZohar();
     renderTodayBox();
-    renderCard();
-    if (state?.ui?.gateEnabled) setTimeout(showGate, 300); // slight delay feels better
+    // Wait for fonts before drawing canvas
+    if(document.fonts && document.fonts.ready){
+      document.fonts.ready.then(function(){ renderCard(); });
+    } else {
+      setTimeout(renderCard, 800);
+    }
+    if(state.ui && state.ui.gateEnabled){
+      setTimeout(showGate, 400);
+    }
     console.log("KAI booted", BUILD);
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    try { boot(); }
-    catch (e) {
-      console.error("BOOT ERROR", e);
-      showErr("BOOT ERROR: " + (e?.message ?? String(e)) + "\n" + (e?.stack ?? ""));
+  document.addEventListener("DOMContentLoaded",function(){
+    try{ boot(); }
+    catch(e){
+      console.error("BOOT ERROR",e);
+      showErr("BOOT ERROR: "+(e.message||String(e))+"\n"+(e.stack||""));
     }
   });
+
 })();
 </script>
 
