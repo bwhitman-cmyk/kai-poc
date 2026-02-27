@@ -148,9 +148,9 @@ function mode85Hz() {
         phase += 0.15;
 
         lines.forEach((l, i) => {
-            const wave = 0.35 + 0.25 * Math.sin(phase + i * 0.4);
-            l.style.opacity = wave;
-            l.style.color = `rgba(255,215,0,${0.4 + wave})`;
+            const wave = 0.8 + 0.2 * Math.sin(phase + i * 0.4);
+        l.style.opacity = wave;
+        l.style.color = "rgba(255,215,120,1)";
         });
 
     }, 12); // ~85 cycles per second
