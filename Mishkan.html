@@ -39,10 +39,19 @@ body {
     0 0 8px rgba(255, 215, 100, 0.15);
   transition: opacity 1.2s ease, color 1.2s ease;
 }
-.line.active {
-    opacity: 1;
-    color: gold;
-}
+.line {
+  color: #f8e7a0;   /* brighter luminous gold */
+  opacity: 0.55;    /* much more visible */
+  font-weight: 600;
+  letter-spacing: 0.6px;
+
+  text-shadow:
+    0 0 6px rgba(255, 215, 120, 0.45),
+    0 0 14px rgba(255, 215, 120, 0.30),
+    0 0 22px rgba(255, 215, 120, 0.20);
+
+  transition: opacity 1.2s ease, color 1.2s ease;
+}}
 
 .glow {
     animation: glowPulse 3s infinite ease-in-out;
