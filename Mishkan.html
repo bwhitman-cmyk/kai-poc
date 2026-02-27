@@ -1,181 +1,146 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mishkan – ושכנתי בתוכם</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mishkan</title>
+
 <style>
 body {
-    margin: 0;
-    background: #000;
-    color: #d4c27a;
-    font-family: "Arial Hebrew", "Noto Sans Hebrew", sans-serif;
-    overflow: hidden;
+  margin: 0;
+  background: black;
+  font-family: "Arial Hebrew", "Noto Sans Hebrew", sans-serif;
+  overflow: hidden;
 }
 
 .container {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .text-grid {
-    width: 90%;
-    max-width: 1100px;
-    line-height: 2.2;
-    font-size: 28px;
-    text-align: center;
+  width: 90%;
+  max-width: 1100px;
+  line-height: 2.2;
+  font-size: 28px;
+  text-align: center;
 }
 
 .line {
-  color: #f5d76e;              /* warm gold */
-  opacity: 0.35;               /* brighter base */
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  text-shadow:
-    0 0 4px rgba(255, 215, 100, 0.25),
-    0 0 8px rgba(255, 215, 100, 0.15);
-  transition: opacity 1.2s ease, color 1.2s ease;
-}
-.line {
-  color: #f8e7a0;   /* brighter luminous gold */
-  opacity: 0.55;    /* much more visible */
+  color: #ffd86a;
+  opacity: 0.85;
   font-weight: 600;
   letter-spacing: 0.6px;
+  transition: opacity 0.4s ease;
+}
 
+.line.active {
+  opacity: 1;
+  color: #fff1b3;
   text-shadow:
-    0 0 6px rgba(255, 215, 120, 0.45),
-    0 0 14px rgba(255, 215, 120, 0.30),
-    0 0 22px rgba(255, 215, 120, 0.20);
-
-  transition: opacity 1.2s ease, color 1.2s ease;
-}}
-
-.glow {
-    animation: glowPulse 3s infinite ease-in-out;
+    0 0 12px rgba(255, 230, 150, 0.9),
+    0 0 30px rgba(255, 215, 120, 0.8),
+    0 0 50px rgba(255, 215, 120, 0.6);
 }
 
-@keyframes glowPulse {
-    0% { text-shadow: 0 0 5px rgba(255,215,0,0.2); }
-    50% { text-shadow: 0 0 25px rgba(255,215,0,0.9); }
-    100% { text-shadow: 0 0 5px rgba(255,215,0,0.2); }
-}
-
-.mishkan-light {
-    position: absolute;
-    width: 4px;
-    height: 60%;
-    background: linear-gradient(to top, transparent, gold, transparent);
-    animation: verticalPulse 4s infinite ease-in-out;
-    opacity: 0.7;
-}
-
-@keyframes verticalPulse {
-    0% { opacity: 0.2; transform: scaleY(0.8); }
-    50% { opacity: 1; transform: scaleY(1.05); }
-    100% { opacity: 0.2; transform: scaleY(0.8); }
+.vav {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, gold, transparent);
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.6;
 }
 
 .controls {
-    position: absolute;
-    bottom: 20px;
-    text-align: center;
-    width: 100%;
+  position: absolute;
+  bottom: 30px;
+  display: flex;
+  gap: 12px;
 }
 
 button {
-    background: gold;
-    border: none;
-    padding: 10px 16px;
-    margin: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-button:hover {
-    background: #ffd700cc;
+  background: gold;
+  border: none;
+  padding: 10px 16px;
+  font-weight: bold;
+  cursor: pointer;
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
-    <div class="mishkan-light"></div>
-    <div class="text-grid" id="textGrid"></div>
-</div>
+  <div class="vav"></div>
 
-<div class="controls">
+  <div class="text-grid" id="textGrid"></div>
+
+  <div class="controls">
     <button onclick="modePulse()">Pulse Mode</button>
     <button onclick="modeGlow()">Dwelling Mode</button>
-    <button onclick="mode85Hz()">85 Hz Stabilize</button>
+    <button onclick="mode85()">85 Hz Stabilize</button>
     <button onclick="modeStill()">Still</button>
+  </div>
 </div>
 
 <script>
-const verse = "עָשׂוּ לִי מִקְדָּשׁ וְשָׁכַנְתִּי בְּתוֹכָם";
+const phrase = "עשו לי מקדש ושכנתי בתוכם";
 const grid = document.getElementById("textGrid");
+const lines = [];
 
-for (let i = 0; i < 14; i++) {
-    const line = document.createElement("div");
-    line.className = "line";
-    line.textContent = verse;
-    grid.appendChild(line);
+for (let i = 0; i < 12; i++) {
+  const div = document.createElement("div");
+  div.className = "line";
+  div.textContent = phrase;
+  grid.appendChild(div);
+  lines.push(div);
 }
 
 let interval;
 let index = 0;
-const lines = document.querySelectorAll(".line");
 
 function clearModes() {
-    clearInterval(interval);
-    lines.forEach(l => {
-        l.classList.remove("active");
-        l.classList.remove("glow");
-        l.style.opacity = 0.25;
-    });
+  clearInterval(interval);
+  lines.forEach(l => l.classList.remove("active"));
 }
 
-/* 85 Hz-inspired modulation */
-function mode85Hz() {
-    clearModes();
-
-    let phase = 0;
-
-    interval = setInterval(() => {
-        phase += 0.15;
-
-        lines.forEach((l, i) => {
-            const wave = 0.8 + 0.2 * Math.sin(phase + i * 0.4);
-        l.style.opacity = wave;
-        l.style.color = "rgba(255,215,120,1)";
-        });
-
-    }, 12); // ~85 cycles per second
-}
-
-/* Slow ceremonial pulse */
 function modePulse() {
-    clearModes();
-    interval = setInterval(() => {
-        lines.forEach(l => l.classList.remove("active"));
-        lines[index].classList.add("active");
-        index = (index + 1) % lines.length;
-    }, 2000);
+  clearModes();
+  interval = setInterval(() => {
+    lines.forEach(l => l.classList.remove("active"));
+    lines[index].classList.add("active");
+    index = (index + 1) % lines.length;
+  }, 1500);
 }
 
-/* Dwelling glow */
 function modeGlow() {
-    clearModes();
-    lines.forEach(l => l.classList.add("glow"));
+  clearModes();
+  lines.forEach(l => l.classList.add("active"));
 }
 
-/* Still */
 function modeStill() {
-    clearModes();
+  clearModes();
 }
+
+function mode85() {
+  clearModes();
+  let phase = 0;
+  interval = setInterval(() => {
+    phase += 0.3;
+    lines.forEach((l, i) => {
+      const wave = 0.85 + 0.15 * Math.sin(phase + i * 0.4);
+      l.style.opacity = wave;
+    });
+  }, 12); // ~85 cycles/sec
+}
+
+mode85();
 </script>
+
 </body>
 </html>
