@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mishkan – ושכנתי בתוכם</title>
+<style>
+body {
+    margin: 0;
+    background: #000;
+    color: #aaa;
+    font-family: "Arial Hebrew", "Noto Sans Hebrew", sans-serif;
+    overflow: hidden;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.text-grid {
+    width: 90%;
+    max-width: 1100px;
+    line-height: 2.2;
+    font-size: 28px;
+    text-align: center;
+}
+
+.line {
+    opacity: 0.25;
+    transition: opacity 1.2s ease, color 1.2s ease;
+}
+
+.line.active {
+    opacity: 1;
+    color: gold;
+}
+
+.glow {
+    animation: glowPulse 3s infinite ease-in-out;
+}
+
+@keyframes glowPulse {
+    0% { text-shadow: 0 0 5px rgba(255,215,0,0.2); }
+    50% { text-shadow: 0 0 25px rgba(255,215,0,0.9); }
+    100% { text-shadow: 0 0 5px rgba(255,215,0,0.2); }
+}
+
+.mishkan-light {
+    position: absolute;
+    width: 4px;
+    height: 60%;
+    background: linear-gradient(to top, transparent, gold, transparent);
+    animation: verticalPulse 4s infinite ease-in-out;
+    opacity: 0.7;
+}
+
+@keyframes verticalPulse {
+    0% { opacity: 0.2; transform: scaleY(0.8); }
+    50% { opacity: 1; transform: scaleY(1.05); }
+    100% { opacity: 0.2; transform: scaleY(0.8); }
+}
+
+.controls {
+    position: absolute;
+    bottom: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+button {
+    background: gold;
+    border: none;
+    padding: 10px 16px;
+    margin: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background: #ffd700cc;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="mishkan-light"></div>
+    <div class="text-grid" id="textGrid"></div>
+</div>
+
+<div class="controls">
+    <button onclick="modePulse()">Pulse Mode</button>
+    <button onclick="modeGlow()">Dwelling Mode</button>
+    <button onclick="modeFrequency()">Frequency Mode</button>
+    <button onclick="modeStill()">Still</button>
+</div>
+
+<script>
+const verse = "עָשׂוּ לִי מִקְדָּשׁ וְשָׁכַנְתִּי בְּתוֹכָם";
+const grid = document.getElementById("textGrid");
+
+for (let i = 0; i < 14; i++) {
+    const line = document.createElement("div");
+    line.className = "line";
+    line.textContent = verse;
+    grid.appendChild(line);
+}
+
+let interval;
+let index = 0;
+const lines = document.querySelectorAll(".line");
+
+function clearModes() {
+    clearInterval(interval);
+    lines.forEach(l => {
+        l.classList.remove("active");
+        l.classList.remove("glow");
+        l.style.opacity = 0.25;
+    });
+}
+
+function modePulse() {
+    clearModes();
+    interval = setInterval(() => {
+        lines.forEach(l => l.classList.remove("active"));
+        lines[index].classList.add("active");
+        index = (index + 1) % lines.length;
+    }, 2000);
+}
+
+function modeGlow() {
+    clearModes();
+    lines.forEach(l => l.classList.add("glow"));
+}
+
+function modeFrequency() {
+    clearModes();
+    interval = setInterval(() => {
+        lines.forEach(l => l.style.opacity = 0.4 + Math.random() * 0.4);
+    }, 120);
+}
+
+function modeStill() {
+    clearModes();
+}
+</script>
+
+</body>
+</html>
