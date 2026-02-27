@@ -8,7 +8,7 @@
 body {
     margin: 0;
     background: #000;
-    color: #aaa;
+    color: #d4c27a;
     font-family: "Arial Hebrew", "Noto Sans Hebrew", sans-serif;
     overflow: hidden;
 }
@@ -30,10 +30,15 @@ body {
 }
 
 .line {
-    opacity: 0.25;
-    transition: opacity 1.2s ease, color 1.2s ease;
+  color: #f5d76e;              /* warm gold */
+  opacity: 0.35;               /* brighter base */
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-shadow:
+    0 0 4px rgba(255, 215, 100, 0.25),
+    0 0 8px rgba(255, 215, 100, 0.15);
+  transition: opacity 1.2s ease, color 1.2s ease;
 }
-
 .line.active {
     opacity: 1;
     color: gold;
