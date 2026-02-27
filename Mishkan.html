@@ -124,6 +124,25 @@ function clearModes() {
     });
 }
 
+/* 85 Hz-inspired modulation */
+function mode85Hz() {
+    clearModes();
+
+    let phase = 0;
+
+    interval = setInterval(() => {
+        phase += 0.15;
+
+        lines.forEach((l, i) => {
+            const wave = 0.35 + 0.25 * Math.sin(phase + i * 0.4);
+            l.style.opacity = wave;
+            l.style.color = `rgba(255,215,0,${0.4 + wave})`;
+        });
+
+    }, 12); // ~85 cycles per second
+}
+
+/* Slow ceremonial pulse */
 function modePulse() {
     clearModes();
     interval = setInterval(() => {
@@ -133,22 +152,16 @@ function modePulse() {
     }, 2000);
 }
 
+/* Dwelling glow */
 function modeGlow() {
     clearModes();
     lines.forEach(l => l.classList.add("glow"));
 }
 
-function modeFrequency() {
-    clearModes();
-    interval = setInterval(() => {
-        lines.forEach(l => l.style.opacity = 0.4 + Math.random() * 0.4);
-    }, 120);
-}
-
+/* Still */
 function modeStill() {
     clearModes();
 }
 </script>
-
 </body>
 </html>
