@@ -1423,7 +1423,10 @@ n,he,title,desc
     } else {
       setTimeout(renderCard, 800);
     }
-    if(state.ui && state.ui.gateEnabled){
+    // Force-hide gate on every boot
+    var _g=ge("gate"); if(_g){_g.className="gate";_g.style.cssText="visibility:hidden;opacity:0;pointer-events:none;";}
+    // GATE DISABLED ON BOOT
+    if(false && state.ui && state.ui.gateEnabled){
       setTimeout(showGate, 400);
     }
     console.log("KAI booted", BUILD);
