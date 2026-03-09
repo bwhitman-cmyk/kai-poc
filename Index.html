@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>KAI | Lunch Demo</title>
+  <meta name="theme-color" content="#0b0d10" />
+  <style>
+    :root{
+      --bg:#0b0d10;
+      --bg2:#12161c;
+      --panel:#161b22;
+      --panel2:#1d2530;
+      --text:#f3f4f6;
+      --muted:#a7b0bc;
+      --line:rgba(255,255,255,.08);
+      --gold:#d6b25e;
+      --gold2:#f1d48a;
+      --good:#56d39b;
+      --warn:#ffbf69;
+      --accent:#7cc7ff;
+      --danger:#ff7b7b;
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+      --radius:20px;
+      --mono: ui-monospace,SFMono-Regular,Menlo,monospace;
+      --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;padding:0;background:radial-gradient(circle at top, #17202a 0%, var(--bg) 55%);color:var(--text);font-family:var(--sans)}
+    body{min-height:100vh}
+    .wrap{max-width:1080px;margin:0 auto;padding:18px 16px 90px}
+    .hero{padding:20px;border:1px solid var(--line);border-radius:28px;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));box-shadow:var(--shadow)}
+    .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);font-weight:700}
+    .title{font-size:38px;line-height:1.02;font-weight:800;margin:10px 0 10px}
+    .subtitle{font-size:17px;line-height:1.45;color:var(--muted);max-width:820px}
+    .version{margin-top:10px;font-size:12px;color:#94a3b8;font-family:var(--mono)}
+    .quickgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+    .quick{border:1px solid var(--line);background:rgba(255,255,255,.03);padding:12px 14px;border-radius:16px}
+    .quick b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+    .quick span{color:var(--muted);font-size:14px;line-height:1.35}
+
+    .chipRow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}
+    .chip{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:16px;padding:12px 10px;text-align:center;min-height:72px;display:flex;flex-direction:column;justify-content:center}
+    .chip span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .chip b{font-size:22px;margin:4px 0;color:var(--text)}
+
+    .tabs{display:flex;gap:8px;overflow:auto;padding:4px 0 10px;position:sticky;top:0;background:linear-gradient(180deg, rgba(11,13,16,.95), rgba(11,13,16,.75));backdrop-filter: blur(10px);z-index:20}
+    .tabBtn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:12px 14px;border-radius:999px;font-weight:700;white-space:nowrap}
+    .tabBtn.active{background:linear-gradient(180deg, rgba(214,178,94,.26), rgba(214,178,94,.08));border-color:rgba(214,178,94,.35);color:#fff}
+
+    .screen{display:none;margin-top:10px}
+    .screen.active{display:block}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+    .panel{border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+    .panelTitle{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);font-weight:800;margin-bottom:6px}
+    .panelSub{font-size:14px;line-height:1.45;color:var(--muted);margin-bottom:14px}
+    .btnRow{display:flex;flex-wrap:wrap;gap:10px}
+    button,.btn{appearance:none;border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:12px 14px;border-radius:14px;font-weight:700;cursor:pointer}
+    .primary{background:linear-gradient(180deg, rgba(124,199,255,.3), rgba(124,199,255,.12));border-color:rgba(124,199,255,.35)}
+    .good{background:linear-gradient(180deg, rgba(86,211,155,.28), rgba(86,211,155,.12));border-color:rgba(86,211,155,.35)}
+    .gold{background:linear-gradient(180deg, rgba(214,178,94,.28), rgba(214,178,94,.12));border-color:rgba(214,178,94,.35)}
+    .danger{background:linear-gradient(180deg, rgba(255,123,123,.28), rgba(255,123,123,.12));border-color:rgba(255,123,123,.35)}
+    .footHint,.tiny{font-size:12px;line-height:1.45;color:var(--muted)}
+    .metricRow{margin:12px 0}
+    .metricRow label{display:flex;justify-content:space-between;font-size:14px;color:var(--text);margin-bottom:8px}
+    input[type="range"]{width:100%}
+    input[type="text"],input[type="date"],textarea,select{width:100%;border:1px solid var(--line);background:#0f141a;color:var(--text);padding:12px 14px;border-radius:14px;font-size:15px}
+    textarea{min-height:120px;resize:vertical}
+    .detail,.list,.cardMini{border:1px solid var(--line);background:rgba(255,255,255,.03);padding:14px;border-radius:16px}
+    .list{display:grid;gap:10px}
+    .item{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.02)}
+    .itemTop{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+    .itemTitle{font-weight:800}
+    .hebrew{font-size:30px;line-height:1;font-weight:900;color:var(--gold2)}
+    .meta{font-size:12px;color:var(--muted);margin-top:4px}
+    .searchRow,.fieldRow{display:grid;gap:8px;margin:12px 0}
+    .flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .step{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.02)}
+    .stepNum{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;border-radius:999px;background:rgba(214,178,94,.2);color:var(--gold2);font-weight:800;margin-bottom:8px}
+    .quote{font-size:18px;line-height:1.5;color:#eef2f7}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--muted);margin:4px 6px 0 0}
+    .gmRow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .gmBox{padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03)}
+    .gmNum{font-size:26px;font-weight:900;color:var(--gold2)}
+    canvas{width:100%;max-width:720px;height:auto;border-radius:22px;border:1px solid var(--line);background:#0d1015}
+    .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);padding:12px 16px;border-radius:999px;background:rgba(0,0,0,.82);border:1px solid var(--line);display:none;z-index:9999;max-width:92vw;text-align:center}
+    .errorBanner{white-space:pre-wrap;display:none;margin:12px 0;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,123,123,.32);background:rgba(255,123,123,.12);color:#ffd6d6;font-size:13px}
+    @media (max-width:840px){
+      .grid,.quickgrid,.flow,.chipRow,.gmRow{grid-template-columns:1fr}
+      .title{font-size:31px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="eyebrow">KAI Lunch Demo</div>
+      <div class="title">Daily Navigation for the Wisdom of Kabbalah</div>
+      <div class="subtitle">A coherent proof of concept for lunch with Eitan: state awareness, connection counting, guided tools, Zohar grounding, teacher guardrails, and a bigger scaling vision.</div>
+      <div class="version" id="buildStamp">Build</div>
+      <div class="quickgrid">
+        <div class="quick"><b>Spiritual Problem</b><span>How do we help people actually apply the wisdom daily, not just hear it?</span></div>
+        <div class="quick"><b>Zohar Logic</b><span>The Zohar gives the map. KAI turns the map into daily navigation.</span></div>
+        <div class="quick"><b>Prototype Focus</b><span>Enter, connect, apply a tool, seal with reflection.</span></div>
+        <div class="quick"><b>Guardrail</b><span>AI supports teachers, classes, and real-world action. It never replaces them.</span></div>
+      </div>
+    </div>
+
+    <div id="err" class="errorBanner"></div>
+
+    <div class="chipRow">
+      <div class="chip"><span>Pillars</span><b id="pillarsChip">0</b><span>/100</span></div>
+      <div class="chip"><span>Cycles</span><b id="cyclesChip">0</b><span>/10</span></div>
+      <div class="chip"><span>Certainty</span><b id="certaintyChip">5</b><span>/10</span></div>
+      <div class="chip"><span>Energy</span><b id="energyChip">5</b><span>/10</span></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tabBtn active" data-screen="home">Home</button>
+      <button class="tabBtn" data-screen="names">72 Names</button>
+      <button class="tabBtn" data-screen="zohar">Zohar</button>
+      <button class="tabBtn" data-screen="gematria">Gematria</button>
+      <button class="tabBtn" data-screen="card">Share Card</button>
+      <button class="tabBtn" data-screen="vision">Vision</button>
+    </div>
+
+    <section id="screen-home" class="screen active">
+      <div class="grid">
+        <div>
+          <div class="panel">
+            <div class="panelTitle">Daily Practice Flow</div>
+            <div class="panelSub">This mirrors the discussion guide: enter KAI, connect through a small action or restriction, apply a tool, and seal with reflection.</div>
+            <div class="flow">
+              <div class="step"><div class="stepNum">1</div><div class="itemTitle">Enter</div><div class="tiny">Breathe. Rate certainty and energy.</div></div>
+              <div class="step"><div class="stepNum">2</div><div class="itemTitle">Connect</div><div class="tiny">Take one conscious action. Count a pillar.</div></div>
+              <div class="step"><div class="stepNum">3</div><div class="itemTitle">Apply</div><div class="tiny">Use a Name, Zohar spark, or gematria.</div></div>
+              <div class="step"><div class="stepNum">4</div><div class="itemTitle">Seal</div><div class="tiny">Capture the insight. Share or revisit later.</div></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelTitle">Daily Metrics</div>
+            <div class="panelSub">Simple and honest state awareness, because guidance lands differently depending on a person’s certainty and energy.</div>
+            <div class="metricRow">
+              <label>Certainty <b id="certaintyVal">5</b></label>
+              <input id="certainty" type="range" min="0" max="10" step="1" value="5" />
+            </div>
+            <div class="metricRow">
+              <label>Energy <b id="energyVal">5</b></label>
+              <input id="energy" type="range" min="0" max="10" step="1" value="5" />
+            </div>
+            <div class="btnRow">
+              <button id="btnConnect" class="good">Connect (+pillar)</button>
+              <button id="btnCycle">Run Full Cycle</button>
+              <button id="btnResetDaily" class="danger">Reset Day</button>
+            </div>
+            <div class="footHint">Connection reps and cycles are the measurable spine of the prototype.</div>
+          </div>
+
+          <div class="panel">
+            <div class="panelTitle">Today’s Prompt</div>
+            <div class="panelSub">A compact demo of how KAI could respond to state with a relevant spiritual action.</div>
+            <div class="detail" id="promptBox"></div>
+            <div class="btnRow" style="margin-top:12px">
+              <button id="btnPrompt" class="primary">Refresh Prompt</button>
+              <button id="btnPickToday" class="gold">Pick Today’s Name</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <div class="panelTitle">Today’s 72 Name</div>
+            <div class="panelSub">Titles are included directly so the lunch demo feels complete and legible.</div>
+            <div class="detail" id="todayBox"></div>
+            <div class="btnRow" style="margin-top:12px">
+              <button class="btn" data-jump="names">Browse 72</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelTitle">Teacher Guardrail</div>
+            <div class="panelSub">This should be spoken explicitly in the meeting.</div>
+            <div class="detail">
+              <div class="quote">AI supports teachers, classes, and in-person action. It never replaces the teacher relationship.</div>
+              <div style="margin-top:10px">
+                <span class="badge">Teacher session integration</span>
+                <span class="badge">Class recommendations</span>
+                <span class="badge">Feedback loops</span>
+                <span class="badge">Physical action prompts</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelTitle">Prototype Status</div>
+            <div class="panelSub">The point today is coherence, not polish.</div>
+            <div class="detail">
+              <div class="itemTitle">This is intentionally a proof of concept.</div>
+              <div class="tiny" style="margin-top:6px">It demonstrates structure, guidance, and spiritual flow. It does not pretend content governance or full platform logic are complete.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-names" class="screen">
+      <div class="panel">
+        <div class="panelTitle">72 Names Reference</div>
+        <div class="panelSub">The prototype already had Hebrew triplets and browsing. This version adds seeded titles and short practical descriptions so the lunch demo reads cleanly.</div>
+        <div class="searchRow">
+          <label for="n72Search">Search by number, Hebrew, or title</label>
+          <input id="n72Search" type="text" placeholder="Time Travel, Certainty, והו, 47..." />
+        </div>
+        <div class="list" id="n72List"></div>
+      </div>
+    </section>
+
+    <section id="screen-zohar" class="screen">
+      <div class="panel">
+        <div class="panelTitle">Zohar Foundation</div>
+        <div class="panelSub">A small seeded library tuned to the lunch conversation, including the Vayakhel teaching on divine opportunities and giving.</div>
+        <div class="searchRow">
+          <label for="zSearch">Search passages</label>
+          <input id="zSearch" type="text" placeholder="opportunity, sharing, vessel, Atika Kadisha..." />
+        </div>
+        <div class="list" id="zList"></div>
+      </div>
+    </section>
+
+    <section id="screen-gematria" class="screen">
+      <div class="panel">
+        <div class="panelTitle">Gematria</div>
+        <div class="panelSub">A lightweight demonstration of exploratory meaning-making.</div>
+        <div class="fieldRow">
+          <label for="gInput">Enter Hebrew</label>
+          <input id="gInput" type="text" placeholder="אחדות" />
+        </div>
+        <div class="gmRow">
+          <div class="gmBox"><div class="tiny">Value</div><div id="gValue" class="gmNum">0</div></div>
+          <div class="gmBox"><div class="tiny">Mispar Katan</div><div id="gKatan" class="gmNum">0</div></div>
+          <div class="gmBox"><div class="tiny">Letters</div><div id="gLetters" class="gmNum">0</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-card" class="screen">
+      <div class="panel">
+        <div class="panelTitle">Share Card</div>
+        <div class="panelSub">A visual artifact to make spiritual insight portable and social.</div>
+        <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:14px">
+          <div><canvas id="cardCanvas" width="1200" height="630"></canvas></div>
+          <div>
+            <div class="fieldRow">
+              <label for="cardTitle">Card Title</label>
+              <input id="cardTitle" type="text" value="The Zohar gives the map. KAI turns the map into daily navigation." />
+            </div>
+            <div class="fieldRow">
+              <label for="cardSubtitle">Card Subtitle</label>
+              <input id="cardSubtitle" type="text" value="Daily connection. Guided tools. Teacher-centered growth." />
+            </div>
+            <div class="btnRow">
+              <button id="btnRenderCard" class="primary">Render</button>
+              <button id="btnDownloadJpg">Download JPEG</button>
+            </div>
+            <div class="tiny" id="shareHint">Perfect for showing the meeting’s core idea in one frame.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-vision" class="screen">
+      <div class="panel">
+        <div class="panelTitle">Scaling Vision</div>
+        <div class="panelSub">The lunch guide frames the long-term path in three layers.</div>
+        <div class="list">
+          <div class="item"><div class="itemTitle">Layer 1: Daily Spiritual Engine</div><div class="tiny" style="margin-top:6px">Daily discipline, connection counting, small acts of restriction and sharing, and measurable consistency.</div></div>
+          <div class="item"><div class="itemTitle">Layer 2: AI Spiritual Guide</div><div class="tiny" style="margin-top:6px">Pattern recognition across mood, reactivity, study, and growth to suggest relevant practices and passages.</div></div>
+          <div class="item"><div class="itemTitle">Layer 3: Global Mishkan</div><div class="tiny" style="margin-top:6px">A worldwide practice environment where aggregated spiritual activity makes transformation visible at scale.</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+<script>
+(() => {
+  "use strict";
+  const BUILD = "KAI-2026-03-09c-lunch";
+  const KEY = { state:"KAI_LUNCH_STATE_V1" };
+  const $ = (id) => document.getElementById(id);
+  const defaultState = { dayKey:"", pillars:0, cycles:0, certainty:5, energy:5, todayN:1, card:{title:"",subtitle:""} };
+  let state = loadState();
+
+  window.addEventListener("error", (e) => {
+    showErr("JS ERROR: " + (e?.message || "unknown") + "\n" + (e?.error?.stack || ""));
+  });
+  window.addEventListener("unhandledrejection", (e) => {
+    showErr("PROMISE ERROR: " + (e?.reason?.message || String(e?.reason || "unknown")));
+  });
+
+  const NAMES = [
+    [1,"והו","Time Travel","Repair the emotional weight of the past and move forward with consciousness."],
+    [2,"ילי","Reclaiming Lost Sparks","Recover fragments of energy, attention, and possibility."],
+    [3,"סיט","Miracles","Interrupt the expected and open space for blessing."],
+    [4,"עלם","Removing Negative Thoughts","Loosen mental loops before they become destiny."],
+    [5,"מהש","Healing","Invite restoration into body, heart, and mind."],
+    [6,"ללה","Dream State","Receive insight beyond the surface mind."],
+    [7,"אכא","DNA of the Soul","Remember essential identity beneath noise and fear."],
+    [8,"כהת","Defusing Anger","Transform reaction into restraint and clarity."],
+    [9,"הזי","Angelic Influences","Tune yourself to subtler support."],
+    [10,"אלד","Protection","Create a boundary against chaos and confusion."],
+    [11,"לאו","Joy","Return to uplift as a spiritual technology."],
+    [12,"ההע","Love of Others","Soften separation and expand concern."],
+    [13,"יזל","Divine Memory","Remember what your soul already knows."],
+    [14,"מבה","No More Fear","Move from contraction into courage."],
+    [15,"הרי","Prophecy and Perception","See pattern beneath appearances."],
+    [16,"הקם","Releasing Depression","Bring motion where heaviness has settled."],
+    [17,"לאו","Escaping Ego","Interrupt self-importance to make room for Light."],
+    [18,"כלא","Fertility of Ideas","Turn inspiration into form."],
+    [19,"ליו","Receiving Guidance","Ask better, hear better, act better."],
+    [20,"פהל","Speech and Truth","Use words to reveal, not distort."],
+    [21,"נלך","Endurance","Stay in the work long enough for it to change you."],
+    [22,"ייי","Returning to Source","Reset to spiritual origin."],
+    [23,"מלה","Sharing","Bestow with warmth and real desire."],
+    [24,"והה","Blessing","Become a vessel for increase."],
+    [25,"נתה","Listening","Make room for the subtle voice."],
+    [26,"האא","Order in Chaos","Find coherence amid fragmentation."],
+    [27,"ירת","Seeing Opportunity","Recognize what was sent to you."],
+    [28,"שאה","Letting Go","Release grip without abandoning responsibility."],
+    [29,"ריי","Purpose","Aim the day toward meaning."],
+    [30,"אום","Humility","Strength without inflation."],
+    [31,"לכב","Boundaries","Contain energy so it can serve."],
+    [32,"ושר","Hope","Hold a thread of future light."],
+    [33,"יהו","Compassion","Temper judgment with heart."],
+    [34,"להח","Reframing Difficulty","See challenge as coded help."],
+    [35,"כוק","Integrity","Match inner and outer behavior."],
+    [36,"מנד","Steadiness","Create continuity instead of spikes."],
+    [37,"אני","Self-Honesty","Stop performing and begin witnessing."],
+    [38,"חעמ","Vital Energy","Increase available life force."],
+    [39,"רהע","Discernment","Separate signal from noise."],
+    [40,"ייי","Absolute Certainty","Anchor beyond visible evidence."],
+    [41,"ההה","Healing Relationships","Repair the field between souls."],
+    [42,"מיכ","Renewal","Begin again without self-hatred."],
+    [43,"וול","Defying Gravity","Rise above inertia."],
+    [44,"ילה","Purification","Clear residue before the next move."],
+    [45,"סאל","Enough Is Never Enough","Transform appetite into holy hunger."],
+    [46,"ערי","Confidence","Stand in your vessel without shrinking."],
+    [47,"עשל","Global Transformation","What changes in one life can radiate outward."],
+    [48,"מיה","Unity","Find the thread that joins the fragments."],
+    [49,"והו","Fulfillment","Receive without collapse or grasping."],
+    [50,"דני","Gratitude","Blessing grows where thanks is conscious."],
+    [51,"החש","No Guilt","Own, repair, move."],
+    [52,"עמם","Restraint","Delay impulse to reveal choice."],
+    [53,"ננא","Forgiveness","End recycling pain into identity."],
+    [54,"נית","Spiritual Discipline","Build consistency one rep at a time."],
+    [55,"מבה","Seeing the Teacher","Recognize guidance as living presence."],
+    [56,"פוי","Truth in Desire","Know what you are really after."],
+    [57,"נמם","Calming the Nervous System","Return intensity to center."],
+    [58,"ייל","Emunah","Trust beyond the visible layer."],
+    [59,"הרח","Sacred Speech","Words that align heaven and earth."],
+    [60,"מצר","Breaking Limitation","Move past the old enclosure."],
+    [61,"ומב","Opening the Heart","Receive the opportunity to give."],
+    [62,"יהה","Teacher Connection","Guidance that directs toward embodied action."],
+    [63,"ענו","Soul Humility","Power without theater."],
+    [64,"מחי","Light in Darkness","Find spark inside obscurity."],
+    [65,"דמב","Blessing the Body","Bring consciousness into form."],
+    [66,"מנק","Accountability","Track what you say you value."],
+    [67,"איע","Spiritual Vision","See the deeper architecture."],
+    [68,"חבו","Energy Repair","Restore leaks and fragmentation."],
+    [69,"ראה","Kingdom of the Soul","Lead inner life with responsibility."],
+    [70,"יבמ","Completion","Seal the cycle with awareness."],
+    [71,"היי","Wonder","Stay available to revelation."],
+    [72,"מום","Collective Redemption","The personal path in service of the whole."]
+  ].map(([n,he,title,desc]) => ({n,he,title,desc}));
+
+  const ZOHAR = [
+    {
+      title:"Vayakhel 61 | Divine opportunities to share",
+      tags:"opportunity sharing vessel poor rich light",
+      text:"Sometimes the Creator Himself sends opportunities. When someone lacking wisdom, strength, health, empowerment, or guidance appears before us, the moment is not random. Sharing becomes an opportunity to create unification between Light and vessel."
+    },
+    {
+      title:"Blessed is the portion of one who welcomes the gift",
+      tags:"gift blessing welcome",
+      text:"The poor person is described not only as someone in need, but as a gift sent by the Holy One. The inner work is to see the encounter as a blessing, not a burden."
+    },
+    {
+      title:"Each action of sharing changes three worlds",
+      tags:"fulfillment world action sharing",
+      text:"A true act of sharing fulfills the recipient, fulfills the giver, and affects change in the entire world. Small conscious actions become spiritual architecture."
+    },
+    {
+      title:"Attitude of opportunity",
+      tags:"attitude consciousness opportunity",
+      text:"The Zoharic stance is: what an opportunity. KAI can help train that reflex by translating daily friction into a prompt for sharing, restraint, or consciousness."
+    },
+    {
+      title:"Atika Kadisha | oldest desire, deepest root",
+      tags:"Atika Kadisha root desire concealment mercy",
+      text:"Atika Kadisha points toward the deepest concealed source, where strict fragmentation gives way to a more ancient mercy. In product terms: KAI should help users move from surface reaction to deeper root-awareness."
+    }
+  ];
+
+  const LETTERS = {א:1,ב:2,ג:3,ד:4,ה:5,ו:6,ז:7,ח:8,ט:9,י:10,כ:20,ך:20,ל:30,מ:40,ם:40,נ:50,ן:50,ס:60,ע:70,פ:80,ף:80,צ:90,ץ:90,ק:100,ר:200,ש:300,ת:400};
+
+  function todayKey(){ return new Date().toISOString().slice(0,10); }
+  function loadState(){
+    try{
+      const raw = JSON.parse(localStorage.getItem(KEY.state) || "null") || structuredClone(defaultState);
+      if(raw.dayKey !== todayKey()){ raw.dayKey = todayKey(); raw.pillars = 0; raw.cycles = 0; }
+      return Object.assign(structuredClone(defaultState), raw);
+    }catch{ return structuredClone(defaultState); }
+  }
+  function saveState(){ localStorage.setItem(KEY.state, JSON.stringify(state)); }
+  function toast(msg){ const t=$("toast"); t.textContent = msg; t.style.display="block"; clearTimeout(toast._tm); toast._tm=setTimeout(()=> t.style.display="none", 1800); }
+  function showErr(msg){ const el=$("err"); el.style.display="block"; el.textContent=msg; }
+  function updateChips(){
+    $("pillarsChip").textContent = state.pillars;
+    $("cyclesChip").textContent = state.cycles;
+    $("certaintyChip").textContent = state.certainty;
+    $("energyChip").textContent = state.energy;
+    $("certaintyVal").textContent = state.certainty;
+    $("energyVal").textContent = state.energy;
+    $("certainty").value = state.certainty;
+    $("energy").value = state.energy;
+    renderPrompt();
+  }
+  function switchScreen(name){
+    document.querySelectorAll('.tabBtn').forEach(b=> b.classList.toggle('active', b.dataset.screen===name));
+    document.querySelectorAll('.screen').forEach(s=> s.classList.toggle('active', s.id === 'screen-' + name));
+  }
+  function pickNameByState(){
+    if(state.certainty <= 3) return 40;      // Absolute Certainty
+    if(state.energy <= 3) return 57;         // Calming the Nervous System
+    if(state.pillars < 1) return 23;         // Sharing
+    if(state.cycles < 1) return 54;          // Discipline
+    return 47;                               // Global Transformation
+  }
+  function getName(n){ return NAMES.find(x => x.n === n) || NAMES[0]; }
+  function renderToday(){
+    const item = getName(state.todayN || 1);
+    $("todayBox").innerHTML = `<div class="hebrew">${item.he}</div><div class="itemTitle" style="margin-top:10px">#${item.n} · ${item.title}</div><div class="tiny" style="margin-top:6px">${item.desc}</div>`;
+  }
+  function renderPrompt(){
+    const recommendations = [];
+    if(state.certainty <= 3) recommendations.push("Lower certainty suggests starting with breath and Name #40 Absolute Certainty.");
+    if(state.energy <= 3) recommendations.push("Lower energy suggests calming the system before adding complexity.");
+    if(state.pillars === 0) recommendations.push("Take one small act of sharing or restriction and log your first pillar.");
+    if(recommendations.length === 0) recommendations.push("State is stable enough to run a full cycle and seal the day with reflection.");
+    $("promptBox").innerHTML = `<div class="itemTitle">Suggested move right now</div><div class="tiny" style="margin-top:6px">${recommendations.join(' ')}</div>`;
+  }
+  function render72(){
+    const q = ($("n72Search").value || "").trim().toLowerCase();
+    const rows = NAMES.filter(x => !q || String(x.n).includes(q) || x.he.includes(q) || x.title.toLowerCase().includes(q) || x.desc.toLowerCase().includes(q));
+    $("n72List").innerHTML = rows.map(x => `
+      <div class="item">
+        <div class="itemTop">
+          <div>
+            <div class="itemTitle">#${x.n} · ${x.title}</div>
+            <div class="meta">${x.he}</div>
+          </div>
+          <button class="btn gold" data-pick-name="${x.n}">Pick</button>
+        </div>
+        <div class="tiny" style="margin-top:10px">${x.desc}</div>
+      </div>`).join("") || `<div class="tiny">No matches.</div>`;
+    document.querySelectorAll('[data-pick-name]').forEach(btn => btn.onclick = () => { state.todayN = parseInt(btn.dataset.pickName,10); saveState(); renderToday(); toast("Today's Name updated."); switchScreen('home'); });
+  }
+  function renderZohar(){
+    const q = ($("zSearch").value || "").trim().toLowerCase();
+    const rows = ZOHAR.filter(x => !q || [x.title,x.tags,x.text].join(" ").toLowerCase().includes(q));
+    $("zList").innerHTML = rows.map(x => `<div class="item"><div class="itemTitle">${x.title}</div><div class="meta">${x.tags}</div><div class="tiny" style="margin-top:8px">${x.text}</div></div>`).join("") || `<div class="tiny">No passages found.</div>`;
+  }
+  function gematriaValue(str){ let sum=0; for(const ch of (str||"")){ sum += LETTERS[ch] || 0; } return sum; }
+  function misparKatan(n){ if(!n) return 0; while(n > 9){ n = String(n).split('').reduce((a,b)=>a + Number(b),0); } return n; }
+  function updateGematria(){
+    const raw = $("gInput").value || "";
+    const letters = [...raw].filter(ch => LETTERS[ch]).length;
+    const value = gematriaValue(raw);
+    $("gValue").textContent = value;
+    $("gKatan").textContent = misparKatan(value);
+    $("gLetters").textContent = letters;
+  }
+  function renderCard(){
+    const canvas = $("cardCanvas");
+    const ctx = canvas.getContext('2d');
+    const title = $("cardTitle").value || "KAI";
+    const subtitle = $("cardSubtitle").value || "Daily connection";
+    ctx.fillStyle = '#0b0d10'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    const grad = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+    grad.addColorStop(0,'#1a2532'); grad.addColorStop(1,'#0b0d10');
+    ctx.fillStyle = grad; ctx.fillRect(28,28,canvas.width-56,canvas.height-56);
+    ctx.strokeStyle = 'rgba(241,212,138,.45)'; ctx.lineWidth = 2; ctx.strokeRect(28,28,canvas.width-56,canvas.height-56);
+    ctx.fillStyle = '#f1d48a'; ctx.font = '700 28px -apple-system, sans-serif'; ctx.fillText('KAI', 70, 95);
+    wrapText(ctx, title, 70, 180, 1030, 60, '700 50px -apple-system, sans-serif', '#f5f7fa');
+    wrapText(ctx, subtitle, 70, 365, 1030, 38, '400 28px -apple-system, sans-serif', '#b9c3cf');
+    ctx.fillStyle = '#b9c3cf'; ctx.font = '400 22px -apple-system, sans-serif';
+    ctx.fillText('The Zohar gives the map. KAI turns the map into daily navigation.', 70, 530);
+    ctx.fillText(BUILD, 70, 575);
+  }
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight, font, color){
+    ctx.font = font; ctx.fillStyle = color;
+    const words = String(text).split(' '); let line='';
+    for(let n=0;n<words.length;n++){
+      const test = line + words[n] + ' '; const w = ctx.measureText(test).width;
+      if(w > maxWidth && n > 0){ ctx.fillText(line, x, y); line = words[n] + ' '; y += lineHeight; }
+      else line = test;
+    }
+    ctx.fillText(line, x, y);
+  }
+  function downloadJpeg(){
+    const a = document.createElement('a');
+    a.href = $("cardCanvas").toDataURL('image/jpeg', .92);
+    a.download = 'kai-card-' + BUILD + '.jpg';
+    a.click();
+  }
+
+  function init(){
+    $("buildStamp").textContent = BUILD;
+    document.querySelectorAll('.tabBtn').forEach(btn => btn.addEventListener('click', ()=> switchScreen(btn.dataset.screen)));
+    document.querySelectorAll('[data-jump]').forEach(btn => btn.addEventListener('click', ()=> switchScreen(btn.dataset.jump)));
+
+    $("certainty").addEventListener('input', e => { state.certainty = parseInt(e.target.value,10); saveState(); updateChips(); });
+    $("energy").addEventListener('input', e => { state.energy = parseInt(e.target.value,10); saveState(); updateChips(); });
+    $("btnConnect").addEventListener('click', ()=> { state.pillars = Math.min(100, state.pillars + 1); saveState(); updateChips(); toast('Pillar added.'); });
+    $("btnCycle").addEventListener('click', ()=> { state.cycles = Math.min(10, state.cycles + 1); state.pillars = Math.min(100, state.pillars + 1); saveState(); updateChips(); toast('Full cycle logged.'); });
+    $("btnResetDaily").addEventListener('click', ()=> { state.dayKey = todayKey(); state.pillars = 0; state.cycles = 0; saveState(); updateChips(); toast('Daily counters reset.'); });
+    $("btnPrompt").addEventListener('click', renderPrompt);
+    $("btnPickToday").addEventListener('click', ()=> { state.todayN = pickNameByState(); saveState(); renderToday(); toast('Name selected from current state.'); });
+
+    $("n72Search").addEventListener('input', render72);
+    $("zSearch").addEventListener('input', renderZohar);
+    $("gInput").addEventListener('input', updateGematria);
+    $("btnRenderCard").addEventListener('click', renderCard);
+    $("btnDownloadJpg").addEventListener('click', downloadJpeg);
+    $("cardTitle").addEventListener('input', renderCard);
+    $("cardSubtitle").addEventListener('input', renderCard);
+
+    updateChips();
+    renderToday();
+    render72();
+    renderZohar();
+    updateGematria();
+    renderCard();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
