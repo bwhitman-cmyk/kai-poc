@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>KAI v0.2 • Guided Modes + Sefirah Tree</title>
+
+  <meta name="theme-color" content="#0b0b10" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="KAI" />
+
+  <style>
+    :root{
+      --bg:#0b0b10;
+      --bg2:#11111a;
+      --card:#171722;
+      --card2:#1f1f2b;
+      --line:rgba(255,255,255,.08);
+      --line2:rgba(240,215,155,.18);
+      --text:#f7f3ea;
+      --muted:#b9af9b;
+      --gold:#d7b46a;
+      --gold2:#f0d79b;
+      --violet:#8f6cff;
+      --green:#7ed0a8;
+      --red:#ff8f8f;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+      --r:20px;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{
+      margin:0;padding:0;background:
+        radial-gradient(circle at top, rgba(143,108,255,.08), transparent 28%),
+        radial-gradient(circle at 85% 10%, rgba(215,180,106,.12), transparent 20%),
+        var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+    }
+    body{min-height:100vh;padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom) 28px}
+    .app{max-width:1080px;margin:0 auto}
+    .hero{padding:20px 8px 8px}
+    .eyebrow{
+      display:inline-flex;gap:8px;align-items:center;color:var(--gold2);
+      font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px
+    }
+    h1{margin:0 0 10px;font-size:clamp(30px,6vw,46px);line-height:.98;letter-spacing:-.03em}
+    .subtitle{max-width:850px;color:var(--muted);font-size:15px;line-height:1.5}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:14px}
+    @media (max-width: 940px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)
+    }
+    .pad{padding:18px}
+    .section-title{margin:0 0 8px;font-size:18px;letter-spacing:-.02em}
+    .section-sub{margin:0 0 16px;color:var(--muted);font-size:13px;line-height:1.45}
+    .mode-grid{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px
+    }
+    @media (max-width:700px){.mode-grid{grid-template-columns:1fr}}
+    .mode-card{
+      border:1px solid var(--line);background:rgba(255,255,255,.02);
+      border-radius:18px;padding:14px;cursor:pointer;transition:140ms ease
+    }
+    .mode-card:hover{transform:translateY(-1px);border-color:rgba(240,215,155,.28)}
+    .mode-card.active{
+      border-color:rgba(240,215,155,.5);
+      background:linear-gradient(180deg, rgba(215,180,106,.16), rgba(143,108,255,.08));
+      box-shadow:0 12px 28px rgba(215,180,106,.12)
+    }
+    .mode-name{font-weight:800;font-size:16px;margin-bottom:6px}
+    .mode-desc{font-size:13px;color:var(--muted);line-height:1.45}
+    .mini-pills,.chips{display:flex;flex-wrap:wrap;gap:8px}
+    .pill,.chip{
+      border:1px solid var(--line);background:rgba(255,255,255,.03);
+      color:var(--text);border-radius:999px;padding:8px 12px;font-size:13px
+    }
+    .pill.gold{color:var(--gold2)}
+    .pill.soft{color:var(--muted)}
+    .field{margin-bottom:14px}
+    .field label{display:block;font-size:13px;color:var(--gold2);margin-bottom:8px;font-weight:700}
+    input[type="date"], select, textarea{
+      width:100%;border:1px solid var(--line);background:var(--card2);color:var(--text);
+      border-radius:14px;padding:14px;font-size:16px;outline:none;appearance:none
+    }
+    textarea{min-height:96px;resize:vertical;line-height:1.45}
+    .chip{cursor:pointer;user-select:none;transition:120ms ease}
+    .chip:hover{transform:translateY(-1px)}
+    .chip.active{
+      background:linear-gradient(180deg, rgba(215,180,106,.22), rgba(215,180,106,.12));
+      border-color:rgba(240,215,155,.52);color:#fff9ea
+    }
+    .chip.sefirah.active{
+      background:linear-gradient(180deg, rgba(143,108,255,.22), rgba(215,180,106,.14));
+    }
+    .button-row{display:flex;flex-wrap:wrap;gap:10px}
+    button{
+      border:none;border-radius:14px;padding:14px 16px;font-size:15px;font-weight:800;
+      cursor:pointer;transition:120ms ease
+    }
+    button:hover{transform:translateY(-1px)}
+    .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#241b0c}
+    .btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--line)}
+    .btn-danger{background:rgba(255,255,255,.03);color:#ffb4b4;border:1px solid rgba(255,120,120,.2)}
+    .prompt-box{
+      border:1px solid var(--line2);background:rgba(215,180,106,.06);
+      border-radius:16px;padding:12px 14px;font-size:14px;line-height:1.5;color:var(--text)
+    }
+    .tree-wrap{
+      position:relative;border:1px solid var(--line);background:rgba(255,255,255,.02);
+      border-radius:20px;padding:18px;overflow:hidden
+    }
+    .tree-caption{font-size:13px;color:var(--muted);margin-bottom:12px}
+    .tree{
+      position:relative;height:400px;max-width:420px;margin:0 auto;
+    }
+    .tree svg{
+      position:absolute;inset:0;width:100%;height:100%;pointer-events:none
+    }
+    .node{
+      position:absolute;transform:translate(-50%,-50%);
+      width:96px;min-height:58px;border-radius:999px;padding:10px 8px;
+      border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      color:var(--text);font-weight:800;font-size:14px;text-align:center;
+      display:flex;align-items:center;justify-content:center;cursor:pointer;
+      transition:140ms ease;box-shadow:0 10px 24px rgba(0,0,0,.18)
+    }
+    .node small{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:2px}
+    .node:hover{transform:translate(-50%,-50%) scale(1.03)}
+    .node.active{
+      border-color:rgba(240,215,155,.7);
+      background:linear-gradient(180deg, rgba(143,108,255,.25), rgba(215,180,106,.18));
+      box-shadow:0 16px 34px rgba(143,108,255,.16), 0 10px 24px rgba(0,0,0,.22)
+    }
+    .tree-legend{margin-top:14px}
+    .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .stat{padding:14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.02)}
+    .stat .k{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+    .stat .v{font-size:24px;letter-spacing:-.03em;font-weight:800}
+    .entry-list{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+    .entry{
+      border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:18px;padding:14px
+    }
+    .entry-top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}
+    .entry-date{font-size:14px;color:var(--gold2);font-weight:800}
+    .entry-mode{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 10px}
+    .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+    .meta{font-size:12px;border-radius:999px;padding:6px 9px;border:1px solid var(--line);background:rgba(255,255,255,.02)}
+    .reflection{margin-top:8px;font-size:14px;line-height:1.5;white-space:pre-wrap}
+    .empty{
+      border:1px dashed var(--line);border-radius:18px;padding:20px;text-align:center;
+      color:var(--muted);background:rgba(255,255,255,.015)
+    }
+    .divider{height:1px;background:var(--line);margin:14px 0}
+    .small-note{color:var(--muted);font-size:12px;line-height:1.45}
+    .footer{margin-top:18px;padding:14px;color:var(--muted);font-size:12px;text-align:center}
+    .toast{
+      position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));
+      transform:translateX(-50%) translateY(20px);background:rgba(18,18,24,.96);color:var(--text);
+      border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:220px;text-align:center;
+      opacity:0;pointer-events:none;transition:180ms ease;box-shadow:var(--shadow);z-index:999
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
+<body>
+<div class="app">
+  <section class="hero">
+    <div class="eyebrow">✦ KAI • Guided Modes + Sefirah Tree</div>
+    <h1>KAI v0.2</h1>
+    <div class="subtitle">
+      Choose a mode, let KAI preload the vessel, then route the practice through the Tree.
+      This version turns the logger into a guided spiritual instrument panel.
+    </div>
+  </section>
+
+  <div class="grid">
+    <section>
+      <div class="card pad">
+        <h2 class="section-title">1. Guided Modes</h2>
+        <p class="section-sub">Tap a mode. KAI preloads the gate, the tone, and the likely route.</p>
+        <div class="mode-grid" id="modeGrid"></div>
+
+        <div class="divider"></div>
+
+        <h2 class="section-title">2. Current KAI Entry Gate</h2>
+        <p class="section-sub">This is the doorway. The mode sets the architecture. Your consciousness animates it.</p>
+
+        <div class="mini-pills" id="selectedModeSummary"></div>
+
+        <div class="field" style="margin-top:14px;">
+          <label for="entryDate">Date</label>
+          <input id="entryDate" type="date" />
+        </div>
+
+        <div class="field">
+          <label for="modeName">Mode</label>
+          <select id="modeName"></select>
+        </div>
+
+        <div class="field">
+          <label>Action</label>
+          <div class="chips" id="actionChips"></div>
+        </div>
+
+        <div class="field">
+          <label>Intention</label>
+          <div class="chips" id="intentionChips"></div>
+        </div>
+
+        <div class="field">
+          <label>Sefirah Route</label>
+          <div class="chips" id="sefirahChips"></div>
+        </div>
+
+        <div class="field">
+          <label>Emotional Tone</label>
+          <div class="chips" id="emotionChips"></div>
+        </div>
+
+        <div class="field">
+          <label>Threshold Event</label>
+          <div class="chips" id="thresholdChips"></div>
+        </div>
+
+        <div class="field">
+          <label>Guided Prompt</label>
+          <div class="prompt-box" id="guidedPrompt">Choose a mode to receive the prompt.</div>
+        </div>
+
+        <div class="field">
+          <label for="reflection">Reflection</label>
+          <textarea id="reflection" placeholder="What opened? What resisted? What was the wake-up call, the softening, the joy, the fear, the mercy?"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="integration">Integration / Next Step</label>
+          <textarea id="integration" placeholder="What changes now? What action, restriction, sharing, or preparation comes next?"></textarea>
+        </div>
+
+        <div class="button-row">
+          <button class="btn-primary" id="saveBtn">Save Entry</button>
+          <button class="btn-secondary" id="clearBtn">Reset to Mode</button>
+          <button class="btn-danger" id="wipeBtn">Delete All Data</button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card pad">
+        <h2 class="section-title">3. Sefirah Tree</h2>
+        <p class="section-sub">Tap a node to route the practice manually. The mode picks a default current, but you can steer the river.</p>
+
+        <div class="tree-wrap">
+          <div class="tree-caption">The lower seven as an interface. Not just symbolism. Routing. ⚡</div>
+          <div class="tree" id="tree">
+            <svg viewBox="0 0 420 400" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="120" y1="60" x2="210" y2="145" stroke="rgba(240,215,155,.22)" stroke-width="2"/>
+              <line x1="300" y1="60" x2="210" y2="145" stroke="rgba(240,215,155,.22)" stroke-width="2"/>
+              <line x1="120" y1="60" x2="120" y2="225" stroke="rgba(240,215,155,.16)" stroke-width="2"/>
+              <line x1="300" y1="60" x2="300" y2="225" stroke="rgba(240,215,155,.16)" stroke-width="2"/>
+              <line x1="210" y1="145" x2="120" y2="225" stroke="rgba(240,215,155,.22)" stroke-width="2"/>
+              <line x1="210" y1="145" x2="300" y2="225" stroke="rgba(240,215,155,.22)" stroke-width="2"/>
+              <line x1="120" y1="225" x2="210" y2="305" stroke="rgba(240,215,155,.22)" stroke-width="2"/>
+              <line x1="300" y1="225" x2="210" y2="305" stroke="rgba(240,215,155,.22)" stroke-width="2"/>
+              <line x1="210" y1="305" x2="210" y2="372" stroke="rgba(240,215,155,.28)" stroke-width="2"/>
+            </svg>
+
+            <button class="node" data-sefirah="Chesed" style="left:120px;top:60px;">Chesed</button>
+            <button class="node" data-sefirah="Gevurah" style="left:300px;top:60px;">Gevurah</button>
+            <button class="node" data-sefirah="Tiferet" style="left:210px;top:145px;">Tiferet</button>
+            <button class="node" data-sefirah="Netzach" style="left:120px;top:225px;">Netzach</button>
+            <button class="node" data-sefirah="Hod" style="left:300px;top:225px;">Hod</button>
+            <button class="node" data-sefirah="Yesod" style="left:210px;top:305px;">Yesod</button>
+            <button class="node" data-sefirah="Malchut" style="left:210px;top:372px;">Malchut</button>
+          </div>
+
+          <div class="tree-legend mini-pills" id="treeLegend"></div>
+        </div>
+      </div>
+
+      <div class="card pad" style="margin-top:16px;">
+        <h2 class="section-title">4. Mini Dashboard</h2>
+        <p class="section-sub">Once you give KAI repetitions, it starts whispering back patterns.</p>
+        <div class="stat-grid">
+          <div class="stat"><div class="k">Total Entries</div><div class="v" id="statTotal">0</div></div>
+          <div class="stat"><div class="k">Breakthroughs</div><div class="v" id="statBreakthroughs">0</div></div>
+          <div class="stat"><div class="k">Top Sefirah</div><div class="v" id="statTopSefirah">—</div></div>
+          <div class="stat"><div class="k">Top Mode</div><div class="v" id="statTopMode">—</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="small-note" id="insightBox">No entries yet. Start logging and KAI will begin reflecting your routes of consciousness back to you.</div>
+      </div>
+
+      <div class="card pad" style="margin-top:16px;">
+        <h2 class="section-title">Recent Entries</h2>
+        <p class="section-sub">The breadcrumb trail through your own interior weather.</p>
+        <div id="entryList" class="entry-list"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="footer">
+    KAI v0.2 • Guided Modes • Sefirah Tree • localStorage only • safe to run as a standalone test build
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = "kai_zohar_mechanics_v0_2";
+
+const MODE_CONFIG = {
+  "Prayer Mode": {
+    description: "Aim beyond relief. Lift the will upward and pray with certainty.",
+    defaultAction: "Prayer",
+    defaultIntention: "Connect to Source",
+    defaultSefirah: "Tiferet",
+    defaultEmotion: "Certainty",
+    defaultThreshold: "Clarity",
+    actions: ["Prayer","Ana Bekoach","Zohar Study","Meditation","Conversation"],
+    intentions: ["Connect to Source","Certainty","Healing","Clarity","Receive to Share","Unification"],
+    emotions: ["Certainty","Longing","Humility","Mercy","Peace","Gratitude"],
+    prompt: "Pause before the words. Aim past symptom relief, past immediate need, toward the Source of all sources. Let the lips move, but make sure the heart is also moving upward."
+  },
+  "Tikkun Mode": {
+    description: "Use pain, friction, or confusion as diagnostic light rather than punishment.",
+    defaultAction: "Witnessing",
+    defaultIntention: "Transform Reactivity",
+    defaultSefirah: "Hod",
+    defaultEmotion: "Humility",
+    defaultThreshold: "Resistance",
+    actions: ["Witnessing","Meditation","Conversation","Restriction","Zohar Study"],
+    intentions: ["Transform Reactivity","Clarity","Healing","Mercy","Breakthrough"],
+    emotions: ["Humility","Vulnerability","Discipline","Mercy","Longing"],
+    prompt: "Ask: what is the wake-up call here? What am I blind to? Where is the message inside the friction? Let the discomfort become revelation instead of mere weather."
+  },
+  "Giving Opportunity Mode": {
+    description: "Treat the appearance of need as a sent opportunity, not an interruption.",
+    defaultAction: "Giving",
+    defaultIntention: "Support Another",
+    defaultSefirah: "Chesed",
+    defaultEmotion: "Joy",
+    defaultThreshold: "Softening",
+    actions: ["Giving","Helping Someone","Conversation","Prayer"],
+    intentions: ["Support Another","Receive to Share","Unification","Mercy","Connect to Source"],
+    emotions: ["Joy","Gratitude","Mercy","Peace","Humility"],
+    prompt: "Look at the encounter as a gift sent to you. You are not only helping. You are participating in a union of light and vessel. Give from the heart, not as favor but as privilege."
+  },
+  "Shabbat Mode": {
+    description: "Prepare for and enter the neshama yetera with joy, peace, and anticipation.",
+    defaultAction: "Shabbat Preparation",
+    defaultIntention: "Connect to Source",
+    defaultSefirah: "Yesod",
+    defaultEmotion: "Peace",
+    defaultThreshold: "Peace",
+    actions: ["Shabbat Preparation","Meditation","Prayer","Giving","Conversation"],
+    intentions: ["Connect to Source","Unification","Healing","Clarity","Receive to Share"],
+    emotions: ["Peace","Joy","Gratitude","Certainty","Mercy"],
+    prompt: "Anticipate the gift. During Shabbat, your elevated self is more available. Bond with that self. Nurture it. Let joy become easier than strain."
+  },
+  "Restriction Mode": {
+    description: "Refuse the golden calf of immediate relief. Persevere toward real blessing.",
+    defaultAction: "Restriction",
+    defaultIntention: "Transform Reactivity",
+    defaultSefirah: "Gevurah",
+    defaultEmotion: "Discipline",
+    defaultThreshold: "Resistance",
+    actions: ["Restriction","Witnessing","Meditation","Prayer","Conversation"],
+    intentions: ["Transform Reactivity","Breakthrough","Clarity","Healing","Connect to Source"],
+    emotions: ["Discipline","Certainty","Longing","Humility","Peace"],
+    prompt: "Where are you tempted by the quick exit? Stay with the higher choice long enough for the hidden blessing to appear. Restriction here is not deprivation. It is anti-counterfeit consciousness."
+  }
+};
+
+const SEFIROT = ["Chesed","Gevurah","Tiferet","Netzach","Hod","Yesod","Malchut"];
+const THRESHOLDS = ["None","Tears","Softening","Clarity","Resistance","Peace","Release","Breakthrough","Missed Opportunity"];
+
+const state = {
+  currentMode: "Prayer Mode",
+  selectedAction: "",
+  selectedIntention: "",
+  selectedSefirah: "",
+  selectedEmotion: "",
+  selectedThreshold: "None"
+};
+
+const els = {
+  modeGrid: document.getElementById("modeGrid"),
+  selectedModeSummary: document.getElementById("selectedModeSummary"),
+  entryDate: document.getElementById("entryDate"),
+  modeName: document.getElementById("modeName"),
+  actionChips: document.getElementById("actionChips"),
+  intentionChips: document.getElementById("intentionChips"),
+  sefirahChips: document.getElementById("sefirahChips"),
+  emotionChips: document.getElementById("emotionChips"),
+  thresholdChips: document.getElementById("thresholdChips"),
+  guidedPrompt: document.getElementById("guidedPrompt"),
+  reflection: document.getElementById("reflection"),
+  integration: document.getElementById("integration"),
+  saveBtn: document.getElementById("saveBtn"),
+  clearBtn: document.getElementById("clearBtn"),
+  wipeBtn: document.getElementById("wipeBtn"),
+  treeLegend: document.getElementById("treeLegend"),
+  entryList: document.getElementById("entryList"),
+  statTotal: document.getElementById("statTotal"),
+  statBreakthroughs: document.getElementById("statBreakthroughs"),
+  statTopSefirah: document.getElementById("statTopSefirah"),
+  statTopMode: document.getElementById("statTopMode"),
+  insightBox: document.getElementById("insightBox"),
+  toast: document.getElementById("toast")
+};
+
+function todayLocalISO(){
+  const now = new Date();
+  const offsetMs = now.getTimezoneOffset() * 60000;
+  return new Date(now.getTime() - offsetMs).toISOString().slice(0,10);
+}
+function formatDisplayDate(iso){
+  try{
+    const d = new Date(iso + "T12:00:00");
+    return d.toLocaleDateString(undefined,{weekday:"short", month:"short", day:"numeric", year:"numeric"});
+  }catch{ return iso; }
+}
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+function getEntries(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  }catch{
+    return [];
+  }
+}
+function saveEntries(entries){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+function countBy(arr, key){
+  const map = {};
+  arr.forEach(item => {
+    const val = item[key];
+    if(!val) return;
+    map[val] = (map[val] || 0) + 1;
+  });
+  return map;
+}
+function topKey(map){
+  const entries = Object.entries(map);
+  if(!entries.length) return "—";
+  entries.sort((a,b) => b[1] - a[1]);
+  return entries[0][0];
+}
+function showToast(message){
+  els.toast.textContent = message;
+  els.toast.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => els.toast.classList.remove("show"), 1800);
+}
+function setActiveChip(container, value){
+  [...container.querySelectorAll(".chip")].forEach(chip => {
+    chip.classList.toggle("active", chip.dataset.value === value);
+  });
+}
+function createChips(container, values, onClick, className=""){
+  container.innerHTML = "";
+  values.forEach(value => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `chip ${className}`.trim();
+    btn.textContent = value;
+    btn.dataset.value = value;
+    btn.addEventListener("click", () => onClick(value));
+    container.appendChild(btn);
+  });
+}
+function renderModes(){
+  els.modeGrid.innerHTML = "";
+  Object.keys(MODE_CONFIG).forEach(modeName => {
+    const cfg = MODE_CONFIG[modeName];
+    const div = document.createElement("button");
+    div.type = "button";
+    div.className = "mode-card" + (state.currentMode === modeName ? " active" : "");
+    div.innerHTML = `
+      <div class="mode-name">${escapeHtml(modeName)}</div>
+      <div class="mode-desc">${escapeHtml(cfg.description)}</div>
+    `;
+    div.addEventListener("click", () => applyMode(modeName, true));
+    els.modeGrid.appendChild(div);
+  });
+
+  els.modeName.innerHTML = "";
+  Object.keys(MODE_CONFIG).forEach(modeName => {
+    const opt = document.createElement("option");
+    opt.value = modeName;
+    opt.textContent = modeName;
+    els.modeName.appendChild(opt);
+  });
+  els.modeName.value = state.currentMode;
+}
+function renderModeSummary(){
+  const cfg = MODE_CONFIG[state.currentMode];
+  els.selectedModeSummary.innerHTML = `
+    <div class="pill gold">${escapeHtml(state.currentMode)}</div>
+    <div class="pill soft">Default Action: ${escapeHtml(cfg.defaultAction)}</div>
+    <div class="pill soft">Default Sefirah: ${escapeHtml(cfg.defaultSefirah)}</div>
+    <div class="pill soft">Tone: ${escapeHtml(cfg.defaultEmotion)}</div>
+  `;
+  els.guidedPrompt.textContent = cfg.prompt;
+}
+function renderTreeLegend(){
+  const cfg = MODE_CONFIG[state.currentMode];
+  els.treeLegend.innerHTML = `
+    <div class="pill gold">Mode Current</div>
+    <div class="pill">${escapeHtml(cfg.defaultSefirah)}</div>
+    <div class="pill soft">Tap any node to override</div>
+  `;
+}
+function setActiveTree(sefirah){
+  document.querySelectorAll(".node[data-sefirah]").forEach(node => {
+    node.classList.toggle("active", node.dataset.sefirah === sefirah);
+  });
+}
+function bindTree(){
+  document.querySelectorAll(".node[data-sefirah]").forEach(node => {
+    node.addEventListener("click", () => {
+      state.selectedSefirah = node.dataset.sefirah;
+      setActiveTree(state.selectedSefirah);
+      setActiveChip(els.sefirahChips, state.selectedSefirah);
+      showToast(`${state.selectedSefirah} selected`);
+    });
+  });
+}
+function renderChipGroups(){
+  const cfg = MODE_CONFIG[state.currentMode];
+
+  createChips(els.actionChips, cfg.actions, value => {
+    state.selectedAction = value;
+    setActiveChip(els.actionChips, value);
+  });
+
+  createChips(els.intentionChips, cfg.intentions, value => {
+    state.selectedIntention = value;
+    setActiveChip(els.intentionChips, value);
+  });
+
+  createChips(els.sefirahChips, SEFIROT, value => {
+    state.selectedSefirah = value;
+    setActiveChip(els.sefirahChips, value);
+    setActiveTree(value);
+  }, "sefirah");
+
+  createChips(els.emotionChips, cfg.emotions, value => {
+    state.selectedEmotion = value;
+    setActiveChip(els.emotionChips, value);
+  });
+
+  createChips(els.thresholdChips, THRESHOLDS, value => {
+    state.selectedThreshold = value;
+    setActiveChip(els.thresholdChips, value);
+  });
+}
+function applyMode(modeName, clearText=false){
+  state.currentMode = modeName;
+  const cfg = MODE_CONFIG[modeName];
+
+  state.selectedAction = cfg.defaultAction;
+  state.selectedIntention = cfg.defaultIntention;
+  state.selectedSefirah = cfg.defaultSefirah;
+  state.selectedEmotion = cfg.defaultEmotion;
+  state.selectedThreshold = cfg.defaultThreshold;
+
+  renderModes();
+  renderModeSummary();
+  renderTreeLegend();
+  renderChipGroups();
+
+  els.modeName.value = state.currentMode;
+  setActiveChip(els.actionChips, state.selectedAction);
+  setActiveChip(els.intentionChips, state.selectedIntention);
+  setActiveChip(els.sefirahChips, state.selectedSefirah);
+  setActiveChip(els.emotionChips, state.selectedEmotion);
+  setActiveChip(els.thresholdChips, state.selectedThreshold);
+  setActiveTree(state.selectedSefirah);
+
+  if(clearText){
+    els.reflection.value = "";
+    els.integration.value = "";
+  }
+}
+function buildEntryFromForm(){
+  return {
+    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2),
+    createdAt: new Date().toISOString(),
+    date: els.entryDate.value,
+    mode: state.currentMode,
+    action: state.selectedAction,
+    intention: state.selectedIntention,
+    sefirah: state.selectedSefirah,
+    emotion: state.selectedEmotion,
+    threshold: state.selectedThreshold,
+    reflection: els.reflection.value.trim(),
+    integration: els.integration.value.trim()
+  };
+}
+function validateEntry(entry){
+  if(!entry.date) return "Please choose a date.";
+  if(!entry.mode) return "Choose a mode.";
+  if(!entry.action) return "Choose an action.";
+  if(!entry.intention) return "Choose an intention.";
+  if(!entry.sefirah) return "Choose a sefirah.";
+  if(!entry.emotion) return "Choose an emotional tone.";
+  return "";
+}
+function saveCurrentEntry(){
+  const entry = buildEntryFromForm();
+  const err = validateEntry(entry);
+  if(err){
+    showToast(err);
+    return;
+  }
+  const entries = getEntries();
+  entries.push(entry);
+  saveEntries(entries);
+  renderEntries();
+  renderStats();
+  showToast("Entry saved");
+}
+function renderEntries(){
+  const entries = getEntries().sort((a,b) => {
+    if(a.date === b.date) return new Date(b.createdAt) - new Date(a.createdAt);
+    return a.date < b.date ? 1 : -1;
+  });
+
+  els.entryList.innerHTML = "";
+  if(!entries.length){
+    els.entryList.innerHTML = `
+      <div class="empty">
+        No entries yet.<br/>
+        Choose a mode, route it through the Tree, and let the first breadcrumb fall.
+      </div>
+    `;
+    return;
+  }
+
+  entries.slice(0,12).forEach(entry => {
+    const div = document.createElement("div");
+    div.className = "entry";
+    div.innerHTML = `
+      <div class="entry-top">
+        <div class="entry-date">${formatDisplayDate(entry.date)}</div>
+        <div class="entry-mode">${escapeHtml(entry.mode)}</div>
+      </div>
+      <div class="meta-row">
+        <div class="meta">Action: ${escapeHtml(entry.action || "—")}</div>
+        <div class="meta">Intention: ${escapeHtml(entry.intention || "—")}</div>
+        <div class="meta">Sefirah: ${escapeHtml(entry.sefirah || "—")}</div>
+        <div class="meta">Emotion: ${escapeHtml(entry.emotion || "—")}</div>
+        <div class="meta">Threshold: ${escapeHtml(entry.threshold || "None")}</div>
+      </div>
+      ${entry.reflection ? `<div class="reflection"><strong>Reflection:</strong> ${escapeHtml(entry.reflection)}</div>` : ""}
+      ${entry.integration ? `<div class="reflection"><strong>Integration:</strong> ${escapeHtml(entry.integration)}</div>` : ""}
+    `;
+    els.entryList.appendChild(div);
+  });
+}
+function renderStats(){
+  const entries = getEntries();
+  els.statTotal.textContent = entries.length;
+
+  const breakthroughs = entries.filter(e =>
+    e.threshold && !["None","Resistance","Missed Opportunity"].includes(e.threshold)
+  ).length;
+  els.statBreakthroughs.textContent = breakthroughs;
+  els.statTopSefirah.textContent = topKey(countBy(entries, "sefirah"));
+  els.statTopMode.textContent = topKey(countBy(entries, "mode"));
+  els.insightBox.textContent = buildInsight(entries);
+}
+function buildInsight(entries){
+  if(!entries.length){
+    return "No entries yet. Start logging and KAI will begin reflecting your routes of consciousness back to you.";
+  }
+
+  const topMode = topKey(countBy(entries, "mode"));
+  const topSefirah = topKey(countBy(entries, "sefirah"));
+  const thresholds = countBy(entries, "threshold");
+  const tears = thresholds["Tears"] || 0;
+  const peace = thresholds["Peace"] || 0;
+  const resistance = thresholds["Resistance"] || 0;
+  const breakthrough = thresholds["Breakthrough"] || 0;
+
+  if(tears >= 2){
+    return `Tears have appeared ${tears} times. That suggests your gate is opening most when humility outruns self-reliance.`;
+  }
+  if(breakthrough >= 2){
+    return `Breakthrough has been logged ${breakthrough} times. You are not merely journaling. You are beginning to map conditions under which force turns into opening.`;
+  }
+  if(resistance >= 2){
+    return `Resistance is recurring. In tikkun logic, that does not only mean obstacle. It may be the exact pressure point where the message is hiding.`;
+  }
+  if(peace >= 2){
+    return `Peace has appeared ${peace} times. Quiet openings count. Some gates swing on silk hinges.`;
+  }
+  return `So far, your practice leans toward ${topMode} through ${topSefirah}. That is your current spiritual weather front.`;
+}
+function wipeAllData(){
+  const sure = confirm("Delete all KAI v0.2 data from this device?");
+  if(!sure) return;
+  localStorage.removeItem(STORAGE_KEY);
+  renderEntries();
+  renderStats();
+  showToast("All data deleted");
+}
+function init(){
+  els.entryDate.value = todayLocalISO();
+  renderModes();
+  bindTree();
+  applyMode("Prayer Mode", true);
+  renderEntries();
+  renderStats();
+
+  els.modeName.addEventListener("change", e => applyMode(e.target.value, false));
+  els.saveBtn.addEventListener("click", saveCurrentEntry);
+  els.clearBtn.addEventListener("click", () => {
+    applyMode(state.currentMode, true);
+    showToast("Reset to mode defaults");
+  });
+  els.wipeBtn.addEventListener("click", wipeAllData);
+}
+init();
+</script>
+</body>
+</html>
